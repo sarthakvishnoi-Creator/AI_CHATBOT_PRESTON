@@ -1,0 +1,29 @@
+[project]
+name = "preston-ai-chatbot"
+version = "0.1.0"
+description = "A production-oriented enterprise AI chatbot platform."
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "ruff",
+    "pyright",
+    "pytest",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+target-version = "py312"
+
+[tool.pyright]
+pythonVersion = "3.12"
+venvPath = "."
+venv = ".venv"
+include = ["backend", "tests", "scripts"]
+exclude = [".venv", "**/__pycache__"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
