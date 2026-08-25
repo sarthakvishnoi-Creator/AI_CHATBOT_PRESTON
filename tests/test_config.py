@@ -1,0 +1,108 @@
+"""Tests for application configuration."""
+
+from pathlib import Path
+
+import pytest
+from pydantic import ValidationError
+
+from preston.core.config import Settings, get_settings
+
+
+@pytest.fixture(autouse=True)
+def clean_environment(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Remove any ``PRESTON_`` variables inherited from the developer's shell."""
+    for name in (
+        "APP_NAME",
+        "APP_VERSION",
+        "ENVIRONMENT",
+        "LOG_LEVEL",
+        "API_V1_PREFIX",
+    ):
+        monkeypatch.delenv(f"PRESTON_{name}", raising=False)
+
+
+def settings_from(env_file: Path | None) -> Settings:
+    """Build settings against a specific env file (``None`` disables the file).
+
+    ``_env_file`` is a documented ``BaseSettings`` parameter, but pydantic's
+    synthesized ``__init__`` hides it from static analysis.
+    """
+    return Settings(_env_file=env_file)  # pyright: ignore[reportCallIssue]
+
+
+def test_defaults() -> None:
+    """Settings fall back to documented defaults."""
+    settings = settings_from(None)
+
+    assert settings.app_name == "Preston AI Chatbot"
+    assert settings.app_version == "0.1.0"
+    assert settings.environment == "local"
+    assert settings.log_level == "INFO"
+    assert settings.api_v1_prefix == "/api/v1"
+
+
+def test_environment_variables_are_read(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Prefixed environment variables populate settings."""
+    monkeypatch.setenv("PRESTON_LOG_LEVEL", "DEBUG")
+
+    assert settings_from(None).log_level == "DEBUG"
+
+
+def test_environment_variables_override_the_env_file(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """A real environment variable wins over the same key in ``.env``."""
+    env_file = tmp_path / ".env"
+    _ = env_file.write_text("PRESTON_LOG_LEVEL=WARNING\n", encoding="utf-8")
+    monkeypatch.setenv("PRESTON_LOG_LEVEL", "DEBUG")
+
+    assert settings_from(env_file).log_level == "DEBUG"
+
+
+def test_env_file_is_read_when_no_variable_is_set(tmp_path: Path) -> None:
+    """The env file is used when the environment does not set the key."""
+    env_file = tmp_path / ".env"
+    _ = env_file.write_text("PRESTON_LOG_LEVEL=WARNING\n", encoding="utf-8")
+
+    assert settings_from(env_file).log_level == "WARNING"
+
+
+def test_init_arguments_override_environment_variables(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Explicit arguments have the highest precedence."""
+    monkeypatch.setenv("PRESTON_APP_NAME", "FromEnv")
+
+    assert Settings(app_name="FromKwarg").app_name == "FromKwarg"
+
+
+def test_invalid_environment_is_rejected(monkeypatch: pytest.MonkeyPatch) -> None:
+    """An unknown environment fails at configuration load."""
+    monkeypatch.setenv("PRESTON_ENVIRONMENT", "staging")
+
+    with pytest.raises(ValidationError):
+        _ = settings_from(None)
+
+
+def test_invalid_log_level_is_rejected(monkeypatch: pytest.MonkeyPatch) -> None:
+    """An unusable log level fails at configuration load, not at startup."""
+    monkeypatch.setenv("PRESTON_LOG_LEVEL", "verbose")
+
+    with pytest.raises(ValidationError):
+        _ = settings_from(None)
+
+
+def test_unknown_prefixed_variables_are_ignored(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Unrecognised ``PRESTON_`` variables do not break configuration load."""
+    monkeypatch.setenv("PRESTON_NOT_A_SETTING", "x")
+
+    settings = settings_from(None)
+
+    assert not hasattr(settings, "not_a_setting")
+
+
+def test_get_settings_is_cached() -> None:
+    """The accessor returns one shared instance."""
+    assert get_settings() is get_settings()

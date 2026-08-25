@@ -9,8 +9,34 @@ and the current project phase. Do not move to another phase or make major
 architectural changes without human approval.
 
 ## Current Phase
+
+
 Phase 3 — Repository & Development Foundation.
 Application development starts in Phase 4.
+
+to:
+
+Phase 4 — Backend Core / FastAPI.
+
+Do not modify any other section or file.
+
+Do not change architecture rules.
+
+After editing, verify the diff and stop.
+Do not begin Phase 4.3.
+Do not commit.
+
+## Simplicity
+Prefer the smallest production-quality solution.
+
+- Reuse existing code before creating abstractions.
+- Do not create files, classes, interfaces, wrappers, or dependencies
+  without a current requirement.
+- Avoid speculative architecture and future-proofing.
+- Prefer simple modules over unnecessary layers.
+- Do not duplicate framework functionality.
+- Keep the codebase small, readable, and maintainable.
+- Add complexity only when a concrete requirement justifies it.
 
 ## Development Rules
 - Inspect relevant existing code before modifying it.
