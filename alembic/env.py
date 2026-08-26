@@ -3,6 +3,7 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
+from preston import models  # noqa: F401  (registers the tables on Base.metadata)
 from preston.core.config import get_settings
 from preston.core.db import Base
 
@@ -15,7 +16,7 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# No ORM models exist yet; this picks them up automatically once they do.
+# Populated by importing preston.models above.
 target_metadata = Base.metadata
 
 # The URL comes from the application's own Settings (PRESTON_DATABASE_URL)
