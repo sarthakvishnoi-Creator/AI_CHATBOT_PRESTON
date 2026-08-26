@@ -4,8 +4,11 @@ version = "0.1.0"
 description = "A production-oriented enterprise AI chatbot platform."
 requires-python = ">=3.12"
 dependencies = [
+    "alembic>=1.19.1",
     "fastapi",
+    "psycopg[binary]>=3.3.4",
     "pydantic-settings",
+    "sqlalchemy[asyncio]>=2.0.52",
     "uvicorn[standard]",
 ]
 

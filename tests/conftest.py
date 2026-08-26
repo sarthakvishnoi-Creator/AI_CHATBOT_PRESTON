@@ -3,6 +3,8 @@
 import logging
 from collections.abc import Callable, Generator, Iterator
 from contextlib import AbstractContextManager, contextmanager
+from pathlib import Path
+from urllib.parse import quote
 
 import httpx
 import pytest
@@ -15,6 +17,8 @@ from preston.main import create_app
 ClientFactory = Callable[[FastAPI], AbstractContextManager[httpx.Client]]
 
 APP_LOGGER = "preston.main"
+
+_ENV_FILE = Path(__file__).resolve().parents[1] / ".env"
 
 
 @pytest.fixture(autouse=True)
@@ -47,6 +51,33 @@ def client() -> Iterator[httpx.Client]:
     """Return a client bound to a freshly built application."""
     with _open_client(create_app()) as test_client:
         yield test_client
+
+
+@pytest.fixture
+def real_database_url() -> str | None:
+    """Return a PostgreSQL URL built from the local ``.env``, or ``None``.
+
+    Reads the Compose-facing ``POSTGRES_*`` values directly and never
+    prints them: the application's own ``Settings`` intentionally does not
+    derive ``database_url`` from them (see ``core/config.py``). Used only
+    by tests that exercise the real database.
+    """
+    if not _ENV_FILE.is_file():
+        return None
+    values: dict[str, str] = {}
+    for raw_line in _ENV_FILE.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        values[key.strip()] = value.strip()
+    try:
+        user = quote(values["POSTGRES_USER"], safe="")
+        password = quote(values["POSTGRES_PASSWORD"], safe="")
+        db = quote(values["POSTGRES_DB"], safe="")
+    except KeyError:
+        return None
+    return f"postgresql+psycopg://{user}:{password}@localhost:5432/{db}"
 
 
 class LogRecorder(logging.Handler):

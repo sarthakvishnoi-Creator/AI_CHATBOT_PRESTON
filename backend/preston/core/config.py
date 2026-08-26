@@ -12,6 +12,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
+from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 Environment = Literal["local", "development", "production"]
@@ -38,6 +39,10 @@ class Settings(BaseSettings):
     environment: Environment = "local"
     log_level: LogLevel = "INFO"
     api_v1_prefix: str = "/api/v1"
+
+    # No default: unset means no database is configured yet. Nothing in this
+    # phase connects, so an absent value is valid, not an oversight.
+    database_url: PostgresDsn | None = None
 
 
 @lru_cache(maxsize=1)

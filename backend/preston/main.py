@@ -15,6 +15,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 from preston.api.v1.router import router as v1_router
 from preston.core.config import Settings, get_settings
+from preston.core.db import build_async_engine, build_session_factory
 from preston.core.errors import PrestonError
 from preston.core.logging import configure_logging, request_id_var
 
@@ -99,12 +100,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     configure_logging(settings.log_level)
 
     @asynccontextmanager
-    async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
+    async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         """Run application startup and shutdown.
 
-        Application-scoped resources are acquired before the ``yield`` and
-        released after it. None exist yet; later phases add them here so that
-        setup and teardown stay paired in one place.
+        The database engine, when a URL is configured, is created here and
+        disposed after the ``yield`` so setup and teardown stay paired in
+        one place. The session factory is exposed on ``app.state`` because
+        that is how the per-request session dependency in ``api/deps.py``
+        reaches it; nothing else needs to be there.
         """
         logger.info(
             "Starting %s %s (environment=%s)",
@@ -112,7 +115,17 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             settings.app_version,
             settings.environment,
         )
+        engine = (
+            build_async_engine(str(settings.database_url))
+            if settings.database_url is not None
+            else None
+        )
+        app.state.db_session_factory = (
+            build_session_factory(engine) if engine is not None else None
+        )
         yield
+        if engine is not None:
+            await engine.dispose()
         logger.info("Stopped %s", settings.app_name)
 
     app = FastAPI(
