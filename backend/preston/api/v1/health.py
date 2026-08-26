@@ -1,16 +1,23 @@
 """Liveness and readiness endpoints.
 
-Both report on the application process only. Neither contacts PostgreSQL,
-pgvector, an LLM, or any other external service, because none is integrated
-yet and probes must stay cheap.
+``/health`` reports on the application process only and never contacts
+PostgreSQL, so it stays cheap and always answers. ``/ready`` additionally
+confirms the database is actually usable, since that is what "ready to
+serve traffic" means once a database is part of the stack.
 """
 
+import logging
 from typing import Literal
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from pydantic import BaseModel
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
 
 from preston.api.deps import SettingsDep
+from preston.core.errors import PrestonError
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["health"])
 
@@ -29,6 +36,18 @@ class ReadyResponse(BaseModel):
     version: str
 
 
+class DatabaseNotReadyError(PrestonError):
+    """The database is unconfigured or unreachable.
+
+    ``detail`` is always a fixed, generic string: the underlying exception
+    may carry the connection URL, host, or credentials, and must never reach
+    the client or the problem-details body.
+    """
+
+    title = "Service Unavailable"
+    status_code = 503
+
+
 @router.get("/health")
 async def health(settings: SettingsDep) -> HealthResponse:
     """Return the process liveness status."""
@@ -36,11 +55,21 @@ async def health(settings: SettingsDep) -> HealthResponse:
 
 
 @router.get("/ready")
-async def ready(settings: SettingsDep) -> ReadyResponse:
+async def ready(request: Request, settings: SettingsDep) -> ReadyResponse:
     """Return the application readiness status.
 
-    Reaching this handler means configuration loaded and the lifespan startup
-    completed, which is the whole of readiness at this phase. Phase 5 extends
-    this once the database becomes a real dependency.
+    Readiness requires PostgreSQL to be configured and reachable. The
+    session factory is read straight off ``app.state``, the same place
+    ``api/deps.get_session`` reads it from, so this reuses the existing
+    engine/session infrastructure without opening a second pool.
     """
+    session_factory = request.app.state.db_session_factory
+    if session_factory is None:
+        raise DatabaseNotReadyError("The database is not configured.")
+    try:
+        async with session_factory() as session:
+            await session.execute(text("SELECT 1"))
+    except SQLAlchemyError:
+        logger.warning("Readiness check failed: the database is unreachable.")
+        raise DatabaseNotReadyError("The database is unreachable.") from None
     return ReadyResponse(status="ready", version=settings.app_version)

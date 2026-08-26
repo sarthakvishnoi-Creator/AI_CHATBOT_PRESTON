@@ -42,8 +42,13 @@ def test_shutdown_is_reached_when_a_request_fails(
 
 
 def test_no_database_is_configured_by_default(open_client: ClientFactory) -> None:
-    """The app starts and stops cleanly with no database URL set."""
-    app = create_app()
+    """The app starts and stops cleanly when no database URL is configured.
+
+    ``database_url=None`` is passed explicitly: local development now has a
+    real ``PRESTON_DATABASE_URL`` in ``.env``, so this exercises the
+    unconfigured path deliberately rather than by relying on it.
+    """
+    app = create_app(settings=Settings(database_url=None))
 
     with open_client(app) as client:
         assert app.state.db_session_factory is None
