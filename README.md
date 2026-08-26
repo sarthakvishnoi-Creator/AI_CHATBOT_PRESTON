@@ -4,11 +4,14 @@ A production-oriented enterprise AI chatbot platform.
 
 ## Status
 
-Development foundation / Phase 3.
+Phase 5 — Database & Data Layer (starting).
 
-No application code has been implemented yet. This repository currently
-contains only the development environment and the directory skeleton that
-later phases will build into.
+Phase 4 delivered the FastAPI backend core: the application factory,
+configuration, request lifecycle (startup/shutdown logging), API
+versioning under `/api/v1`, problem-details error handling, request-id
+correlation, structured logging, and liveness/readiness endpoints. No
+database access layer exists yet; PostgreSQL + pgvector currently run
+only as development infrastructure.
 
 ## Environment
 
@@ -29,10 +32,10 @@ required variable names.
 
 | Path        | Purpose                                            |
 | ----------- | -------------------------------------------------- |
-| `backend/`  | Future FastAPI/backend application.                 |
+| `backend/`  | FastAPI backend application.                        |
 | `frontend/` | Future web frontend.                                |
 | `tests/`    | Cross-component and integration testing.            |
 | `docs/`     | Project and architecture documentation.             |
 | `scripts/`  | Development and maintenance utilities.              |
 
-These directories are intentionally empty at this stage.
+`frontend/`, `docs/`, and `scripts/` are intentionally empty at this stage.

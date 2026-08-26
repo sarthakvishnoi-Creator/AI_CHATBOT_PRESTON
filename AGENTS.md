@@ -8,23 +8,25 @@ Follow approved architecture, technology decisions, repository structure,
 and the current project phase. Do not move to another phase or make major
 architectural changes without human approval.
 
+#### Editing
+- Use structured file editing for source changes.
+- Do not use sed/awk or shell text-rewrite commands to modify source files.
+- Use shell commands for inspection, installation, testing, linting, type checking, and Git.
+
+## Verification
+After meaningful code changes, run:
+- uv run ruff format --check .
+- uv run ruff check .
+- uv run pyright
+- uv run pytest
+Report the actual results.
+
 ## Current Phase
 
+Phase 4 — Backend Core / FastAPI — complete.
 
-Phase 3 — Repository & Development Foundation.
-Application development starts in Phase 4.
-
-to:
-
-Phase 4 — Backend Core / FastAPI.
-
-Do not modify any other section or file.
-
-Do not change architecture rules.
-
-After editing, verify the diff and stop.
-Do not begin Phase 4.3.
-Do not commit.
+Current phase: Phase 5 — Database & Data Layer.
+Phase 5.0 — Phase Transition Housekeeping (in progress).
 
 ## Simplicity
 Prefer the smallest production-quality solution.

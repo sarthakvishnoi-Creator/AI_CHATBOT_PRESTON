@@ -19,10 +19,3 @@ class PrestonError(Exception):
     def __init__(self, detail: str) -> None:
         super().__init__(detail)
         self.detail = detail
-
-
-class NotFoundError(PrestonError):
-    """A requested resource does not exist."""
-
-    title = "Not Found"
-    status_code = 404

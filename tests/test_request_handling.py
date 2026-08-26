@@ -4,32 +4,23 @@ import logging
 import uuid
 from http import HTTPStatus
 
-from conftest import ClientFactory
+from conftest import ClientFactory, LogRecorder
 from fastapi import FastAPI
 
-from preston.core.errors import NotFoundError, PrestonError
+from preston.core.errors import PrestonError
 from preston.main import REQUEST_ID_HEADER, create_app
 
-APP_LOGGER = "preston.main"
 
+class WidgetNotFoundError(PrestonError):
+    """A subclass defined for the tests, since no route needs one yet."""
 
-class MessageRecorder(logging.Handler):
-    """Collect records emitted by a specific logger."""
-
-    def __init__(self) -> None:
-        super().__init__()
-        self.records: list[logging.LogRecord] = []
-
-    def emit(self, record: logging.LogRecord) -> None:
-        self.records.append(record)
-
-    def formatted(self) -> str:
-        return "\n".join(self.format(record) for record in self.records)
+    title = "Not Found"
+    status_code = 404
 
 
 async def raise_expected_error() -> None:
     """Route handler raising an expected application error."""
-    raise NotFoundError("Widget 42 does not exist.")
+    raise WidgetNotFoundError("Widget 42 does not exist.")
 
 
 async def raise_unexpected_error() -> None:
@@ -79,21 +70,14 @@ def test_unexpected_exception_returns_safe_500(open_client: ClientFactory) -> No
 
 
 def test_unexpected_exception_is_logged_with_traceback(
-    open_client: ClientFactory,
+    open_client: ClientFactory, app_logs: LogRecorder
 ) -> None:
     """The detail withheld from the client is recorded internally instead."""
-    recorder = MessageRecorder()
-    app_logger = logging.getLogger(APP_LOGGER)
-    app_logger.addHandler(recorder)
+    with open_client(app_with_failing_routes()) as client:
+        _ = client.get("/boom/unexpected")
 
-    try:
-        with open_client(app_with_failing_routes()) as client:
-            _ = client.get("/boom/unexpected")
-    finally:
-        app_logger.removeHandler(recorder)
-
-    assert any(record.exc_info for record in recorder.records)
-    assert "secret-value-should-never-surface" in recorder.formatted()
+    assert any(record.exc_info for record in app_logs.records)
+    assert "secret-value-should-never-surface" in app_logs.formatted()
 
 
 def test_supplied_request_id_is_used(open_client: ClientFactory) -> None:
@@ -139,37 +123,26 @@ def test_error_response_carries_the_request_id(open_client: ClientFactory) -> No
 
 
 def test_requests_are_logged_with_correlation_method_path_and_status(
-    open_client: ClientFactory,
+    open_client: ClientFactory, app_logs: LogRecorder
 ) -> None:
     """Request logging carries the id, method, path, and resulting status."""
-    recorder = MessageRecorder()
-    recorder.setFormatter(logging.Formatter("[%(request_id)s] %(message)s"))
-    app_logger = logging.getLogger(APP_LOGGER)
-    app_logger.addHandler(recorder)
+    with open_client(create_app()) as client:
+        _ = client.get("/api/v1/health", headers={REQUEST_ID_HEADER: "log-me"})
 
-    try:
-        with open_client(create_app()) as client:
-            _ = client.get("/api/v1/health", headers={REQUEST_ID_HEADER: "log-me"})
-    finally:
-        app_logger.removeHandler(recorder)
+    rendered = app_logs.formatted("[%(request_id)s] %(message)s")
 
-    assert "[log-me] GET /api/v1/health -> 200" in recorder.formatted()
+    assert "[log-me] GET /api/v1/health -> 200" in rendered
 
 
-def test_expected_error_does_not_log_a_traceback(open_client: ClientFactory) -> None:
+def test_expected_error_does_not_log_a_traceback(
+    open_client: ClientFactory, app_logs: LogRecorder
+) -> None:
     """Expected errors are warnings, not internal failures."""
-    recorder = MessageRecorder()
-    app_logger = logging.getLogger(APP_LOGGER)
-    app_logger.addHandler(recorder)
+    with open_client(app_with_failing_routes()) as client:
+        _ = client.get("/boom/expected")
 
-    try:
-        with open_client(app_with_failing_routes()) as client:
-            _ = client.get("/boom/expected")
-    finally:
-        app_logger.removeHandler(recorder)
-
-    assert not any(record.exc_info for record in recorder.records)
-    assert any(record.levelno == logging.WARNING for record in recorder.records)
+    assert not any(record.exc_info for record in app_logs.records)
+    assert any(record.levelno == logging.WARNING for record in app_logs.records)
 
 
 def test_preston_error_base_is_usable_directly(open_client: ClientFactory) -> None:
