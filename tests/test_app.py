@@ -1,5 +1,6 @@
 """Tests for application construction and dependency wiring."""
 
+import pytest
 from conftest import ClientFactory
 
 from preston.core.config import Settings, get_settings
@@ -27,8 +28,13 @@ def test_openapi_publishes_both_probes_under_the_configured_prefix() -> None:
     assert "/api/v1/health" not in paths
 
 
-def test_changing_the_prefix_moves_both_endpoints(open_client: ClientFactory) -> None:
+def test_changing_the_prefix_moves_both_endpoints(
+    open_client: ClientFactory, real_database_url: str | None
+) -> None:
     """Both probes answer on the configured prefix and nowhere else."""
+    if real_database_url is None:
+        pytest.skip("No local database is reachable.")
+
     app = create_app(Settings(api_v1_prefix="/api/v9"))
 
     with open_client(app) as client:

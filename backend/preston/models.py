@@ -13,6 +13,7 @@ when something does.
 
 import uuid
 from datetime import datetime
+from typing import Any
 
 from sqlalchemy import (
     CheckConstraint,
@@ -23,7 +24,9 @@ from sqlalchemy import (
     UniqueConstraint,
     Uuid,
     func,
+    text,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
 from preston.core.db import Base
@@ -80,15 +83,134 @@ class Message(Base):
     )
 
 
-class Document(Base):
-    """A source document that retrieval will later draw on."""
+class IngestionRun(Base):
+    """One execution of the ingestion pipeline.
 
-    __tablename__ = "documents"
+    Not a log line: the mass-archival gate and every health metric query
+    this table. ``counts`` holds per-adapter figures rather than the table
+    carrying a ``source_type`` column, because one run spans adapters.
+
+    The version quartet is recorded per run so that an operator can tell a
+    corpus-wide change from a change to our own rules — without it, the two
+    are indistinguishable and a compromised extractor looks exactly like a
+    site redesign.
+    """
+
+    __tablename__ = "ingestion_runs"
+    __table_args__ = (
+        CheckConstraint(
+            "mode IN ('sync', 'reprocess', 'backfill')",
+            name="ck_ingestion_runs_mode",
+        ),
+        CheckConstraint(
+            "status IN ('running', 'succeeded', 'failed', 'aborted')",
+            name="ck_ingestion_runs_status",
+        ),
+        # Health queries and the next run's stale-``running`` sweep both
+        # order by start time; a btree serves either direction.
+        Index("ix_ingestion_runs_started_at", "started_at"),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(
         Uuid, primary_key=True, server_default=func.gen_random_uuid()
     )
+    mode: Mapped[str] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(Text)
+    started_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    counts: Mapped[dict[str, Any]] = mapped_column(JSONB, server_default="{}")
+    abort_reason: Mapped[str | None] = mapped_column(Text)
+    notes: Mapped[str | None] = mapped_column(Text)
+    extractor_version: Mapped[int]
+    normalizer_version: Mapped[int]
+    hash_version: Mapped[int]
+    chunker_version: Mapped[int]
+    # No embedding model is approved, so a run cannot yet name one.
+    embedding_model: Mapped[str | None] = mapped_column(Text)
+
+
+class Document(Base):
+    """One canonical public document, and the last known-good copy of it.
+
+    Identity is ``canonical_uri`` — the normalized public URL produced by
+    one tested function, not "wherever this came from". The native source
+    identity moved to ``source_ref``.
+
+    ``blocks`` is the authoritative content; ``metadata`` never is and is
+    never hashed. Storing the canonical blocks makes a chunker or
+    tokenizer change a local reprocess with no source round-trip, which
+    matters when source access is itself an open approval item.
+
+    There is deliberately no ``failed`` status. A document whose
+    re-extraction failed has not failed — it still holds correct content
+    worth serving — so failures increment a counter and never touch
+    ``status``. That is what makes "failure never destroys knowledge"
+    enforceable rather than aspirational.
+    """
+
+    __tablename__ = "documents"
+    __table_args__ = (
+        CheckConstraint(
+            "source_type IN ('mysql', 'api', 'web')",
+            name="ck_documents_source_type",
+        ),
+        CheckConstraint(
+            "content_type IN ('blog', 'service', 'faq', 'resource', "
+            "'corporate', 'location', 'accreditation')",
+            name="ck_documents_content_type",
+        ),
+        # Two persisted states only. Archiving retains blocks and chunks,
+        # so removal is reversible and unattended archival is safe.
+        CheckConstraint("status IN ('active', 'archived')", name="ck_documents_status"),
+        # Cross-URL duplicate detection: two canonical URIs sharing a hash
+        # are the same content published twice.
+        Index("ix_documents_content_hash", "content_hash"),
+        # Inventory reconciliation only ever asks this of live documents.
+        Index(
+            "ix_documents_last_seen_at_active",
+            "last_seen_at",
+            postgresql_where=text("status = 'active'"),
+        ),
+        Index("ix_documents_metadata", "metadata", postgresql_using="gin"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, primary_key=True, server_default=func.gen_random_uuid()
+    )
+    # The identity anchor and the citation link. Unique so re-ingestion of
+    # the same page updates the existing row instead of duplicating it.
+    canonical_uri: Mapped[str] = mapped_column(Text, unique=True)
+    source_type: Mapped[str] = mapped_column(Text)
+    # Native identity in that source, e.g. "subone_newblogs#1421". Null
+    # where a document is composed from more than one source record.
+    source_ref: Mapped[str | None] = mapped_column(Text)
+    content_type: Mapped[str] = mapped_column(Text)
     title: Mapped[str] = mapped_column(Text)
+    blocks: Mapped[list[Any]] = mapped_column(JSONB)
+    # "metadata" is taken on the declarative base, so the attribute is
+    # renamed while the column keeps the name the architecture gives it.
+    doc_metadata: Mapped[dict[str, Any]] = mapped_column(
+        "metadata", JSONB, server_default="{}"
+    )
+    status: Mapped[str] = mapped_column(Text, server_default="active")
+    language: Mapped[str] = mapped_column(Text, server_default="en")
+    # SHA-256 of the hash-normalized canonical serialization. The only
+    # oracle of change: the source carries no usable timestamp.
+    content_hash: Mapped[str] = mapped_column(Text)
+    hash_version: Mapped[int]
+    normalizer_version: Mapped[int]
+    extractor_version: Mapped[int]
+    fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    last_seen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    # Kept when its run is deleted: losing the run history must not lose
+    # the document.
+    last_run_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("ingestion_runs.id", ondelete="SET NULL")
+    )
+    gone_count: Mapped[int] = mapped_column(server_default="0")
+    consecutive_failure_count: Mapped[int] = mapped_column(server_default="0")
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )

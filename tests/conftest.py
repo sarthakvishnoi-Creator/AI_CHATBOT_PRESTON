@@ -7,6 +7,7 @@ from pathlib import Path
 from urllib.parse import quote
 
 import httpx
+import psycopg
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
@@ -55,12 +56,16 @@ def client() -> Iterator[httpx.Client]:
 
 @pytest.fixture
 def real_database_url() -> str | None:
-    """Return a PostgreSQL URL built from the local ``.env``, or ``None``.
+    """Return a PostgreSQL URL for a reachable local database, or ``None``.
 
     Reads the Compose-facing ``POSTGRES_*`` values directly and never
     prints them: the application's own ``Settings`` intentionally does not
-    derive ``database_url`` from them (see ``core/config.py``). Used only
-    by tests that exercise the real database.
+    derive ``database_url`` from them (see ``core/config.py``). A short,
+    synchronous connection attempt confirms the database container is
+    actually up, not just that credentials are configured, so DB
+    integration tests skip cleanly when it is not running instead of
+    failing with a connection error. Used only by tests that exercise the
+    real database.
     """
     if not _ENV_FILE.is_file():
         return None
@@ -72,12 +77,24 @@ def real_database_url() -> str | None:
         key, _, value = line.partition("=")
         values[key.strip()] = value.strip()
     try:
-        user = quote(values["POSTGRES_USER"], safe="")
-        password = quote(values["POSTGRES_PASSWORD"], safe="")
-        db = quote(values["POSTGRES_DB"], safe="")
+        user = values["POSTGRES_USER"]
+        password = values["POSTGRES_PASSWORD"]
+        db = values["POSTGRES_DB"]
     except KeyError:
         return None
-    return f"postgresql+psycopg://{user}:{password}@localhost:5432/{db}"
+    try:
+        with psycopg.connect(
+            host="localhost",
+            port=5432,
+            user=user,
+            password=password,
+            dbname=db,
+            connect_timeout=1,
+        ):
+            pass
+    except psycopg.OperationalError:
+        return None
+    return f"postgresql+psycopg://{quote(user, safe='')}:{quote(password, safe='')}@localhost:5432/{quote(db, safe='')}"
 
 
 class LogRecorder(logging.Handler):
