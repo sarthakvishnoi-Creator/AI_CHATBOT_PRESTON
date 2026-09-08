@@ -12,7 +12,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import PostgresDsn
+from pydantic import MySQLDsn, PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 Environment = Literal["local", "development", "production"]
@@ -43,6 +43,13 @@ class Settings(BaseSettings):
     # No default: unset means no database is configured yet. Nothing in this
     # phase connects, so an absent value is valid, not an oversight.
     database_url: PostgresDsn | None = None
+
+    # The MySQL source system (decision record B2). No default, for the
+    # same reason as ``database_url``: source extraction is not wired yet,
+    # so an absent value is valid. Read-only enforcement lives with the
+    # engine in ``preston.sources.mysql``, not here — this field only
+    # carries the connection string.
+    source_mysql_url: MySQLDsn | None = None
 
 
 @lru_cache(maxsize=1)

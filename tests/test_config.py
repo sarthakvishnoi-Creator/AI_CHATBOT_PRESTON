@@ -18,6 +18,7 @@ def clean_environment(monkeypatch: pytest.MonkeyPatch) -> None:
         "LOG_LEVEL",
         "API_V1_PREFIX",
         "DATABASE_URL",
+        "SOURCE_MYSQL_URL",
     ):
         monkeypatch.delenv(f"PRESTON_{name}", raising=False)
 
@@ -41,6 +42,7 @@ def test_defaults() -> None:
     assert settings.log_level == "INFO"
     assert settings.api_v1_prefix == "/api/v1"
     assert settings.database_url is None
+    assert settings.source_mysql_url is None
 
 
 def test_environment_variables_are_read(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -126,6 +128,29 @@ def test_valid_database_url_is_accepted(monkeypatch: pytest.MonkeyPatch) -> None
 def test_malformed_database_url_is_rejected(monkeypatch: pytest.MonkeyPatch) -> None:
     """An unusable URL fails at configuration load, not at connection time."""
     monkeypatch.setenv("PRESTON_DATABASE_URL", "not-a-database-url")
+
+    with pytest.raises(ValidationError):
+        _ = settings_from(None)
+
+
+def test_valid_source_mysql_url_is_accepted(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A well-formed MySQL URL populates the setting (decision record B2)."""
+    monkeypatch.setenv(
+        "PRESTON_SOURCE_MYSQL_URL",
+        "mysql+pymysql://readonly_app:secret@localhost:3306/website_db",
+    )
+
+    settings = settings_from(None)
+
+    assert settings.source_mysql_url is not None
+    assert str(settings.source_mysql_url).startswith("mysql+pymysql://")
+
+
+def test_malformed_source_mysql_url_is_rejected(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """An unusable MySQL URL fails at configuration load, not at connection time."""
+    monkeypatch.setenv("PRESTON_SOURCE_MYSQL_URL", "not-a-database-url")
 
     with pytest.raises(ValidationError):
         _ = settings_from(None)

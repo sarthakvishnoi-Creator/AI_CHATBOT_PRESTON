@@ -11,9 +11,12 @@ import psycopg
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
 
 from preston.core.config import get_settings
 from preston.main import create_app
+from preston.sources.mysql import build_source_engine
 
 ClientFactory = Callable[[FastAPI], AbstractContextManager[httpx.Client]]
 
@@ -95,6 +98,43 @@ def real_database_url() -> str | None:
     except psycopg.OperationalError:
         return None
     return f"postgresql+psycopg://{quote(user, safe='')}:{quote(password, safe='')}@localhost:5432/{quote(db, safe='')}"
+
+
+@pytest.fixture
+def real_source_mysql_url() -> str | None:
+    """Return a MySQL URL for a reachable source database, or ``None``.
+
+    Mirrors ``real_database_url``: reads ``PRESTON_SOURCE_MYSQL_URL``
+    directly from ``.env`` and never prints it. Connects through
+    ``build_source_engine`` (decision record B2) itself, rather than a
+    bare driver call, so the fixture exercises the same engine
+    construction MySQL-dependent tests are checking. Any failure — no
+    variable configured, no reachable database, a malformed URL — means
+    the test using this fixture skips cleanly instead of failing with a
+    connection error.
+    """
+    if not _ENV_FILE.is_file():
+        return None
+    raw: str | None = None
+    for raw_line in _ENV_FILE.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        if key.strip() == "PRESTON_SOURCE_MYSQL_URL":
+            raw = value.strip()
+    if not raw:
+        return None
+    try:
+        engine = build_source_engine(raw)
+        try:
+            with engine.connect() as connection:
+                _ = connection.execute(text("SELECT 1"))
+        finally:
+            engine.dispose()
+    except SQLAlchemyError:
+        return None
+    return raw
 
 
 class LogRecorder(logging.Handler):
