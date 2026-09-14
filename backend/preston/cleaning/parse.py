@@ -62,9 +62,12 @@ Whichever change wires :func:`parse_fragment` into the cleaning pipeline
 must fold this tuple into ``preston.normalization.NORMALIZER_VERSION`` —
 bumping the pinned html5lib version, or any of the configuration choices
 above, without also bumping ``NORMALIZER_VERSION`` breaks the
-``REPROCESSED`` guarantee (contract §17, architecture §7.1). That wiring
-does not exist yet: no cleaning pipeline is built (contract §5 is out of
-scope for B1), so nothing currently reads these constants except tests.
+``REPROCESSED`` guarantee (contract §17, architecture §7.1). The cleaning
+pipeline now exists (``rules.py``, ``blocks.py``), but **that wiring still
+does not**: no application code calls :func:`parse_fragment` on a path
+that reaches a hash, and nothing reads these constants except tests. The
+Blog adapter is the change that closes both gaps, and it must bump
+``NORMALIZER_VERSION`` in the same commit.
 """
 
 from typing import Final, cast

@@ -18,5 +18,24 @@ services:
       retries: 10
       start_period: 10s
 
+  mysql-source:
+    image: mysql:8.4
+    container_name: preston-mysql-source
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_SOURCE_ROOT_PASSWORD}
+      MYSQL_DATABASE: website_db_controlled
+    ports:
+      - "127.0.0.1:3307:3306"
+    volumes:
+      - mysql_source_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
 volumes:
   pgdata:
+  mysql_source_data:

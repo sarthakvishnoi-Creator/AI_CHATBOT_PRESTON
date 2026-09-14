@@ -92,16 +92,21 @@ def test_build_source_engine_masks_the_password_in_repr() -> None:
     assert "***" in rendered
 
 
-def test_source_metadata_is_standalone_and_empty() -> None:
+def test_source_metadata_is_standalone_from_postgresql() -> None:
     """The source ``MetaData`` is separate from the PostgreSQL ``Base``.
 
-    Empty by design, not omission: which tables and columns extraction
-    may read is decision record B4, not built here. This test pins the
-    boundary, not an allow-list.
+    This pins the structural boundary, not a table count: whether
+    ``SOURCE_METADATA`` holds zero tables or the B4 Blog allow-list
+    (``preston.sources.blog_tables``) depends on which adapter modules
+    the test session has imported, which is not this module's concern to
+    assert. What must remain true regardless is that this ``MetaData`` is
+    never ``Base.metadata`` — that separation is what makes it
+    structurally impossible for Alembic autogenerate to ever propose
+    creating a MySQL table in PostgreSQL, and it is independently
+    reconfirmed by ``alembic check`` reporting no drift.
     """
     assert isinstance(SOURCE_METADATA, MetaData)
     assert SOURCE_METADATA is not Base.metadata
-    assert dict(SOURCE_METADATA.tables) == {}
 
 
 def test_source_database_error_has_a_fixed_generic_shape() -> None:

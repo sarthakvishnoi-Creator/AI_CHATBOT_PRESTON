@@ -185,6 +185,13 @@ async def ingest_document(
     if unchanged and not was_archived:
         row.last_seen_at = document.provenance.retrieved_at
         row.last_run_id = document.provenance.run_id
+        # Seeing the document again is itself a success, even though its
+        # content did not move: it is neither consecutively failing nor
+        # gone. Without this the counters only ever reset when content
+        # happens to change, so a document that failed once and then
+        # returned unchanged would carry that failure forever.
+        row.consecutive_failure_count = 0
+        row.gone_count = 0
         return IngestionResult(row, IngestionOutcome.UNCHANGED)
 
     _apply(row, document, content_hash)

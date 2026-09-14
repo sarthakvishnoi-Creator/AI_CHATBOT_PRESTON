@@ -30,7 +30,20 @@ from urllib.parse import urljoin, urlsplit, urlunsplit
 # incomparable with freshly computed ones, which is the point: the
 # document is then REPROCESSED rather than reported as CHANGED
 # (contract §17, architecture §7.1).
-NORMALIZER_VERSION = 1
+#
+# Bumped 1 -> 2 by the Blog adapter (Phase 6.3B-2): this is the change
+# that first calls `preston.cleaning.parse.parse_fragment` from a
+# hash-bearing path. Per decision record B1 §4, wiring the parser in
+# requires folding its identity into this version -- `PARSER_NAME`,
+# `PARSER_VERSION` and `PARSER_CONFIG_VERSION` (`cleaning/parse.py`) are
+# now part of what "normalized" means, alongside the R1-R13 removal rules
+# and block construction (`cleaning/rules.py`, `cleaning/blocks.py`).
+# Version 1 predates HTML parsing entirely. Safe to bump freely: no
+# document has been persisted yet (0 rows in `documents`), so nothing is
+# REPROCESSED by this change. `HASH_VERSION` and `CHUNKER_VERSION` are
+# unaffected -- what is *included* in the canonical serialization has not
+# changed, only how the input text is derived before it gets there.
+NORMALIZER_VERSION = 2
 
 # ---------------------------------------------------------------------------
 # Character rules (contract §4.3-§4.5)
