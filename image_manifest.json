@@ -1,0 +1,52 @@
+{
+  "_notes": "framework = curated by you (goes into metadata). hint = context passed to the model for images with no title. skip = duplicates. reasoning / max_output_tokens = per-image overrides for complex layouts. needs_review = hint is inferred from content, confirm it.",
+  "images": {
+    "California_Consumer_Privacy_Act_CCPA_twwoy3E.png": {"framework": "CCPA"},
+    "CMMC-Cybersecurity-Maturity-Model-Certification_xMsbXsE.png": {"framework": "CMMC 2.0"},
+    "CSA-STAR-Cloud-Security-Alliance-Security-Trust-Assurance-and-Risk_XgH52Yd.png": {"framework": "CSA STAR"},
+    "Essential-Eight-Maturity-Model-Compliances-Services_KSYCWH0.png": {"framework": "Essential Eight Maturity Model"},
+    "EU-GDPR-General-Data-Protection-Regulation_kTyOp2X.png": {"framework": "EU GDPR"},
+    "EU-NIS2--Network-and-Information-Security-Directive_ofA82c7.png": {"framework": "EU NIS2"},
+    "FISMA-Federal-Information-Security-Management_5GnLdG7.png": {"framework": "FISMA"},
+    "flowchart__MQUoag6.png": {"framework": "DPDP Act 2023 (India)"},
+    "Group_48097416.png": {
+      "framework": "ISMS implementation (likely ISO/IEC 27001)",
+      "hint": "Untitled InterCert roadmap for implementing an Information Security Management System (ISMS).",
+      "reasoning": "medium",
+      "needs_review": true
+    },
+    "Group_48097490_p6yVpLZ.png": {"framework": "Auditor career path", "hint": "Title is printed at the bottom of the image."},
+    "Group_48097635.png": {"skip": true, "reason": "Untitled duplicate of ISO_42001_2023 image (text truncated in places)."},
+    "Group_48097640.png": {
+      "framework": "SOC 2",
+      "hint": "SOC 2 audit timeline; title printed at the bottom. Has branching Type 1 and Type 2 tracks.",
+      "reasoning": "medium"
+    },
+    "Group_48097649.png": {"skip": true, "reason": "Lower-resolution duplicate of WCAG---ADA image."},
+    "Group_48097656_N5TQKiQ.png": {"skip": true, "reason": "Older ISO 22301 version with conflicting step numbering (5/8 swapped)."},
+    "Group_48097758.png": {
+      "framework": "InterCert certification process",
+      "hint": "Untitled flowchart of InterCert's certification process from application to re-certification.",
+      "reasoning": "medium",
+      "needs_review": true
+    },
+    "HIPAA-_The_Health_Insurance_Portability_and_Accountability_Act_hO4r5A3.png": {"framework": "HIPAA"},
+    "HITRUST_gcr9cfF.png": {"framework": "HITRUST CSF"},
+    "IEC_27001_2019_Privacy_Information_Management_System.png": {"framework": "ISO/IEC 27701 (PIMS)"},
+    "infographic_4_qk0H6im.png": {
+      "framework": "ISO/IEC 20000 / ITIL 4 / COBIT",
+      "hint": "Untitled mapping diagram. Colours are defined by the legend at the bottom and carry meaning.",
+      "needs_review": true
+    },
+    "ISO31000_2018-Risk-Management-System.png": {"framework": "ISO 31000:2018"},
+    "ISO_22301_2019-Business_Continuity_Management_System_1.png": {"framework": "ISO 22301:2019"},
+    "ISO_27018_2019_Cloud_Privacy_WkGpIhQ.png": {"framework": "ISO/IEC 27018:2019"},
+    "ISO_42001_2023-Artificial_Intelligence_Management_System_Z3EF53r.png": {"framework": "ISO/IEC 42001:2023"},
+    "Microsoft_SSPA__Supplier_Security_and_Privacy_Assurance_EzcuQNm.png": {"framework": "Microsoft SSPA"},
+    "NIST-800-53-National-Institute-of-Standards-and-a-Technology-Special-Publication-800-53.png": {"framework": "NIST SP 800-53"},
+    "NIST_800-171_National_Institute_of_Standards_and_Technology_Special_Publication_800-171.png": {"framework": "NIST SP 800-171"},
+    "PCI_DSS_V4.0.1-_Payment_Card_Industry_Data_Security_Standard_VStpf06.png": {"framework": "PCI DSS v4.0.1"},
+    "PIPEDA--Personal-Information-Protection-and-Electronic-Documents-Act_EHjUpyk.png": {"framework": "PIPEDA"},
+    "WCAG---ADA_X2plKzv.png": {"framework": "WCAG & ADA", "reasoning": "medium", "max_output_tokens": 5000}
+  }
+}

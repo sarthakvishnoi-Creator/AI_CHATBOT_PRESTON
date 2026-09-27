@@ -1,0 +1,579 @@
+{
+  "California_Consumer_Privacy_Act_CCPA_twwoy3E.png": {
+    "framework": "CCPA",
+    "search_term": "California Consumer Privacy",
+    "searched_all_scopes": true,
+    "candidates": []
+  },
+  "CMMC-Cybersecurity-Maturity-Model-Certification_xMsbXsE.png": {
+    "framework": "CMMC 2.0",
+    "search_term": "CMMC",
+    "searched_all_scopes": true,
+    "candidates": [
+      {
+        "id": "5c64f7a2-169a-4c9b-86a6-177b9b5c93e8",
+        "canonical_uri": "https://www.intercert.com/blogs/cmmc-myths-busted-dib-companies-2026",
+        "title": "4 CMMC Myths Busted: What DIB Companies Need to Know in 2026",
+        "scope": null
+      },
+      {
+        "id": "de63aa4b-2962-4cd0-9596-5c09b4eedc42",
+        "canonical_uri": "https://www.intercert.com/services/governance-risk-compliance/cmmc",
+        "title": "CMMC",
+        "scope": null
+      },
+      {
+        "id": "f1ce0303-8672-439e-ba2b-af9d7967ae28",
+        "canonical_uri": "https://www.intercert.com/blogs/cmmc-2-0-levels-explained-dod-contract-compliance",
+        "title": "CMMC 2.0 Levels Explained: Are You Ready for DoD Contract Compliance?",
+        "scope": null
+      },
+      {
+        "id": "ffa139b4-f920-4fe2-85dc-f4a5ff4b5ea0",
+        "canonical_uri": "https://www.intercert.com/blogs/cmmc-certification-assessment-process-usa",
+        "title": "CMMC Assessment Process: From Start to Certification",
+        "scope": null
+      },
+      {
+        "id": "01722a49-651a-4b58-9c98-7a1d72074161",
+        "canonical_uri": "https://www.intercert.com/blogs/cmmc-assessment-types",
+        "title": "CMMC Assessment Types: Level 1, 2 & 3 Explained",
+        "scope": null
+      }
+    ]
+  },
+  "CSA-STAR-Cloud-Security-Alliance-Security-Trust-Assurance-and-Risk_XgH52Yd.png": {
+    "framework": "CSA STAR",
+    "search_term": "CSA STAR",
+    "searched_all_scopes": true,
+    "candidates": [
+      {
+        "id": "c49c228a-9d82-4700-b07c-b7acf70a4375",
+        "canonical_uri": "https://www.intercert.com/services/governance-risk-compliance/csa-star",
+        "title": "CSA STAR",
+        "scope": null
+      },
+      {
+        "id": "807af6f6-3614-484e-a704-d1ff3e44b6e5",
+        "canonical_uri": "https://www.intercert.com/blogs/csa-star-certification-aligning-cloud-security-with-business-objectives",
+        "title": "CSA STAR Certification: Aligning Cloud Security with Business Objectives",
+        "scope": null
+      },
+      {
+        "id": "9876bc7f-a4b6-4c2a-9cf1-f31d8ede71b3",
+        "canonical_uri": "https://www.intercert.com/blogs/csa-star-certification-middle-east",
+        "title": "CSA STAR Certification: Cloud Security in the Middle East",
+        "scope": null
+      },
+      {
+        "id": "174ec914-36ab-42b8-a530-39be96780040",
+        "canonical_uri": "https://www.intercert.com/blogs/csa-star-certification-cloud-security-approach-guide",
+        "title": "CSA STAR Certification: Comprehensive Approach to Cloud Security",
+        "scope": null
+      },
+      {
+        "id": "497b7cfe-f5a7-4422-a2c7-538171aac580",
+        "canonical_uri": "https://www.intercert.com/blogs/csa-star-certification-india-levels-star-registry-guide",
+        "title": "CSA STAR Certification for Indian Cloud Providers: Levels & Registry Guide",
+        "scope": null
+      }
+    ]
+  },
+  "Essential-Eight-Maturity-Model-Compliances-Services_KSYCWH0.png": {
+    "framework": "Essential Eight Maturity Model",
+    "search_term": "Essential Eight Maturity Model",
+    "searched_all_scopes": true,
+    "candidates": [
+      {
+        "id": "7fd29200-3fe8-4f2d-a959-5181e71b43d6",
+        "canonical_uri": "https://www.intercert.com/services/governance-risk-compliance/essential-eight-maturity-model",
+        "title": "Essential eight maturity model",
+        "scope": null
+      }
+    ]
+  },
+  "EU-GDPR-General-Data-Protection-Regulation_kTyOp2X.png": {
+    "framework": "EU GDPR",
+    "search_term": "EU GDPR",
+    "searched_all_scopes": true,
+    "candidates": []
+  },
+  "EU-NIS2--Network-and-Information-Security-Directive_ofA82c7.png": {
+    "framework": "EU NIS2",
+    "search_term": "EU NIS2",
+    "searched_all_scopes": true,
+    "candidates": [
+      {
+        "id": "45cbebbb-a6e2-458d-ae63-afe9b3e04c78",
+        "canonical_uri": "https://www.intercert.com/services/governance-risk-compliance/eu-nis2",
+        "title": "EU NIS2",
+        "scope": null
+      }
+    ]
+  },
+  "FISMA-Federal-Information-Security-Management_5GnLdG7.png": {
+    "framework": "FISMA",
+    "search_term": "FISMA",
+    "searched_all_scopes": true,
+    "candidates": [
+      {
+        "id": "ea8f21a1-e6cc-4c2a-899d-b54fa47f1815",
+        "canonical_uri": "https://www.intercert.com/blogs/federal-compliance-assessments-fedramp-fisma-nist-800-53-guide",
+        "title": "Federal Compliance Assessments: FedRAMP, FISMA, NIST 800-53 & More",
+        "scope": null
+      },
+      {
+        "id": "fd92ff1d-a16b-4cb1-870c-84db79a8528c",
+        "canonical_uri": "https://www.intercert.com/services/governance-risk-compliance/fisma",
+        "title": "FISMA",
+        "scope": null
+      },
+      {
+        "id": "76b9efc8-9efe-4ab1-b521-915bc8cc3bb5",
+        "canonical_uri": "https://www.intercert.com/blogs/what-is-fisma-compliance",
+        "title": "FISMA Compliance: Requirements, Controls, Standards & Process",
+        "scope": null
+      }
+    ]
+  },
+  "flowchart__MQUoag6.png": {
+    "framework": "DPDP Act 2023 (India)",
+    "search_term": "DPDP Act 2023 (India)",
+    "searched_all_scopes": true,
+    "candidates": []
+  },
+  "Group_48097416.png": {
+    "framework": "ISMS implementation (likely ISO/IEC 27001)",
+    "search_term": "ISMS implementation (likely ISO/IEC 27001)",
+    "searched_all_scopes": true,
+    "candidates": []
+  },
+  "Group_48097490_p6yVpLZ.png": {
+    "framework": "Auditor career path",
+    "search_term": "Auditor career path",
+    "searched_all_scopes": true,
+    "candidates": [
+      {
+        "id": "4465ee5b-b7a9-45d2-84c1-ab0c4db36e53",
+        "canonical_uri": "https://www.intercert.com/blogs/iso-42001-auditor-career-path",
+        "title": "ISO 42001 Auditor Career Path: Skills & Opportunities",
+        "scope": null
+      }
+    ]
+  },
+  "Group_48097640.png": {
+    "framework": "SOC 2",
+    "search_term": "SOC",
+    "searched_all_scopes": true,
+    "candidates": [
+      {
+        "id": "e4f4e3ca-5f3d-4da4-9a47-6cd67cec277a",
+        "canonical_uri": "https://www.intercert.com/blogs/commitment-to-integrity-and-values-soc-2",
+        "title": "Demonstrating Integrity and Ethical Values in SOC 2",
+        "scope": null
+      },
+      {
+        "id": "097ad849-33ea-4135-9562-c4355201665e",
+        "canonical_uri": "https://www.intercert.com/blogs/hitrust-vs-soc-2-for-healthcare",
+        "title": "HITRUST vs SOC 2: Which Certification Do US Healthcare Vendors Actually Need?",
+        "scope": null
+      },
+      {
+        "id": "6ad49eb3-43f0-4a7c-a97c-6b06e3d3c848",
+        "canonical_uri": "https://www.intercert.com/blogs/soc-2-type-1-audit-preparation-guide",
+        "title": "How to Prepare for a SOC 2 Type 1 Audit Engagement",
+        "scope": null
+      },
+      {
+        "id": "b3e58839-8570-4811-8519-4c8e04306265",
+        "canonical_uri": "https://www.intercert.com/blogs/soc-2-internal-control-components",
+        "title": "Internal Control Components in SOC 2 Explained",
+        "scope": null
+      },
+      {
+        "id": "adceb31c-7384-4b70-8ee1-c45837ec98bd",
+        "canonical_uri": "https://www.intercert.com/blogs/iso-27001-vs-soc-2-us",
+        "title": "ISO 27001 vs SOC 2: Which Certification Do US Companies Need First?",
+        "scope": null
+      }
+    ]
+  },
+  "Group_48097758.png": {
+    "framework": "InterCert certification process",
+    "search_term": "InterCert certification process",
+    "searched_all_scopes": true,
+    "candidates": []
+  },
+  "HIPAA-_The_Health_Insurance_Portability_and_Accountability_Act_hO4r5A3.png": {
+    "framework": "HIPAA",
+    "search_term": "HIPAA",
+    "searched_all_scopes": true,
+    "candidates": [
+      {
+        "id": "0fef9ac2-bf87-4ad3-ab2c-f5a13616c4fa",
+        "canonical_uri": "https://www.intercert.com/blogs/hipaa-breach-notification-rule",
+        "title": "HIPAA Breach Notification Rule Requirements Explained",
+        "scope": null
+      },
+      {
+        "id": "d9a7b48a-1c52-4305-8406-333526e667e6",
+        "canonical_uri": "https://www.intercert.com/blogs/hipaa-certification-for-medical-couriers",
+        "title": "HIPAA Certification for Medical Couriers in the USA",
+        "scope": null
+      },
+      {
+        "id": "8d7854a1-6250-45fc-be7a-56ecb43aa7dc",
+        "canonical_uri": "https://www.intercert.com/blogs/hipaa-compliance-privacy-program-europe",
+        "title": "HIPAA Compliance: Building a Strong Privacy Program for Healthcare Organizations in Europe",
+        "scope": null
+      },
+      {
+        "id": "d4c553d5-e869-4220-8511-1a20e5a6d05a",
+        "canonical_uri": "https://www.intercert.com/blogs/hipaa-compliance-checklist-us",
+        "title": "HIPAA Compliance Checklist 2026: What Healthcare Tech Companies Must Fix",
+        "scope": null
+      },
+      {
+        "id": "29ed21a9-cc6f-4626-8ef6-2b757ff068d6",
+        "canonical_uri": "https://www.intercert.com/blogs/hipaa-compliance-indian-healthcare-it-companies",
+        "title": "HIPAA Compliance for Indian IT Companies: Serving US Healthcare",
+        "scope": null
+      }
+    ]
+  },
+  "HITRUST_gcr9cfF.png": {
+    "framework": "HITRUST CSF",
+    "search_term": "HITRUST CSF",
+    "searched_all_scopes": true,
+    "candidates": [
+      {
+        "id": "189dbdee-d7c3-4d5b-8d81-0069ad2093c2",
+        "canonical_uri": "https://www.intercert.com/blogs/hitrust-csf-e1-i1-r2-assessments-comparison",
+        "title": "HITRUST CSF Assessments for e1, i1, and r2: A Comparative Breakdown",
+        "scope": null
+      },
+      {
+        "id": "015480aa-dd57-4343-b92f-f6e5427e457b",
+        "canonical_uri": "https://www.intercert.com/blogs/hitrust-csf-certification-cost-timeline-us-healthcare-2026",
+        "title": "HITRUST CSF Certification Cost & Timeline: What US Healthcare Companies Need to Know in 2026",
+        "scope": null
+      },
+      {
+        "id": "c98e9b97-1842-499c-b214-0452ab487f08",
+        "canonical_uri": "https://www.intercert.com/blogs/hitrust-csf-gap-analysis-guide-before-audit",
+        "title": "HITRUST CSF Gap Analysis: A Step-by-Step Guide Before Your Audit",
+        "scope": null
+      },
+      {
+        "id": "78563ae4-a127-4b7f-824a-1b1e3125c163",
+        "canonical_uri": "https://www.intercert.com/blogs/hitrust-csf-v11-8-0-released-what-you-need-to-know",
+        "title": "HITRUST CSF v11.8.0 Released \u2013 What You Need to Know",
+        "scope": null
+      }
+    ]
+  },
+  "IEC_27001_2019_Privacy_Information_Management_System.png": {
+    "framework": "ISO/IEC 27701 (PIMS)",
+    "search_term": "27701",
+    "searched_all_scopes": true,
+    "candidates": [
+      {
+        "id": "27aeb89c-a9f8-4928-b8a7-f34a526de49a",
+        "canonical_uri": "https://www.intercert.com/blogs/iso-27701-2025-philippine-dpa-audits",
+        "title": "How ISO 27701:2025 Simplifies Philippine DPA Audits",
+        "scope": null
+      },
+      {
+        "id": "e056f83f-921b-4040-bf0c-df36806fe181",
+        "canonical_uri": "https://www.intercert.com/blogs/iso-27001-vs-iso-27701-difference",
+        "title": "ISO 27001 vs. ISO 27701: What's the Difference",
+        "scope": null
+      },
+      {
+        "id": "917f8936-7a1b-431b-9539-e31ded963bf2",
+        "canonical_uri": "https://www.intercert.com/blogs/iso-27701-2019-privacy-information-management-system",
+        "title": "ISO 27701:2019 Privacy Management System - Compliance & Security",
+        "scope": null
+      },
+      {
+        "id": "b15558aa-b2df-4913-aa1e-276d1cf15105",
+        "canonical_uri": "https://www.intercert.com/services/training/management-system-training/iso-iec-27701-2019",
+        "title": "ISO/IEC 27701:2019",
+        "scope": null
+      },
+      {
+        "id": "23c22bf4-0d3b-4fc0-9c64-b12f1de95f4b",
+        "canonical_uri": "https://www.intercert.com/services/training/management-system-training/iso-iec-27701-2019#faq",
+        "title": "ISO/IEC 27701:2019 \u2014 Frequently Asked Questions",
+        "scope": null
+      }
+    ]
+  },
+  "infographic_4_qk0H6im.png": {
+    "framework": "ISO/IEC 20000 / ITIL 4 / COBIT",
+    "search_term": "ISO/IEC 20000 / ITIL 4 / COBIT",
+    "searched_all_scopes": true,
+    "candidates": []
+  },
+  "ISO31000_2018-Risk-Management-System.png": {
+    "framework": "ISO 31000:2018",
+    "search_term": "ISO 31000",
+    "searched_all_scopes": true,
+    "candidates": [
+      {
+        "id": "ea878bcd-3f6a-4da9-9fd7-442bbb0c3716",
+        "canonical_uri": "https://www.intercert.com/blogs/essential-benefits-of-getting-certified-in-iso-31000-risk-management",
+        "title": "Essential Benefits of Getting Certified in ISO 31000 Risk Management",
+        "scope": null
+      },
+      {
+        "id": "77554054-ea12-4ff5-8903-670a579697e8",
+        "canonical_uri": "https://www.intercert.com/services/governance-risk-compliance/iso-31000-2018",
+        "title": "ISO 31000:2018",
+        "scope": null
+      },
+      {
+        "id": "e807d423-5d2e-4799-8f81-b0aa2db4beec",
+        "canonical_uri": "https://www.intercert.com/services/training/management-system-training/iso-31000-2018",
+        "title": "ISO 31000:2018",
+        "scope": null
+      },
+      {
+        "id": "7a0af677-2541-4922-a857-dcf54df38cbd",
+        "canonical_uri": "https://www.intercert.com/services/training/management-system-training/iso-31000-2018#faq",
+        "title": "ISO 31000:2018 \u2014 Frequently Asked Questions",
+        "scope": null
+      },
+      {
+        "id": "d3e7556d-7f71-43c1-a1d8-3deb562208b2",
+        "canonical_uri": "https://www.intercert.com/blogs/risk-management-framework",
+        "title": "ISO 31000:2018 Risk Management Framework & Guidelines",
+        "scope": null
+      }
+    ]
+  },
+  "ISO_22301_2019-Business_Continuity_Management_System_1.png": {
+    "framework": "ISO 22301:2019",
+    "search_term": "ISO 22301",
+    "searched_all_scopes": true,
+    "candidates": [
+      {
+        "id": "a4edd9b9-d2ce-4e2a-ae28-77348d96cf85",
+        "canonical_uri": "https://www.intercert.com/services/training/management-system-training/iso-22301-2019",
+        "title": "ISO 22301:2019",
+        "scope": null
+      },
+      {
+        "id": "cddf9371-17b2-48cb-bd24-1f79b30e682f",
+        "canonical_uri": "https://www.intercert.com/services/governance-risk-compliance/iso-22301-2019",
+        "title": "ISO 22301:2019",
+        "scope": null
+      },
+      {
+        "id": "57e541da-1ba5-4d0c-88ff-2220ff49b71b",
+        "canonical_uri": "https://www.intercert.com/blogs/iso-22301-2019-business-continuity-management-system",
+        "title": "ISO 22301:2019 - Business Continuity Management System Guide",
+        "scope": null
+      },
+      {
+        "id": "d1dfdbd0-ecd8-43ad-9c3d-f85080dc6740",
+        "canonical_uri": "https://www.intercert.com/services/training/management-system-training/iso-22301-2019#faq",
+        "title": "ISO 22301:2019 \u2014 Frequently Asked Questions",
+        "scope": null
+      },
+      {
+        "id": "25947219-1b32-4e38-95f2-3ce89c6bd535",
+        "canonical_uri": "https://www.intercert.com/blogs/Guide-to-ISO-22301-Business-Continuity-Management-System-BCMS",
+        "title": "ISO 22301 (BCMS) Benefits and Requirements",
+        "scope": null
+      }
+    ]
+  },
+  "ISO_27018_2019_Cloud_Privacy_WkGpIhQ.png": {
+    "framework": "ISO/IEC 27018:2019",
+    "search_term": "ISO/IEC 27018",
+    "searched_all_scopes": true,
+    "candidates": []
+  },
+  "ISO_42001_2023-Artificial_Intelligence_Management_System_Z3EF53r.png": {
+    "framework": "ISO/IEC 42001:2023",
+    "search_term": "42001",
+    "searched_all_scopes": true,
+    "candidates": [
+      {
+        "id": "0f980c59-8ad7-4deb-a34b-941fb29ffef6",
+        "canonical_uri": "https://www.intercert.com/blogs/iso-42001-eu-ai-act-compliance",
+        "title": "How ISO 42001 Helps with EU AI Act Compliance",
+        "scope": null
+      },
+      {
+        "id": "8034bb91-e58d-453d-86c4-93bc97732e23",
+        "canonical_uri": "https://www.intercert.com/blogs/how-iso-42001-supports-ai-compliance",
+        "title": "How ISO 42001 Supports AI Compliance and Risk Management Strategy",
+        "scope": null
+      },
+      {
+        "id": "271e19e8-3b3c-4753-8e2e-eb0a2ab8f344",
+        "canonical_uri": "https://www.intercert.com/blogs/iso-42001-ai-management-system-guide-africa",
+        "title": "ISO 42001: AI Management System for African Businesses Explained",
+        "scope": null
+      },
+      {
+        "id": "ef7c8054-760a-437e-906c-504409c643e8",
+        "canonical_uri": "https://www.intercert.com/blogs/iso-42001-annex-a-controls",
+        "title": "ISO 42001 Annex A Controls: Requirements & Control List",
+        "scope": null
+      },
+      {
+        "id": "4465ee5b-b7a9-45d2-84c1-ab0c4db36e53",
+        "canonical_uri": "https://www.intercert.com/blogs/iso-42001-auditor-career-path",
+        "title": "ISO 42001 Auditor Career Path: Skills & Opportunities",
+        "scope": null
+      }
+    ]
+  },
+  "Microsoft_SSPA__Supplier_Security_and_Privacy_Assurance_EzcuQNm.png": {
+    "framework": "Microsoft SSPA",
+    "search_term": "Microsoft SSPA",
+    "searched_all_scopes": true,
+    "candidates": [
+      {
+        "id": "4c3502e1-6cde-41b2-bd90-dc01569b38d8",
+        "canonical_uri": "https://www.intercert.com/services/governance-risk-compliance/microsoft-sspa",
+        "title": "Microsoft SSPA",
+        "scope": null
+      }
+    ]
+  },
+  "NIST-800-53-National-Institute-of-Standards-and-a-Technology-Special-Publication-800-53.png": {
+    "framework": "NIST SP 800-53",
+    "search_term": "800-53",
+    "searched_all_scopes": true,
+    "candidates": [
+      {
+        "id": "f38a835b-2e4a-42bc-bfdb-acd0f78f445b",
+        "canonical_uri": "https://www.intercert.com/blogs/nist-800-53-vs-nist-800-171-comparison-usa",
+        "title": "Difference Between NIST 800-53 and NIST 800-171 | Complete Comparison",
+        "scope": null
+      },
+      {
+        "id": "ea8f21a1-e6cc-4c2a-899d-b54fa47f1815",
+        "canonical_uri": "https://www.intercert.com/blogs/federal-compliance-assessments-fedramp-fisma-nist-800-53-guide",
+        "title": "Federal Compliance Assessments: FedRAMP, FISMA, NIST 800-53 & More",
+        "scope": null
+      },
+      {
+        "id": "b9c343e6-5865-48f6-bbb2-536d195dda42",
+        "canonical_uri": "https://www.intercert.com/services/governance-risk-compliance/nist-800-53",
+        "title": "NIST 800-53",
+        "scope": null
+      },
+      {
+        "id": "b0888e61-ce6c-4096-992f-2da2654f5942",
+        "canonical_uri": "https://www.intercert.com/blogs/nist-sp-800-53-rev-5-security-controls",
+        "title": "NIST SP 800-53 Rev. 5: An In-Depth Guide to Security Controls",
+        "scope": null
+      },
+      {
+        "id": "f07b9692-bb27-4f8f-90d1-fdf7f46aa317",
+        "canonical_uri": "https://www.intercert.com/blogs/nist-800-171-and-nist-800-53-complete-guide",
+        "title": "What is NIST 800-171 and 800-53 Frameworks? A Complete Guide in 2026",
+        "scope": null
+      }
+    ]
+  },
+  "NIST_800-171_National_Institute_of_Standards_and_Technology_Special_Publication_800-171.png": {
+    "framework": "NIST SP 800-171",
+    "search_term": "800-171",
+    "searched_all_scopes": true,
+    "candidates": [
+      {
+        "id": "280c9a0e-f404-4bdf-a812-ffd6d560943d",
+        "canonical_uri": "https://www.intercert.com/blogs/cmmc-vs-nist-800-171-compliance",
+        "title": "CMMC vs NIST 800-171: Understanding the Overlap for DoD Contractors",
+        "scope": null
+      },
+      {
+        "id": "f38a835b-2e4a-42bc-bfdb-acd0f78f445b",
+        "canonical_uri": "https://www.intercert.com/blogs/nist-800-53-vs-nist-800-171-comparison-usa",
+        "title": "Difference Between NIST 800-53 and NIST 800-171 | Complete Comparison",
+        "scope": null
+      },
+      {
+        "id": "52dd3fa3-be19-4b0d-9d80-96f2b58a9490",
+        "canonical_uri": "https://www.intercert.com/services/governance-risk-compliance/nist-800-171",
+        "title": "NIST 800-171",
+        "scope": null
+      },
+      {
+        "id": "f07b9692-bb27-4f8f-90d1-fdf7f46aa317",
+        "canonical_uri": "https://www.intercert.com/blogs/nist-800-171-and-nist-800-53-complete-guide",
+        "title": "What is NIST 800-171 and 800-53 Frameworks? A Complete Guide in 2026",
+        "scope": null
+      }
+    ]
+  },
+  "PCI_DSS_V4.0.1-_Payment_Card_Industry_Data_Security_Standard_VStpf06.png": {
+    "framework": "PCI DSS v4.0.1",
+    "search_term": "PCI DSS",
+    "searched_all_scopes": true,
+    "candidates": [
+      {
+        "id": "99dd2202-0da0-46ba-8bed-e06558b39fea",
+        "canonical_uri": "https://www.intercert.com/blogs/pci-dss-levels",
+        "title": "4 PCI DSS Levels: Requirements and Validation Explained",
+        "scope": null
+      },
+      {
+        "id": "9940c4ed-e065-4f32-bc5f-92588258e650",
+        "canonical_uri": "https://www.intercert.com/blogs/common-PCI-DSS-audit-mistakes-that-impact-payment-security",
+        "title": "Common PCI DSS 4.0 Audit Mistakes That Impact Payment Security",
+        "scope": null
+      },
+      {
+        "id": "f043d037-ae2d-477b-8fd1-607be8ffe22c",
+        "canonical_uri": "https://www.intercert.com/blogs/complete-guide-pci-dss-certification-eu-businesses",
+        "title": "Complete Guide to PCI DSS Certification for EU Businesses",
+        "scope": null
+      },
+      {
+        "id": "9095976c-347d-4733-9287-7a39c015496b",
+        "canonical_uri": "https://www.intercert.com/blogs/cyber-security-payment-card-industry-pci-dss-middle-east",
+        "title": "Cyber Security in Payment Card Industry | PCI DSS Compliance in Middle East",
+        "scope": null
+      },
+      {
+        "id": "99819a35-d340-4c21-8a42-151291c95d54",
+        "canonical_uri": "https://www.intercert.com/blogs/pci-dss-impact-payment-companies-in-us",
+        "title": "How Does PCI DSS v4.0.1 Impact Payment Companies in the US?",
+        "scope": null
+      }
+    ]
+  },
+  "PIPEDA--Personal-Information-Protection-and-Electronic-Documents-Act_EHjUpyk.png": {
+    "framework": "PIPEDA",
+    "search_term": "PIPEDA",
+    "searched_all_scopes": true,
+    "candidates": [
+      {
+        "id": "e6176852-ed60-43af-ae36-2a1f12179676",
+        "canonical_uri": "https://www.intercert.com/services/governance-risk-compliance/pipeda",
+        "title": "PIPEDA",
+        "scope": null
+      }
+    ]
+  },
+  "WCAG---ADA_X2plKzv.png": {
+    "framework": "WCAG & ADA",
+    "search_term": "WCAG",
+    "searched_all_scopes": true,
+    "candidates": [
+      {
+        "id": "18cfb3bf-1401-4f98-aeee-62cccc40063f",
+        "canonical_uri": "https://www.intercert.com/services/governance-risk-compliance/wcag-ada",
+        "title": "WCAG & ADA",
+        "scope": null
+      }
+    ]
+  }
+}

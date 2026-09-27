@@ -1,0 +1,6 @@
+.env
+.venv/
+__pycache__/
+graphify-out/
+node_modules/
+*.lock
