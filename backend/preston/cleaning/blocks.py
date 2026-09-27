@@ -36,6 +36,7 @@ from preston.canonical import (
     ListBlock,
     Paragraph,
     Table,
+    block_text,
 )
 from preston.cleaning.rules import tag_of
 from preston.normalization import normalize_content_text, normalize_url
@@ -454,8 +455,19 @@ def build_faq_pair(question: str, answer_blocks: tuple[Block, ...]) -> Block | N
     a contextless answer — the latter being the shape most likely to be
     cited as authoritative out of context — so it is discarded and counted
     rather than stored (§6.5, §7.2).
+
+    **An answer must render to text, not merely be a non-empty tuple.** A
+    field holding only content that renders to nothing — a decorative
+    image, whose ``alt`` is empty by definition (§9.3) — builds one block
+    and would pass a bare emptiness check, yielding a pair whose answer is
+    blank everywhere it matters: blank in the chunk, and absent from the
+    canonical serialization, which drops a decorative image. That is the
+    orphaned question this function exists to refuse, so it is refused
+    here rather than stored and discovered downstream. ``block_text`` is
+    the same renderer the chunker uses, so "has an answer" and "has an
+    answer to retrieve" cannot drift apart.
     """
     text = normalize_content_text(question)
-    if not text or not answer_blocks:
+    if not text or not any(block_text(block).strip() for block in answer_blocks):
         return None
     return FaqPair(question=text, answer=answer_blocks)

@@ -6,11 +6,13 @@
 **Reads:** `Preston_Source_of_Truth_FINAL` (2026-09-04) ·
 `docs/PHASE_6_KB_ARCHITECTURE.md` (2026-09-07; accepted, partially
 implemented — 6.2, B1, B2, B3, B4, 6.3A, 6.3B-1 and the Blog adapter
-(6.3B-2 steps 1–9) complete; the first real PostgreSQL ingestion run
-not yet performed) ·
+(6.3B-2 steps 1–9) complete; Blog ingestion into PostgreSQL and the FAQ
+atomic-chunking reprocess also complete) ·
 `docs/PRESTON_PHASE_6_OPEN_QUESTIONS_DECISIONS.pdf` — the Implementation
 Decision Record, which freezes the decisions needed to enter Phase 6.3 ·
-`docs/archive/phase-history/PHASE_6_2_COMPLETION.md` (Phase 6.2, implemented)
+`docs/archive/phase-history/PHASE_6_2_COMPLETION.md` (Phase 6.2, implemented) ·
+`docs/PHASE_6_5_SOURCE_AUTHORITY_DECISION.md` (2026-09-21; amends OPEN-1 for
+the five service-page families and freezes per-page FAQ-widget treatment)
 
 **Labels used below, carried from the source documents:**
 **CONFIRMED** (evidenced by the source contract or existing code) ·
@@ -19,11 +21,16 @@ Decision Record, which freezes the decisions needed to enter Phase 6.3 ·
 
 **Where the flow stands:** stages ①–⑤ up to the canonical seam are **built**
 (Phase 6.2 — schema, URL normalization, the content/hash normalizer split, the
-version quartet; migration head `b1d7e4a26c58`). Cleaning and block
-construction (6.3B-1) and the synchronization foundation (6.3A) are now built
-too. Source **adapters**, chunking, embeddings and retrieval remain
-**designed, not built**. §12 says which decisions are frozen and which still
-block.
+version quartet; migration head `8fc561d8753e`). Cleaning and block
+construction (6.3B-1) and the synchronization foundation (6.3A) are built too,
+and so are **five source adapters** — the Blog adapter, the generic
+service-page adapter (one class, four `FamilySpec` values) and the frontend
+FAQ adapter. The KB now holds **494 documents and 6,850 chunks** across six
+`source_scope`s, all 516 FAQ pairs held whole as one chunk each — see §13 for
+per-family status and the final integrity audit. Chunking beyond that FAQ rule
+(the heading tree, token budget and context prefix), **embeddings and
+retrieval remain designed, not built**, as does the Professional Training
+adapter. §12 says which decisions are frozen and which still block.
 
 ---
 
@@ -83,8 +90,9 @@ block.
 
 | Source | Role | Supplies content? | Label |
 | --- | --- | --- | --- |
-| **MySQL** (`ICWebDatabase`) | System of record. Every content byte originates here. Primary extraction for flat, slug-keyed content: blogs (368), blog-embedded FAQ pairs (≤1,840), blog SEO metadata | **Yes** | CONFIRMED |
-| **REST API** (DRF, ~90 public endpoints) | Primary extraction for nested, section-composed page types: GRC (38), audit (13), STC (14), management-system training (19), professional training (13), corporate/resource, locations, accreditations. Also the **only** source for standalone FAQ, because `/faqs/` applies `is_active=True` — the single real publication gate in the stack. Separately: validates MySQL extraction fidelity by sampled comparison | **Yes** | CONFIRMED |
+| **MySQL** (`ICWebDatabase`) | System of record. Every content byte originates here. Primary extraction for flat, slug-keyed content: blogs (402 ingested), blog-embedded FAQ pairs (478 ingested), blog SEO metadata. **Also primary, as of Phase 6.5, for the five service-page families**: GRC (38, ingested), audit (13, ingested), STC (14, ingested), management-system training (19, ingested), professional training (13, **not yet audited or ingested**) — see `docs/PHASE_6_5_SOURCE_AUTHORITY_DECISION.md` and §13 | **Yes** | CONFIRMED |
+| **REST API** (DRF, ~90 public endpoints) | Remains primary for standalone FAQ, because `/faqs/` applies `is_active=True` — the single real publication gate in the stack. **For the five service-page families, the API is now validation/fidelity cross-check only** (Phase 6.5 amendment — confirmed, by direct source and live-endpoint inspection, to be an unfiltered passthrough serialization of the same MySQL rows, with no publication gate, filter, or composition logic of its own) | Cross-check only for service pages; **Yes** for standalone FAQ | CONFIRMED |
+| **Frontend service FAQ** (`src/app/constants/faq-data.ts`, Angular) | **New in Phase 6.5.** Per-page FAQ widgets on Management Training/GRC/Audit/Security-Testing pages are hardcoded in frontend source, not MySQL or the API. Explicit, temporary, isolated extraction source (`source_scope = "service_faq"`), reachable public entries only — see `docs/PHASE_6_5_SOURCE_AUTHORITY_DECISION.md` §2.2 | **Yes**, for this one content type only | CONFIRMED |
 | **Website probe** (`www.intercert.com`) | **Verifier, never an extractor.** Emits a `VisibilityVerdict` into `metadata.visibility.*` only. Judges by *content identity* (distinct `<title>` + byte size diverging from the per-category fallback signature), **never by HTTP status** — Angular returns 200 for every path. **Advisory metadata only: a failed or unusual probe never blocks valid source extraction and can never archive a document by itself** (OPEN-12 RESOLVED) | **No** | CONFIRMED |
 | **Registry / sitemap** (`subone_search` 89, `servicenav` 67, `nav` 85) | **Discovery aid and SEO reconciliation only. Never corpus, never a filter.** Q1 disproved it as a publication gate: 17 of 18 unregistered records are publicly live, and production's own sitemap ships 3 dead URLs | **No** | CONFIRMED |
 
@@ -104,11 +112,26 @@ rendered HTML removes anything. **CONFIRMED**
 > decision record (`docs/PRESTON_PHASE_6_OPEN_QUESTIONS_DECISIONS.pdf`)
 > supersedes them on this point.
 
+> **Phase 6.5 amendment to OPEN-1** (`docs/PHASE_6_5_SOURCE_AUTHORITY_DECISION.md`,
+> 2026-09-21). For the five service-page families specifically — GRC, audit,
+> STC, management-system training, professional training — **MySQL is now the
+> primary extraction source and the REST API is validation/fidelity
+> cross-check only**, reversing the API-primary half of OPEN-1's original
+> resolution for these families alone. Confirmed by direct inspection of the
+> actual Django views/serializers and a live production diff, not by
+> documentation alone: every relevant endpoint is an unfiltered passthrough
+> of the same MySQL rows, with no publication gate or composition logic of
+> its own. Blog and the generic `/faqs/` endpoint are unaffected. This
+> amendment also freezes a new, separate decision: per-page FAQ widgets for
+> these families are hardcoded in Angular frontend source
+> (`src/app/constants/faq-data.ts`), not MySQL or the API, and are ingested
+> as an isolated, temporary `source_scope = "service_faq"` content type.
+
 ### 2.1 Development snapshot vs. production source — read this before trusting a run
 
 | | Today (development) | Future (production) |
 | --- | --- | --- |
-| **MySQL** | Local `website_db`, the **point-in-time dump `ICWebDatabase_20260829`** (2026-08-29). Frozen. Never re-reads. Whether production has since diverged is **UNKNOWN** | Read-only access to prod RDS `ICWebDatabase` or a replica — route and lag **OPEN-4** |
+| **MySQL** | Local **controlled snapshot `website_db_controlled`** on `127.0.0.1:3307`, read-only user, reached only through `build_source_engine` (which sets `SET SESSION TRANSACTION READ ONLY` on every connection). A point-in-time copy, promoted 2026-09-17. Frozen. Never re-reads. Whether production has since diverged is **UNKNOWN** | Read-only access to prod RDS `ICWebDatabase` or a replica — route and lag **OPEN-4** |
 | **Change detection** | Detects only changes *within the snapshot* — i.e. effectively nothing. A "no changes" run proves the pipeline is idempotent, **not** that the site is unchanged | Detects real editorial change |
 | **Deletion / archival** | Reconciliation runs against a frozen inventory. Do not read archival counts as production signal | Real deletions detected by full-inventory reconciliation |
 | **Governance** | The dump on a developer workstation contains client-certificate and contact-enquiry records. Provenance, authorization and retention must be settled with security **before further use** — **OPEN-5** | Read-only `SELECT`; no PII tables in the allow-list |
@@ -438,7 +461,7 @@ engineering.
 
 | # | Item | What it holds up | Status |
 | --- | --- | --- | --- |
-| **OPEN-3** | Embedding provider, model, dimension, tokenizer, no-training terms | Vector column, HNSW index, **final chunk boundaries** (§7) | **OPEN — blocks 6.5** |
+| **OPEN-3** | Embedding provider, model, dimension, tokenizer, no-training terms | Vector column, HNSW index, **final chunk boundaries** (§7) | **OPEN — blocks Phase 7** (§13) |
 | OPEN-4 | Production MySQL read-only route, credentials, replica lag | Live synchronization (§2.1) | **OPEN — not blocking 6.3** |
 | OPEN-5 | Dump governance — provenance, authorization, retention | Continued handling of the dev dump (§2.1, §10) | **OPEN — security** |
 | OPEN-6 / OPEN-7 | DORA and ISO 20121 canonical ownership | Which representation is canonical. Interim: keep both, linked, never merged (§4) | **OPEN — owner** |
@@ -462,6 +485,92 @@ and LLM enrichment all remain outside 6.3.
 
 ---
 
+## 13. Phase 6 / KB ingestion status
+
+Each family was audited read-only, implemented on the generic adapter, reviewed,
+and then ingested in exactly one controlled run of its own `source_scope`. No run
+touched more than one scope.
+
+| Family | `source_scope` | Documents | Chunks | Status |
+| --- | --- | --- | --- | --- |
+| **Blog** | `blog` | 402 | 6,514 | **Ingested and verified** — audit found no issues |
+| **Management Training** | `management_training` | 19 | 58 | **Ingested and verified** — audit found no issues |
+| **Service FAQ** (frontend `faq-data.ts`) | `service_faq` | 8 | 28 | **Ingested and verified** — audit found no issues |
+| **GRC** | `grc` | 38 | 145 | **Ingested and verified** — audit found no issues |
+| **Audit & Assessment** | `audit_assessment` | 13 | 56 | **Ingested and verified** — audit found no issues |
+| **Security Testing** | `security_testing` | 14 | 49 | **Ingested and verified** — audit found no issues |
+| **Professional Training** | — | — | — | **Not audited, not implemented, not ingested** |
+
+### FINAL KB INTEGRITY AUDIT
+
+**Status: PASS** (2026-09-22, read-only; no data, schema, configuration or
+source code was modified by the audit).
+
+**Verified baseline:** **494 documents · 6,850 `document_chunks`** — all
+`active`, 0 archived, across the six scopes above. 11 `ingestion_runs`, all
+`succeeded`, none running, each confined to a single scope.
+
+What the audit checked and found clean:
+
+- **Source ↔ KB reconciliation.** All six scopes reconcile 1:1 against the
+  controlled source through each adapter's own inventory path — no identity in
+  the source without a document, none in the KB without a source identity.
+  Re-extracting all 494 documents reproduced **every stored content hash
+  byte-for-byte**, with 0 extraction failures: the KB has not drifted.
+- **Document and chunk integrity.** 0 duplicate `canonical_uri`, 0 duplicate
+  `source_ref`, 0 null/empty identity or hash fields, 0 zero-block documents,
+  0 documents without chunks, 0 orphan chunks, 0 empty chunks, 0 negative or
+  duplicate chunk indexes, 0 `chunk_index` gaps. Every document's stored chunk
+  set is byte-identical to what `build_chunks` produces from its stored blocks.
+- **Canonical blocks.** 26,146 blocks, all of valid types, none malformed or
+  empty; every `FaqPair` carries both a question and a rendering answer; all
+  **516** FAQ pairs are atomic (one pair, one chunk, 0 split).
+- **Placeholder and navigation contamination.** 0 placeholder-only blocks
+  (`a`, `aa`, `None`, empty, whitespace). The excluded "Other Services" /
+  "Other Offerings" navigation blocks appear **nowhere** in the corpus; the six
+  textual matches for "other services" are ordinary blog prose ("…or other
+  services to…"), classified as legitimate content.
+- **FAQ isolation.** `service_faq` is exactly 8 documents / 28 pairs, all from
+  the `FAQ_VALUE` dictionary and linked to their Management Training parents by
+  metadata only — never merged into the parent document. Native `sec_qna` pairs
+  stay inside their own families (audit 9, STC 1). No `FAQ_TEST`/`FAQ_VALUE`/
+  `FAQ_DATA` marker reached any block. GRC and Management Training carry 0 FAQ
+  pairs, as designed.
+- **Images.** Service-page image references are metadata only (315 across four
+  families, including Security Testing's 5 item-level images); 0 image paths
+  leaked into block text. Blog `ImageRef` blocks (98) are the Blog HTML
+  pipeline's documented behaviour, carrying `src`/`alt`/`caption`/`role` with
+  `src` excluded from the hash. No OCR or image-derived text anywhere.
+- **Cross-family isolation.** Scope, route prefix and `source_ref` table
+  partition cleanly by family. The ISO 20121:2012 separation holds: two
+  documents, different scopes, different URIs, different `source_ref`s,
+  different content hashes — never merged.
+- **Schema and environment.** Head `8fc561d8753e`, 5 migrations, `alembic check`
+  reports no drift, pgvector 0.8.6 available, `.env` untouched, no dependency
+  change. **No vector column exists** — embeddings are not implemented.
+- **Quality gates.** 727 tests passed, `ruff format --check`, `ruff check` and
+  `pyright` all clean.
+
+---
+
+## 14. Next phase — PHASE 7: EMBEDDING & VECTOR RETRIEVAL
+
+**Not started.** Embeddings, the vector column, the HNSW index and retrieval
+remain designed, not built — exactly as §7, §8 and §11 describe them.
+
+Phase 7 is gated on **OPEN-3** (embedding provider, model, dimension, tokenizer
+and no-training terms): the dimension is a hard schema commitment, so no vector
+column may be created before that approval. The remainder of structure-aware
+chunking (§7) should also be settled before embedding, since chunk boundaries
+determine what gets embedded.
+
+The KB as a whole is verified and ready for Phase 7 on the six ingested scopes.
+Professional Training is not part of that baseline; it can be audited and
+ingested independently, and doing so later will not invalidate Phase 7 work on
+the existing scopes.
+
+---
+
 ## Document control
 
 | | |
@@ -469,7 +578,7 @@ and LLM enrichment all remain outside 6.3.
 | **Purpose** | 5-minute operating guide to SOURCE → KB → RETRIEVAL |
 | **Not** | The architecture specification — that is `docs/PHASE_6_KB_ARCHITECTURE.md` |
 | **Derived from** | `Preston_Source_of_Truth_FINAL` (2026-09-04) · `docs/PHASE_6_KB_ARCHITECTURE.md` (2026-09-07) · `docs/PRESTON_PHASE_6_OPEN_QUESTIONS_DECISIONS.pdf` (Implementation Decision Record) · `docs/archive/phase-history/PHASE_6_2_COMPLETION.md` |
-| **Implementation status** | **Built:** Phase 6.2 canonical foundation — schema, canonical URL normalization, the content/hash normalizer split, the version quartet; migration head `b1d7e4a26c58`; no new dependency. Phase 6.3A synchronization foundation; Phase 6.3B-1 cleaning and block construction; the Blog allow-list, pre-clean gate, and the Blog adapter itself (6.3B-2 steps 1–9, `backend/preston/sources/blog.py`), verified read-only against the real controlled MySQL corpus (368 Blogs → 368 SourceRecords, 0 failures). **Not yet performed:** the first real ingestion run (`SourceRecord` → PostgreSQL through the 6.3A sync engine) — PostgreSQL holds no Blog documents. **Designed, not built:** chunking, embeddings, retrieval. Roughly 60–70% of the existing ingestion foundation is reused; what changes is what flows through it |
+| **Implementation status** | **Built:** Phase 6.2 canonical foundation — schema, canonical URL normalization, the content/hash normalizer split, the version quartet; migration head `8fc561d8753e`. Phase 6.3A synchronization foundation; Phase 6.3B-1 cleaning and block construction; the Blog allow-list, pre-clean gate and Blog adapter (6.3B-2 steps 1–9, `backend/preston/sources/blog.py`); and the Phase 6.5 service-page layer — one generic `ServicePageAdapter` driven by a declarative `FamilySpec` per family (`backend/preston/sources/service_page.py`, allow-list in `service_page_tables.py`) plus the frontend FAQ adapter (`service_faq.py`). **Ingested and stored:** 494 documents and 6,850 `document_chunks` across six `source_scope`s (§13), all active, at `normalizer_version` 3 / `hash_version` 1, chunked at `chunker_version` 2; `extractor_version` 2 for Blog, 1 for the service families and the FAQ set. One chunking rule is implemented: an `FaqPair` is one chunk, whole (516 pairs, 0 split). Verified by the final KB integrity audit of 2026-09-22 — **PASS** (§13). **Designed, not built:** the rest of chunking (heading tree, token budget, context prefix), embeddings, retrieval (§14), and the Professional Training adapter |
 | **Numbering note** | `OPEN-n` numbers are **not** shared across source documents. OPEN-1…16 here follow `PHASE_6_KB_ARCHITECTURE.md` §18; OPEN-20 and U9 come from the cleaning contract |
 | **Phase note** | `AGENTS.md` records Phase 6.2 — Canonical Foundation as complete, next Phase 6.3 — Source Extraction, matching the decision record and the 6.2 completion record |
 | **Update trigger** | Resolution of OPEN-3 · approval of OPEN-4/5/15 · a content-owner decision on OPEN-6/7 · a source schema or API change · any change to the architecture document |

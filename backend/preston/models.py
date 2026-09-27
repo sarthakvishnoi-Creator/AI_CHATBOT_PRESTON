@@ -148,6 +148,16 @@ class Document(Base):
     worth serving — so failures increment a counter and never touch
     ``status``. That is what makes "failure never destroys knowledge"
     enforceable rather than aspirational.
+
+    ``source_scope`` is the owning adapter's reconciliation boundary —
+    finer than ``source_type``/``content_type``, which future adapters
+    may share. Missing-reconciliation filters on it so one adapter's run
+    can never flag another adapter's documents as gone (Phase 6.5-A.5).
+
+    ``chunker_version`` is tracked per document, not only per run: without
+    it, a chunker-only version bump could never be told apart from "no
+    version changed at all", and ``ingest_document`` would leave stale
+    chunks in place with nothing to detect it.
     """
 
     __tablename__ = "documents"
@@ -173,6 +183,14 @@ class Document(Base):
             "last_seen_at",
             postgresql_where=text("status = 'active'"),
         ),
+        # Reconciliation's other query: every active document *in one
+        # adapter's scope*. Serves the same completeness-gated check as
+        # the index above, scoped instead of ordered.
+        Index(
+            "ix_documents_source_scope_active",
+            "source_scope",
+            postgresql_where=text("status = 'active'"),
+        ),
         Index("ix_documents_metadata", "metadata", postgresql_using="gin"),
     )
 
@@ -187,6 +205,10 @@ class Document(Base):
     # where a document is composed from more than one source record.
     source_ref: Mapped[str | None] = mapped_column(Text)
     content_type: Mapped[str] = mapped_column(Text)
+    # The owning adapter's reconciliation boundary, e.g. "blog" or "grc" —
+    # not a content taxonomy value, and never CHECK-constrained to a fixed
+    # vocabulary, because each new adapter introduces its own.
+    source_scope: Mapped[str] = mapped_column(Text)
     title: Mapped[str] = mapped_column(Text)
     blocks: Mapped[list[Any]] = mapped_column(JSONB)
     # "metadata" is taken on the declarative base, so the attribute is
@@ -202,6 +224,10 @@ class Document(Base):
     hash_version: Mapped[int]
     normalizer_version: Mapped[int]
     extractor_version: Mapped[int]
+    # Tracked per document (unlike ingestion_runs.chunker_version, which is
+    # per run): only this lets ingest_document tell "this row's chunks were
+    # built by an older chunker" apart from "nothing changed".
+    chunker_version: Mapped[int]
     fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     last_seen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     # Kept when its run is deleted: losing the run history must not lose

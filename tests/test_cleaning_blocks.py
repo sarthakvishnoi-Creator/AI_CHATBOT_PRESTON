@@ -403,6 +403,19 @@ def test_build_faq_pair_discards_a_half_pair() -> None:
     assert build_faq_pair("   ", blocks_of("<p>answer</p>")) is None
 
 
+def test_build_faq_pair_requires_an_answer_that_renders_to_text() -> None:
+    """A non-empty tuple is not an answer. A decorative image builds one
+    block but renders to nothing, so the pair would be a bare question."""
+    decorative = blocks_of('<img src="spacer.png" alt="">')
+    assert decorative != ()  # the block really is there
+    assert build_faq_pair("Why?", decorative) is None
+
+
+def test_build_faq_pair_accepts_an_answer_whose_text_comes_from_alt() -> None:
+    """The rule is about renderable text, not about block kind."""
+    assert build_faq_pair("Why?", blocks_of('<img src="m.png" alt="Because.">'))
+
+
 def test_body_html_that_looks_like_an_faq_is_not_promoted() -> None:
     """§6.5 — FAQ pairs are field-level; inferring them would invent structure."""
     blocks = blocks_of(
@@ -453,6 +466,7 @@ def test_identical_blocks_hash_identically() -> None:
             canonical_uri="https://e.com/a",
             source_type="mysql",
             content_type="blog",
+            source_scope="blog",
             title="T",
             blocks=blocks_of(markup),
             provenance=Provenance(

@@ -13,24 +13,35 @@ from collections.abc import AsyncIterator
 from datetime import UTC, datetime
 
 import pytest
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from preston.canonical import (
     HASH_VERSION,
+    Block,
     CanonicalDocument,
+    FaqPair,
     Heading,
+    ImageRef,
+    ListBlock,
     Paragraph,
     Provenance,
+    block_text,
     blocks_from_json,
+    blocks_to_json,
     hash_document,
 )
+from preston.cleaning.blocks import build_blocks
+from preston.cleaning.parse import parse_fragment
+from preston.cleaning.rules import apply_rules
 from preston.core.db import build_async_engine, build_session_factory
 from preston.ingestion import (
     CHUNK_OVERLAP,
     CHUNK_SIZE,
     CHUNKER_VERSION,
+    NON_KNOWLEDGE_ALT_TEXT,
     IngestionOutcome,
+    build_chunks,
     chunk_text,
     ingest_document,
 )
@@ -100,6 +111,368 @@ def test_chunk_text_last_chunk_may_be_shorter() -> None:
 
 
 # ---------------------------------------------------------------------------
+# build_chunks — the retrieval units, and FAQ atomicity
+#
+# The invariant under test: one valid FaqPair is exactly one chunk, whole,
+# never split by the character window and never sharing a chunk with the
+# ordinary prose around it.
+# ---------------------------------------------------------------------------
+
+
+def chunks_of(*blocks: Block) -> list[str]:
+    """Return the chunks a document made of ``blocks`` produces."""
+    return build_chunks(make_blocks_document(blocks))
+
+
+def make_blocks_document(blocks: tuple[Block, ...]) -> CanonicalDocument:
+    """Build a canonical document carrying exactly ``blocks``."""
+    return CanonicalDocument(
+        canonical_uri="https://www.intercert.com/blogs/a",
+        source_type="mysql",
+        content_type="blog",
+        source_scope="blog",
+        title="A Title",
+        blocks=blocks,
+        provenance=Provenance(
+            retrieved_at=RETRIEVED_AT,
+            extractor_version=2,
+            normalizer_version=NORMALIZER_VERSION,
+        ),
+    )
+
+
+def faq(number: int, *, answer_words: int = 6) -> FaqPair:
+    """Build a distinctly-worded FAQ pair, so a transposition cannot pass."""
+    return FaqPair(
+        question=f"Question number {number}?",
+        answer=(
+            Paragraph(
+                text=f"Answer number {number}. " + f"Detail{number} " * answer_words
+            ),
+        ),
+    )
+
+
+def prose(words: int, token: str = "Audit scope note.") -> Paragraph:
+    """Build a paragraph of ordinary long-form body text."""
+    return Paragraph(text=(token + " ") * words)
+
+
+def test_build_chunks_renders_ordinary_blocks_as_before() -> None:
+    """Short prose is one chunk, blocks separated — the old behaviour."""
+    assert chunks_of(
+        Heading(level=2, text="Benefits"), Paragraph(text="Certified.")
+    ) == ["Benefits\n\nCertified."]
+
+
+def test_build_chunks_excludes_the_title() -> None:
+    """The title is a column, not body text."""
+    assert "A Title" not in "".join(chunks_of(Paragraph(text="Body.")))
+
+
+def test_build_chunks_drops_blocks_that_render_to_nothing() -> None:
+    """An empty render contributes no chunk and no stray separator."""
+    assert chunks_of(Paragraph(text=""), Paragraph(text="Real.")) == ["Real."]
+
+
+def test_build_chunks_of_an_empty_document_is_empty() -> None:
+    assert build_chunks(make_blocks_document(())) == []
+
+
+# --- A. Pairing: slot N's question travels with slot N's answer ---------
+
+
+def test_each_faq_chunk_pairs_its_own_question_with_its_own_answer() -> None:
+    """Q1->A1 ... Q5->A5, with distinct answers, so a transposition fails.
+
+    Pairing itself is the adapter's (``test_sources_blog.py``); this pins
+    that chunking cannot *re-pair* what the adapter paired correctly.
+    """
+    pairs = [faq(n) for n in range(1, 6)]
+    chunks = chunks_of(*pairs)
+
+    assert len(chunks) == 5
+    for number, chunk in enumerate(chunks, start=1):
+        assert f"Question number {number}?" in chunk
+        assert f"Answer number {number}." in chunk
+        # No other slot's text leaked into this chunk.
+        for other in set(range(1, 6)) - {number}:
+            assert f"Question number {other}?" not in chunk
+            assert f"Answer number {other}." not in chunk
+
+
+# --- B. Atomicity across the old 1000-character boundary ---------------
+
+
+def test_an_faq_crossing_the_old_window_boundary_stays_in_one_chunk() -> None:
+    """The exact defect this change fixes.
+
+    The prose is sized so that, under the previous flatten-then-window
+    chunker, the boundary fell inside the FAQ and its question landed in
+    one chunk while its answer landed in the next.
+    """
+    body = prose(46)  # 827 characters: the 198-character FAQ then spans 1000
+    pair = FaqPair(
+        question="What does the certification audit cover in practice?",
+        answer=(
+            Paragraph(
+                text=(
+                    "The audit covers scope definition, control design, "
+                    "monitoring evidence, corrective action and continual "
+                    "improvement across the management system."
+                )
+            ),
+        ),
+    )
+    chunks = chunks_of(body, pair)
+
+    # The old chunker split this; assert the premise still holds, so the
+    # test cannot quietly stop testing anything.
+    flattened = chunk_text("\n\n".join([body.text.strip(), block_text(pair)]))
+    assert not any(block_text(pair) in chunk for chunk in flattened)
+
+    holding = [chunk for chunk in chunks if pair.question in chunk]
+    assert len(holding) == 1
+    assert holding[0] == block_text(pair)
+    # The answer is in that same chunk, and nowhere else.
+    answer = pair.answer[0].text  # type: ignore[union-attr]
+    assert answer in holding[0]
+    assert sum(1 for chunk in chunks if answer in chunk) == 1
+    # No fragment of the FAQ leaked into a prose chunk.
+    for chunk in chunks:
+        if chunk is not holding[0]:
+            assert "certification audit" not in chunk
+            assert "control design" not in chunk
+
+
+def test_an_faq_is_never_merged_with_adjacent_ordinary_content() -> None:
+    """Prose on both sides: the FAQ chunk holds the pair and nothing else."""
+    before, after = prose(4, "Before."), prose(4, "After.")
+    chunks = chunks_of(before, faq(1), after)
+
+    assert len(chunks) == 3
+    assert chunks[1] == block_text(faq(1))
+    assert "Before." not in chunks[1]
+    assert "After." not in chunks[1]
+
+
+# --- C. A long FAQ is still one chunk ----------------------------------
+
+
+def test_an_faq_longer_than_the_chunk_size_is_still_one_chunk() -> None:
+    """Atomicity outranks the character limit — deliberately, per
+    ``build_chunks``: half an answer cited as authoritative is worse than
+    an oversized chunk."""
+    pair = FaqPair(
+        question="Why is this answer so long?",
+        answer=(Paragraph(text="Because it is. " * 400),),  # well over CHUNK_SIZE
+    )
+    chunks = chunks_of(pair)
+
+    assert len(chunks) == 1
+    assert len(chunks[0]) > CHUNK_SIZE
+    assert chunks[0] == block_text(pair)
+
+
+# --- D. Multiple FAQs stay separate ------------------------------------
+
+
+def test_each_of_several_faq_pairs_becomes_its_own_chunk() -> None:
+    """Three pairs, three chunks — never concatenated into one unit."""
+    chunks = chunks_of(faq(1), faq(2), faq(3))
+
+    assert len(chunks) == 3
+    assert chunks == [block_text(faq(n)) for n in (1, 2, 3)]
+
+
+def test_adjacent_faq_pairs_are_not_windowed_together() -> None:
+    """Even when several short pairs would comfortably fit one window."""
+    chunks = chunks_of(*(faq(n, answer_words=1) for n in range(1, 6)))
+    assert len(chunks) == 5
+    assert all(len(chunk) < CHUNK_SIZE for chunk in chunks)
+
+
+# --- E. Ordering --------------------------------------------------------
+
+
+def test_chunks_follow_canonical_document_order() -> None:
+    """Prose and FAQ units interleave in the order the blocks are in."""
+    chunks = chunks_of(
+        Paragraph(text="First prose."),
+        faq(1),
+        Paragraph(text="Second prose."),
+        faq(2),
+        Paragraph(text="Third prose."),
+    )
+
+    assert chunks == [
+        "First prose.",
+        block_text(faq(1)),
+        "Second prose.",
+        block_text(faq(2)),
+        "Third prose.",
+    ]
+
+
+def test_ordinary_blocks_between_faqs_are_grouped_into_one_run() -> None:
+    """Consecutive ordinary blocks still share a window; only an FAQ
+    breaks the run."""
+    chunks = chunks_of(
+        Heading(level=2, text="Scope"),
+        Paragraph(text="Body."),
+        ListBlock(ordered=False, items=("a", "b")),
+        faq(1),
+    )
+
+    assert chunks == ["Scope\n\nBody.\n\na\nb", block_text(faq(1))]
+
+
+# --- F. Determinism -----------------------------------------------------
+
+
+def test_build_chunks_is_deterministic_across_repeated_runs() -> None:
+    """Same blocks in, byte-identical chunks out, in the same order."""
+    blocks: tuple[Block, ...] = (
+        prose(60),
+        faq(1),
+        Paragraph(text="Between."),
+        faq(2),
+        prose(90),
+    )
+    first = build_chunks(make_blocks_document(blocks))
+    second = build_chunks(make_blocks_document(blocks))
+
+    assert first == second
+    assert len(first) > len(blocks) - 2  # the prose runs really did window
+
+
+# --- G. Non-knowledge image alt text ------------------------------------
+#
+# A placeholder ("test") and a call-to-action label ("Contact us") were
+# found verbatim as blog image alt text. The ImageRef keeps its alt — the
+# contract preserves and hashes authored alt — but it must not become
+# retrieval text.
+
+
+def image(alt: str) -> ImageRef:
+    return ImageRef(src="https://cdn.test/media/banner.png", alt=alt)
+
+
+def html_blocks(markup: str) -> tuple[Block, ...]:
+    """Parse, clean and build blocks — the blog extraction path."""
+    root = parse_fragment(markup)
+    apply_rules(root)
+    return build_blocks(root)
+
+
+def test_the_non_knowledge_alt_list_is_exactly_the_audited_values() -> None:
+    assert NON_KNOWLEDGE_ALT_TEXT == frozenset({"test", "contact us"})
+    assert CHUNKER_VERSION == 3
+
+
+@pytest.mark.parametrize("alt", ["test", "contact us", "Contact us"])
+def test_a_non_knowledge_alt_produces_no_retrieval_text(alt: str) -> None:
+    assert chunks_of(image(alt)) == []
+    assert chunks_of(Paragraph(text="Body."), image(alt)) == ["Body."]
+
+
+@pytest.mark.parametrize(
+    "alt",
+    ["TEST", "  Test ", "CONTACT US", "Contact   Us", " contact\nus\t", "Contact us"],
+)
+def test_matching_ignores_case_and_collapses_whitespace(alt: str) -> None:
+    assert chunks_of(image(alt)) == []
+
+
+@pytest.mark.parametrize(
+    "alt",
+    [
+        "Certification process flow diagram",
+        "ISO certification mark",
+        "Cloud security certification illustration",
+        "Contact us for ISO 27001 certification",
+        "tests",
+        "penetration test report",
+        "contactus",
+    ],
+)
+def test_descriptive_and_near_miss_alt_text_still_reaches_retrieval(
+    alt: str,
+) -> None:
+    """Only exact values are excluded — never a substring or a lookalike."""
+    assert chunks_of(image(alt)) == [alt]
+
+
+def test_the_image_reference_itself_is_kept_with_its_alt() -> None:
+    blocked = image("Contact us")
+    document = make_blocks_document((Paragraph(text="Body."), blocked))
+
+    assert build_chunks(document) == ["Body."]
+    assert document.blocks == (Paragraph(text="Body."), blocked)
+    assert blocked.alt == "Contact us"
+    assert blocks_to_json(document.blocks)[1]["alt"] == "Contact us"
+
+
+def test_the_content_hash_is_unaffected_and_deterministic() -> None:
+    """Alt is still canonical, hashed content: excluding it from chunk text
+    changes no hash, so the block and its hash are exactly as before."""
+    contact = make_blocks_document((Paragraph(text="Body."), image("Contact us")))
+    placeholder = make_blocks_document((Paragraph(text="Body."), image("test")))
+
+    assert hash_document(contact) == hash_document(
+        make_blocks_document((Paragraph(text="Body."), image("Contact us")))
+    )
+    assert hash_document(contact) != hash_document(placeholder)
+    assert build_chunks(contact) == build_chunks(contact) == build_chunks(placeholder)
+
+
+def test_surrounding_blog_content_is_unchanged() -> None:
+    """Removing the alt removes exactly that text and nothing around it."""
+    around = (
+        Heading(level=2, text="Scope"),
+        Paragraph(text="Before the banner."),
+        ListBlock(ordered=False, items=("a", "b")),
+        Paragraph(text="After the banner."),
+    )
+    with_banner = (*around[:2], image("Contact us"), *around[2:])
+
+    assert chunks_of(*with_banner) == chunks_of(*around)
+    assert chunks_of(*around) == [
+        "Scope\n\nBefore the banner.\n\na\nb\n\nAfter the banner."
+    ]
+
+
+def test_a_non_knowledge_image_inside_an_faq_answer_is_excluded() -> None:
+    pair = FaqPair(
+        question="How do I start?",
+        answer=(Paragraph(text="Apply online."), image("Contact us")),
+    )
+    assert chunks_of(pair) == ["How do I start?\nApply online."]
+
+
+def test_blog_extraction_still_keeps_the_image_and_its_alt_verbatim() -> None:
+    """The cleanup is in chunking only: extraction output is unchanged."""
+    blocks = html_blocks(
+        '<p>Intro.</p><img src="/media/cta.png" alt="Contact us"><p>Outro.</p>'
+    )
+
+    assert blocks == (
+        Paragraph(text="Intro."),
+        ImageRef(src="/media/cta.png", alt="Contact us", role="informational"),
+        Paragraph(text="Outro."),
+    )
+    assert chunks_of(*blocks) == ["Intro.\n\nOutro."]
+
+
+def test_decorative_and_descriptive_images_render_as_before() -> None:
+    descriptive = html_blocks('<img src="/m/flow.png" alt="Audit flow diagram">')
+    decorative = html_blocks('<img src="/m/rule.png" alt="">')
+
+    assert chunks_of(*descriptive) == ["Audit flow diagram"]
+    assert chunks_of(*decorative) == []
+
+
+# ---------------------------------------------------------------------------
 # ingest_document
 # ---------------------------------------------------------------------------
 
@@ -110,6 +483,7 @@ def make_document(
     title: str = "A",
     text: str = "hello world",
     extractor_version: int = 1,
+    source_scope: str = "blog",
     run_id: uuid.UUID | None = None,
 ) -> CanonicalDocument:
     """Build a one-paragraph canonical document."""
@@ -117,6 +491,7 @@ def make_document(
         canonical_uri=canonical_uri,
         source_type="mysql",
         content_type="blog",
+        source_scope=source_scope,
         title=title,
         blocks=(Paragraph(text=text),),
         source_ref="subone_newblogs#1",
@@ -284,6 +659,7 @@ async def test_ingest_stores_the_authoritative_blocks(session: AsyncSession) -> 
         canonical_uri="https://example.com/g",
         source_type="api",
         content_type="service",
+        source_scope="service-example",
         title="Service",
         blocks=(Heading(level=2, text="Benefits"), Paragraph(text="Certified.")),
         provenance=Provenance(
@@ -315,6 +691,7 @@ async def test_an_unchanged_document_only_touches_the_run_pointers(
         canonical_uri=document.canonical_uri,
         source_type=document.source_type,
         content_type=document.content_type,
+        source_scope=document.source_scope,
         title=document.title,
         blocks=document.blocks,
         source_ref=document.source_ref,
@@ -393,3 +770,75 @@ async def test_ingest_links_a_document_to_its_run(session: AsyncSession) -> None
     await session.flush()
 
     assert result.document.last_run_id == run.id
+
+
+# ---------------------------------------------------------------------------
+# Per-document chunker-version tracking (Phase 6.5-A.5)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.anyio
+async def test_a_new_document_is_stamped_with_the_current_chunker_version(
+    session: AsyncSession,
+) -> None:
+    result = await ingest_document(
+        session, make_document("https://example.com/chunker-new")
+    )
+    await session.flush()
+
+    assert result.document.chunker_version == CHUNKER_VERSION
+
+
+@pytest.mark.anyio
+async def test_matching_chunker_version_alongside_matching_content_is_unchanged(
+    session: AsyncSession,
+) -> None:
+    """No processing-version bump at all — including the chunker — is a no-op."""
+    canonical_uri = "https://example.com/chunker-same"
+    document = make_document(canonical_uri, text="stable content")
+    await ingest_document(session, document)
+    await session.flush()
+
+    result = await ingest_document(session, document)
+    await session.flush()
+
+    assert result.outcome is IngestionOutcome.UNCHANGED
+    assert result.document.chunker_version == CHUNKER_VERSION
+
+
+@pytest.mark.anyio
+async def test_a_chunker_version_change_alone_is_reprocessed_and_rebuilds_chunks(
+    session: AsyncSession,
+) -> None:
+    """The exact gap this phase closes: a chunker-only rule change must not
+    read as ``UNCHANGED`` just because the hash, normalizer and extractor
+    versions all still match."""
+    canonical_uri = "https://example.com/chunker-bump"
+    first = await ingest_document(
+        session, make_document(canonical_uri, text="same content")
+    )
+    await session.flush()
+    document_id = first.document.id
+    assert first.document.chunker_version == CHUNKER_VERSION
+
+    # Simulate a document whose chunks were built by an older chunker,
+    # with hash/normalizer/extractor unchanged — the one case the old
+    # design (chunker_version tracked only per run) could not detect.
+    first.document.chunker_version = CHUNKER_VERSION - 1
+    await session.execute(
+        delete(DocumentChunk).where(DocumentChunk.document_id == document_id)
+    )
+    session.add(
+        DocumentChunk(document_id=document_id, chunk_index=0, content="stale chunk")
+    )
+    await session.flush()
+
+    result = await ingest_document(
+        session, make_document(canonical_uri, text="same content")
+    )
+    await session.flush()
+
+    assert result.outcome is IngestionOutcome.REPROCESSED
+    assert result.document.chunker_version == CHUNKER_VERSION
+    chunks = await _chunks_of(session, document_id)
+    assert [c.content for c in chunks] == ["same content"]

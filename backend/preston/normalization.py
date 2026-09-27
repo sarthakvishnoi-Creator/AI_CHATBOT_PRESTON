@@ -38,12 +38,27 @@ from urllib.parse import urljoin, urlsplit, urlunsplit
 # `PARSER_VERSION` and `PARSER_CONFIG_VERSION` (`cleaning/parse.py`) are
 # now part of what "normalized" means, alongside the R1-R13 removal rules
 # and block construction (`cleaning/rules.py`, `cleaning/blocks.py`).
-# Version 1 predates HTML parsing entirely. Safe to bump freely: no
-# document has been persisted yet (0 rows in `documents`), so nothing is
-# REPROCESSED by this change. `HASH_VERSION` and `CHUNKER_VERSION` are
-# unaffected -- what is *included* in the canonical serialization has not
-# changed, only how the input text is derived before it gets there.
-NORMALIZER_VERSION = 2
+# Version 1 predates HTML parsing entirely.
+#
+# Bumped 2 -> 3 by the FAQ atomic-retrieval change: `build_faq_pair`
+# (`cleaning/blocks.py`, already inside this version's scope as stated
+# above) now requires an answer that *renders to text* rather than merely
+# a non-empty tuple of blocks, so a field holding only a decorative image
+# no longer produces an answerless `FaqPair`. That changes which blocks a
+# document has, and therefore its hash, which is precisely what this
+# version exists to make visible as REPROCESSED rather than CHANGED.
+#
+# This bump is *not* free, and is not meant to be: 368 Blog documents are
+# stored at version 2, so the next run reports all 368 REPROCESSED. That
+# is the intended mechanism rather than a side effect -- it is what
+# rebuilds their chunks under the FAQ-atomic chunker, since
+# `CHUNKER_VERSION` is recorded per run and never per document and so
+# triggers no reprocessing on its own. Their content has not moved (all
+# 368 hashes verified identical), which is exactly why REPROCESSED and
+# not CHANGED is correct. `HASH_VERSION` is unaffected -- what is
+# *included* in the canonical serialization has not changed, only which
+# blocks reach it and how their text is derived.
+NORMALIZER_VERSION = 3
 
 # ---------------------------------------------------------------------------
 # Character rules (contract §4.3-§4.5)

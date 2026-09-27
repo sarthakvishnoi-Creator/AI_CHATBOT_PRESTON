@@ -208,11 +208,18 @@ class CanonicalDocument:
     links, and any LLM enrichment, which must never be able to alter a
     hash. It is left as a mapping because the adapters that populate its
     keys arrive with the source phases.
+
+    ``source_scope`` is the adapter's own reconciliation boundary — finer
+    than ``source_type``/``content_type``, which several future adapters
+    may share (e.g. GRC, audit and STC may all be ``source_type="api"``).
+    Reconciliation must only ever compare a run's inventory against
+    documents carrying *that adapter's* scope, never the whole corpus.
     """
 
     canonical_uri: str
     source_type: SourceType
     content_type: ContentType
+    source_scope: str
     title: str
     blocks: tuple[Block, ...]
     provenance: Provenance
@@ -303,10 +310,11 @@ def serialize_for_hash(document: CanonicalDocument) -> str:
     written, so moving a block changes the bytes.
 
     Identity and provenance are absent by design. ``canonical_uri``,
-    ``source_type``, ``content_type``, ``language``, ``metadata`` and
-    every lifecycle counter are excluded: they are what the system knows
-    *about* the content, not what was published. A taxonomy change must
-    not rewrite every hash in the corpus.
+    ``source_type``, ``content_type``, ``source_scope``, ``language``,
+    ``metadata`` and every lifecycle counter are excluded: they are what
+    the system knows *about* the content, not what was published. A
+    taxonomy change, or which adapter a document is reconciled under,
+    must not rewrite every hash in the corpus.
     """
     records = [_record("DOC", normalize_hash_text(document.title))]
     for block in document.blocks:
@@ -324,23 +332,17 @@ def hash_document(document: CanonicalDocument) -> str:
     return hash_content(serialize_for_hash(document))
 
 
-def content_text(document: CanonicalDocument) -> str:
-    """Render the blocks as plain text for the current chunker.
+def block_text(block: Block) -> str:
+    """Render one block to the plain text a chunk carries.
 
-    A bridge, not the chunking strategy: the character-window chunker in
-    ``ingestion.py`` consumes a single string, and this keeps that path
-    working across the widened seam without flattening what is *stored*.
-    The structure-aware chunker replaces both this function and
-    ``chunk_text``; ``blocks`` remains the authoritative form until it
-    does.
+    Public, and per-block rather than per-document, because chunking
+    chooses its unit *from the block vocabulary*: ``ingestion.py`` emits
+    an ``FaqPair`` whole and windows everything else, and it cannot do
+    that from a document already flattened to one string. A whole-document
+    renderer deliberately no longer lives here — flattening before
+    boundaries are decided is exactly what let the character window split
+    a question away from its answer.
     """
-    return "\n\n".join(
-        rendered for block in document.blocks if (rendered := _block_text(block))
-    )
-
-
-def _block_text(block: Block) -> str:
-    """Render one block to plain text."""
     match block:
         case Heading() | Paragraph():
             return block.text
@@ -355,7 +357,7 @@ def _block_text(block: Block) -> str:
             answer = "\n".join(
                 rendered
                 for answer_block in block.answer
-                if (rendered := _block_text(answer_block))
+                if (rendered := block_text(answer_block))
             )
             return f"{block.question}\n{answer}" if answer else block.question
 

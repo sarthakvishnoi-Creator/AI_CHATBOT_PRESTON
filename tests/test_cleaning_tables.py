@@ -88,6 +88,7 @@ def make_document(
         canonical_uri="https://www.intercert.com/blogs/x",
         source_type="mysql",
         content_type="blog",
+        source_scope="blog",
         title="Doc",
         blocks=blocks,
         metadata=metadata or {},

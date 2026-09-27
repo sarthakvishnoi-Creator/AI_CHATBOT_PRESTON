@@ -108,6 +108,7 @@ def test_valid_row_produces_a_source_record() -> None:
     )
     assert result.source_type == "mysql"
     assert result.content_type == "blog"
+    assert result.source_scope == "blog"
     assert result.source_ref == "subone_newblogs#9"
 
 
@@ -425,6 +426,45 @@ def test_faq_answer_body_still_builds_an_ordinary_listblock() -> None:
 
 
 # ---------------------------------------------------------------------------
+# An answer must render to text, not merely be a non-empty tuple of blocks
+# ---------------------------------------------------------------------------
+
+
+def test_answer_of_only_a_decorative_image_is_a_half_pair() -> None:
+    """A decorative image has no alt by definition, so it renders to
+    nothing: the pair would reach retrieval as a bare question and would
+    vanish from the canonical serialization entirely. It is the orphaned
+    question Sec7.2 refuses, so it is counted like any other half pair."""
+    result = build_record(
+        row(
+            faq_question1="<p>1. Is it mandatory?</p>",
+            faq_answer1='<img src="spacer.png" alt="">',
+        ),
+        RETRIEVED_AT,
+    )
+    assert isinstance(result, SourceRecord)
+    assert not any(isinstance(b, FaqPair) for b in result.blocks)
+    assert result.metadata["cleaning"]["faq_half_pairs_discarded"] == 1  # type: ignore[index]
+
+
+def test_answer_of_an_informational_image_is_still_a_valid_pair() -> None:
+    """The rule is "renders to text", not "is not an image": an image
+    carrying alt text is an answer a chunk can actually carry."""
+    result = build_record(
+        row(
+            faq_question1="<p>1. What does the mark look like?</p>",
+            faq_answer1='<img src="mark.png" alt="The certification mark.">',
+        ),
+        RETRIEVED_AT,
+    )
+    assert isinstance(result, SourceRecord)
+    faq = next(b for b in result.blocks if isinstance(b, FaqPair))
+    assert faq.answer == (
+        ImageRef(src="mark.png", alt="The certification mark.", role="informational"),
+    )
+
+
+# ---------------------------------------------------------------------------
 # Provenance / retrieved_at
 # ---------------------------------------------------------------------------
 
@@ -502,6 +542,7 @@ def test_adapter_exposes_the_required_protocol_properties() -> None:
     adapter = BlogAdapter(engine)
     assert adapter.source_type == "mysql"
     assert adapter.extractor_version == 2
+    assert adapter.source_scope == "blog"
 
 
 @pytest.mark.anyio
@@ -551,7 +592,7 @@ async def test_real_inventory_is_complete_and_matches_the_known_count(
     finally:
         engine.dispose()
     assert isinstance(inventory, CompleteInventory)
-    assert len(inventory.identities) == 368
+    assert len(inventory.identities) == 402
     assert all(uri.startswith(_BLOG_BASE_URL) for uri in inventory.identities)
 
 
@@ -574,7 +615,7 @@ async def test_real_inventory_is_deterministic_across_two_calls(
 
 
 @pytest.mark.anyio
-async def test_real_extraction_run_produces_368_records_with_one_timestamp(
+async def test_real_extraction_run_produces_402_records_with_one_timestamp(
     real_source_mysql_url: str | None,
 ) -> None:
     """The real corpus, end to end, read-only. Never written to Postgres."""
@@ -590,10 +631,11 @@ async def test_real_extraction_run_produces_368_records_with_one_timestamp(
     records = [i for i in items if isinstance(i, SourceRecord)]
     failures = [i for i in items if isinstance(i, ExtractionFailure)]
 
-    assert len(items) == 368
-    assert len(records) + len(failures) == 368
-    # All 368 rows are known-valid (0 empty bodies, 0 placeholders, per
-    # the B4/6.3B-2 evidence base) — no failures expected on this corpus.
+    assert len(items) == 402
+    assert len(records) + len(failures) == 402
+    # All 402 rows are known-valid (0 empty bodies, 0 placeholders, per
+    # the 2026-09-09 promotion evidence base) — no failures expected on
+    # this corpus.
     assert failures == []
 
     timestamps = {r.retrieved_at for r in records}
@@ -608,8 +650,13 @@ async def test_real_extraction_run_produces_368_records_with_one_timestamp(
     headings = sum(1 for r in records for b in r.blocks if isinstance(b, Heading))
 
     # Loose bounds matching the independently-measured corpus facts from
-    # the 6.3B inspection (64 blogs with >=1 FAQ pair, 6 tables, ~68 images).
+    # the 6.3B inspection (64 blogs with >=1 FAQ pair, ~68 images), plus
+    # the exact table-block count re-verified against the 2026-09-09
+    # promotion: 6 tables across 5 blogs in the original 368-row corpus
+    # (one of those five, dora-compliance-checklist-eu-businesses, carries
+    # 2 tables) plus 1 table in one of the 34 blogs added by the
+    # promotion (what-is-a-compliance-report, subone_newblogs#463) = 7.
     assert faq_pairs >= 64
-    assert tables == 6
+    assert tables == 7
     assert images >= 60
     assert headings > 0

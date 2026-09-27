@@ -1,0 +1,192 @@
+{
+  "version": 1,
+  "frontend_repository": "intercert-dev-frontend",
+  "frontend_file": "src/app/constants/faq-data.ts",
+  "generated_by": "scripts/extract_service_faq.py",
+  "documents": [
+    {
+      "dictionary": "FAQ_VALUE",
+      "key": "iso-iec-42001-2023",
+      "parent_scope": "management_training",
+      "parent_canonical_uri": "https://www.intercert.com/services/training/management-system-training/iso-iec-42001-2023",
+      "parent_title": "ISO/IEC 42001:2023",
+      "pairs": [
+        {
+          "question": "How will ISO/IEC 42001- AIMS help organizations using AI?",
+          "answer": "It provides a structured framework for managing AI responsibly, ensuring transparency, accountability, and compliance with ethical and regulatory expectations."
+        },
+        {
+          "question": "What are the benefits of the ISO/IEC 42001:2023 AIMS Lead Auditor Training Program?",
+          "answer": "Participants learn AI and ML basics, understand cost efficiency and traceability, build transparency and reliability, and gain skills to perform effective AIMS audits."
+        },
+        {
+          "question": "Who should attend the ISO/IEC 42001 Lead Auditor Training?",
+          "answer": "Auditors, consultants, compliance professionals, and individuals responsible for implementing or assessing AI management systems."
+        },
+        {
+          "question": "Does ISO/IEC 42001 apply to USA organizations?",
+          "answer": "Yes. USA organizations adopting AI systems can use ISO/IEC 42001 to align with international best practices and demonstrate responsible AI governance."
+        },
+        {
+          "question": "How does ISO/IEC 42001 differ from other ISO management system standards?",
+          "answer": "While it follows a similar structure (Annex SL), it is tailored specifically for AI systems, addressing transparency, fairness, accountability, and societal impact."
+        }
+      ]
+    },
+    {
+      "dictionary": "FAQ_VALUE",
+      "key": "iso-iec-27701-2019",
+      "parent_scope": "management_training",
+      "parent_canonical_uri": "https://www.intercert.com/services/training/management-system-training/iso-iec-27701-2019",
+      "parent_title": "ISO/IEC 27701:2019",
+      "pairs": [
+        {
+          "question": "Which organizations should take ISO 27701 – PIMS Lead Auditor Training?",
+          "answer": "Organizations handling personal data, including privacy officers, compliance teams, internal auditors and consultants, aiming to strengthen data protection, achieve regulatory compliance, and implement a robust Privacy Information Management System."
+        },
+        {
+          "question": "What are the benefits of the Lead Auditor Course On Privacy Information Management System Program?",
+          "answer": "Improve transparency – with detailed security & privacy controls for your PII processor & controllers. Minimise risk – by consistently achieving a level of quality as per customer expectations. Achieve world-class standards – implement PIMS which enables you to benchmark, measure and report data privacy improvements."
+        },
+        {
+          "question": "Does this course apply to USA organizations?",
+          "answer": "Yes. USA organizations can use this training to strengthen privacy practices, ensure regulatory compliance, and manage personal data in line with federal and state privacy laws."
+        }
+      ]
+    },
+    {
+      "dictionary": "FAQ_VALUE",
+      "key": "iso-21001-2018",
+      "parent_scope": "management_training",
+      "parent_canonical_uri": "https://www.intercert.com/services/training/management-system-training/iso-21001-2018",
+      "parent_title": "ISO 21001:2018",
+      "pairs": [
+        {
+          "question": "Why is ISO 21001 important for educational organizations?",
+          "answer": "It provides a structured approach to improve learning outcomes, enhance teaching quality, and ensure organizational effectiveness in education delivery."
+        },
+        {
+          "question": "Who should take ISO 21001 certification?",
+          "answer": "Schools, universities, vocational training institutes, and organizations involved in curriculum design or learner-focused programs."
+        },
+        {
+          "question": "How does ISO 21001 benefit USA educational organizations?",
+          "answer": "It helps USA schools, colleges, and training providers align with federal and state education standards, enhance teaching quality, and demonstrate commitment to continuous improvement."
+        }
+      ]
+    },
+    {
+      "dictionary": "FAQ_VALUE",
+      "key": "iso-iec-20000-1-2018",
+      "parent_scope": "management_training",
+      "parent_canonical_uri": "https://www.intercert.com/services/training/management-system-training/iso-iec-20000-1-2018",
+      "parent_title": "ISO/IEC 20000-1:2018",
+      "pairs": [
+        {
+          "question": "What is ISO/IEC 20000-1?",
+          "answer": "ISO/IEC 20000-1 is an international standard that defines requirements for an IT service management system (ITSMS), ensuring consistent delivery and continual improvement of IT services."
+        },
+        {
+          "question": "Which organizations should implement ISO/IEC 20000-1?",
+          "answer": "IT service providers, internal IT departments, and organizations managing complex IT infrastructures seeking to improve service quality and efficiency."
+        },
+        {
+          "question": "How does ISO/IEC 20000-1 benefit USA organizations?",
+          "answer": "USA companies can use it to meet federal and industry IT service requirements, enhance customer satisfaction, reduce downtime, and demonstrate reliable IT service management practices."
+        }
+      ]
+    },
+    {
+      "dictionary": "FAQ_VALUE",
+      "key": "iso-22301-2019",
+      "parent_scope": "management_training",
+      "parent_canonical_uri": "https://www.intercert.com/services/training/management-system-training/iso-22301-2019",
+      "parent_title": "ISO 22301:2019",
+      "pairs": [
+        {
+          "question": "Why is ISO 22301 important for organizations?",
+          "answer": "It provides a structured approach to identify risks, plan responses, and ensure continuity of critical operations during disruptions or emergencies."
+        },
+        {
+          "question": "Who should pursue ISO 22301 certification?",
+          "answer": "Businesses, government agencies, healthcare providers, and any organization that needs to maintain continuity of critical services."
+        },
+        {
+          "question": "How does ISO 22301 help USA organizations comply with federal and state continuity requirements?",
+          "answer": "It enables USA organizations to align with FEMA and state emergency preparedness regulations, maintain critical operations during disruptions, and demonstrate resilience to regulators, clients, and stakeholders."
+        }
+      ]
+    },
+    {
+      "dictionary": "FAQ_VALUE",
+      "key": "iso-31000-2018",
+      "parent_scope": "management_training",
+      "parent_canonical_uri": "https://www.intercert.com/services/training/management-system-training/iso-31000-2018",
+      "parent_title": "ISO 31000:2018",
+      "pairs": [
+        {
+          "question": "What are the benefits of ISO 31000 certification?",
+          "answer": "It enhances risk awareness, strengthens governance, supports strategic objectives, and improves stakeholder confidence."
+        },
+        {
+          "question": "Is ISO 31000 mandatory in the USA?",
+          "answer": "No. ISO 31000 is not legally required in the USA, but organizations adopt it to strengthen internal risk management and compliance practices."
+        },
+        {
+          "question": "Does INTERCERT provide ISO 31000 certification?",
+          "answer": "Yes. INTERCERT offers ISO 31000 certification, including audits, gap analysis, and guidance to ensure your risk management system meets the standard."
+        }
+      ]
+    },
+    {
+      "dictionary": "FAQ_VALUE",
+      "key": "iso-13485-2016",
+      "parent_scope": "management_training",
+      "parent_canonical_uri": "https://www.intercert.com/services/training/management-system-training/iso-13485-2016",
+      "parent_title": "ISO 13485:2016",
+      "pairs": [
+        {
+          "question": "Why is ISO 13485 certification important for medical device companies in the USA?",
+          "answer": "ISO 13485 certification in the USA ensures compliance with FDA and regulatory requirements, enhances product safety, and builds trust with healthcare partners and patients."
+        },
+        {
+          "question": "What does it mean for my company to be ISO 13485 certified?",
+          "answer": "Certification confirms that your medical devices’ quality meets ISO 13485 requirements and is effectively controlling processes to ensure medical device safety."
+        },
+        {
+          "question": "How can my organization implement ISO 13485?",
+          "answer": "Organizations implement ISO 13485 by establishing a compliant QMS, conducting internal audits, addressing non-conformities, and undergoing a certification audit by an accredited body."
+        },
+        {
+          "question": "What are the key requirements of ISO 13485?",
+          "answer": "Key requirements include risk management, document control, process validation, traceability, supplier management, and continual improvement of the QMS."
+        }
+      ]
+    },
+    {
+      "dictionary": "FAQ_VALUE",
+      "key": "iso-28001-2007",
+      "parent_scope": "management_training",
+      "parent_canonical_uri": "https://www.intercert.com/services/training/management-system-training/iso-28001-2007",
+      "parent_title": "ISO 28001:2007",
+      "pairs": [
+        {
+          "question": "Who should opt for ISO 28001?",
+          "answer": "ISO 28001 is suitable for organizations involved in supply chain operations, logistics, transportation, and trade compliance. It is also relevant for professionals managing supply chain risks and security."
+        },
+        {
+          "question": "What are the benefits of ISO 28001 certification?",
+          "answer": "Certification strengthens supply chain resilience, improves risk management, supports trade compliance, and enhances trust among global partners."
+        },
+        {
+          "question": "Is ISO 28001 certification required in the USA?",
+          "answer": "ISO 28001 is not mandatory in the USA, but it supports compliance with US Customs-Trade Partnership Against Terrorism (C-TPAT) and other supply chain security programs."
+        },
+        {
+          "question": "Does INTERCERT provide ISO 28001 certification?",
+          "answer": "Yes. INTERCERT offers ISO 28001 certification, including gap assessments, audits, and ongoing support to strengthen supply chain security management."
+        }
+      ]
+    }
+  ]
+}

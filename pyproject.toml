@@ -37,7 +37,7 @@ src = ["backend"]
 [tool.pyright]
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
-extraPaths = ["backend"]
+extraPaths = ["backend", "scripts"]
 venvPath = "."
 venv = ".venv"
 include = ["backend", "tests", "scripts"]

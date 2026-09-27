@@ -56,11 +56,18 @@ class SourceRecord:
     ``extractor_version`` belongs to the adapter because the adapter is
     what changed when extraction rules change; the normalizer and hash
     versions belong to the system and are attached in :func:`to_canonical`.
+
+    ``source_scope`` is the adapter's reconciliation boundary (contract
+    §20.1) — every record an adapter yields carries the same value as
+    that adapter's own :attr:`SourceAdapter.source_scope`, mirroring how
+    ``source_type`` and ``extractor_version`` are both adapter-level
+    properties and per-record fields.
     """
 
     canonical_uri: str
     source_type: SourceType
     content_type: ContentType
+    source_scope: str
     title: str
     blocks: tuple[Block, ...]
     retrieved_at: datetime
@@ -86,6 +93,7 @@ def to_canonical(
         canonical_uri=record.canonical_uri,
         source_type=record.source_type,
         content_type=record.content_type,
+        source_scope=record.source_scope,
         title=record.title,
         blocks=record.blocks,
         source_ref=record.source_ref,
@@ -167,6 +175,16 @@ class SourceAdapter(Protocol):
     when a single record cannot be extracted, so one bad row does not end
     the iteration and abandon every record after it. Raising is reserved
     for a source-level fault, where failing the whole run is correct.
+
+    ``source_scope`` (contract §20.1) is the adapter's own reconciliation
+    boundary — a stable string identifying *this specific ingestion*, not
+    merely its ``source_type`` or ``content_type``. Several future
+    adapters may share both (GRC, audit and STC are all planned as
+    ``source_type="api"``, and more than one may share a ``content_type``
+    too), so neither is fine-grained enough to say which documents one
+    adapter's inventory may reconcile. :func:`preston.sync.synchronize`
+    passes this value to reconciliation so a run can never mark another
+    adapter's documents missing.
     """
 
     @property
@@ -174,6 +192,9 @@ class SourceAdapter(Protocol):
 
     @property
     def extractor_version(self) -> int: ...
+
+    @property
+    def source_scope(self) -> str: ...
 
     async def inventory(self) -> Inventory: ...
 

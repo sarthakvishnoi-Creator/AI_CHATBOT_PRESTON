@@ -44,6 +44,7 @@ class FakeAdapter:
 
     source_type: SourceType = "mysql"
     extractor_version: int = 1
+    source_scope: str = "sync-test"
 
     def __init__(
         self,
@@ -51,11 +52,13 @@ class FakeAdapter:
         inventory: Inventory,
         *,
         extractor_version: int = 1,
+        source_scope: str = "sync-test",
         inventory_error: Exception | None = None,
     ) -> None:
         self._items = items
         self._inventory = inventory
         self.extractor_version = extractor_version
+        self.source_scope = source_scope
         self._inventory_error = inventory_error
 
     async def inventory(self) -> Inventory:
@@ -111,12 +114,14 @@ def record(
     title: str = "Title",
     text_body: str = "hello world",
     extractor_version: int = 1,
+    source_scope: str = "sync-test",
 ) -> SourceRecord:
     """Build a valid source record for ``uri``."""
     return SourceRecord(
         canonical_uri=uri,
         source_type="mysql",
         content_type="blog",
+        source_scope=source_scope,
         title=title,
         blocks=(Paragraph(text=text_body),),
         retrieved_at=RETRIEVED_AT,
@@ -388,6 +393,151 @@ async def test_returning_record_clears_gone_count(
 
 
 # ---------------------------------------------------------------------------
+# Source-scoped reconciliation (Phase 6.5-A.5)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.anyio
+async def test_a_scopes_reconciliation_cannot_flag_another_scopes_document(
+    engine: AsyncEngine, namespace: str
+) -> None:
+    """Blog reconciliation must never touch another source's documents."""
+    blog_scope, grc_scope = f"{namespace}-blog", f"{namespace}-grc"
+    blog_uri = f"{namespace}/blog-doc"
+    await synchronize(
+        engine,
+        FakeAdapter(
+            [record(blog_uri, source_scope=blog_scope)],
+            CompleteInventory(frozenset({blog_uri})),
+            source_scope=blog_scope,
+        ),
+    )
+
+    # A different scope's complete inventory omits the Blog document
+    # entirely — it was never this adapter's to list.
+    other_uri = f"{namespace}/other-doc"
+    report = await synchronize(
+        engine,
+        FakeAdapter(
+            [record(other_uri, source_scope=grc_scope)],
+            CompleteInventory(frozenset({other_uri})),
+            source_scope=grc_scope,
+        ),
+    )
+
+    assert report.missing == ()
+    assert report.counters.missing_candidates == 0
+    stored = await _document(engine, blog_uri)
+    assert stored is not None
+    assert stored.gone_count == 0
+    assert stored.status == "active"
+
+
+@pytest.mark.anyio
+async def test_a_simulated_grc_scope_cannot_touch_blog_documents(
+    engine: AsyncEngine, namespace: str
+) -> None:
+    """A stand-in for a future adapter, reconciling only its own scope."""
+    blog_scope, grc_scope = f"{namespace}-blog", f"{namespace}-grc"
+    blog_uri = f"{namespace}/blog-only"
+    await synchronize(
+        engine,
+        FakeAdapter(
+            [record(blog_uri, source_scope=blog_scope)],
+            CompleteInventory(frozenset({blog_uri})),
+            source_scope=blog_scope,
+        ),
+    )
+
+    # GRC's own inventory is complete and simply does not mention the
+    # Blog document — as it never would, being a different adapter.
+    grc_report = await synchronize(
+        engine,
+        FakeAdapter([], CompleteInventory(frozenset()), source_scope=grc_scope),
+    )
+
+    assert grc_report.missing == ()
+    assert grc_report.counters.reconciled is True
+    stored = await _document(engine, blog_uri)
+    assert stored is not None
+    assert stored.gone_count == 0
+
+
+@pytest.mark.anyio
+async def test_missing_and_restored_behaviour_still_works_within_one_scope(
+    engine: AsyncEngine, namespace: str
+) -> None:
+    """Scoping must not weaken the existing missing/restore behaviour."""
+    gone, kept = f"{namespace}/scoped-gone", f"{namespace}/scoped-kept"
+    scope = f"{namespace}-blog"
+    await synchronize(
+        engine,
+        FakeAdapter(
+            [record(gone, source_scope=scope), record(kept, source_scope=scope)],
+            CompleteInventory(frozenset({gone, kept})),
+            source_scope=scope,
+        ),
+    )
+
+    missing_report = await synchronize(
+        engine,
+        FakeAdapter(
+            [record(kept, source_scope=scope)],
+            CompleteInventory(frozenset({kept})),
+            source_scope=scope,
+        ),
+    )
+    assert missing_report.missing == (gone,)
+    assert (await _document(engine, gone) or Document()).gone_count == 1
+
+    restored_report = await synchronize(
+        engine,
+        FakeAdapter(
+            [record(gone, source_scope=scope), record(kept, source_scope=scope)],
+            CompleteInventory(frozenset({gone, kept})),
+            source_scope=scope,
+        ),
+    )
+    assert restored_report.missing == ()
+    stored = await _document(engine, gone)
+    assert stored is not None
+    assert stored.gone_count == 0
+
+
+@pytest.mark.anyio
+async def test_empty_inventory_guard_only_considers_the_adapters_own_scope(
+    engine: AsyncEngine, namespace: str
+) -> None:
+    """A source with genuinely zero documents must not be blocked by another's."""
+    other_scope, empty_scope = f"{namespace}-other", f"{namespace}-empty"
+    other_uri = f"{namespace}/belongs-to-other-scope"
+    await synchronize(
+        engine,
+        FakeAdapter(
+            [record(other_uri, source_scope=other_scope)],
+            CompleteInventory(frozenset({other_uri})),
+            source_scope=other_scope,
+        ),
+    )
+
+    # This adapter's own scope has no active documents at all, so its
+    # empty complete inventory must be accepted, not refused by the guard
+    # that exists to protect a *non-empty* scope from a false-empty answer.
+    report = await synchronize(
+        engine,
+        FakeAdapter([], CompleteInventory(frozenset()), source_scope=empty_scope),
+    )
+
+    assert report.counters.reconciled is True
+    assert report.counters.reconciliation_skipped_reason is None
+    assert report.missing == ()
+    # The other scope's document is entirely untouched.
+    stored = await _document(engine, other_uri)
+    assert stored is not None
+    assert stored.gone_count == 0
+
+
+# ---------------------------------------------------------------------------
 # Failure preserves knowledge (invariants 10, 11, 12 of the brief)
 # ---------------------------------------------------------------------------
 
@@ -479,6 +629,7 @@ async def test_persistence_failure_is_contained_and_rolled_back(
         source_type="mysql",
         # Violates ck_documents_content_type at the database level.
         content_type=cast(Paragraph, "not-a-content-type"),  # type: ignore[arg-type]
+        source_scope="sync-test",
         title="Bad",
         blocks=(Paragraph(text="text"),),
         retrieved_at=RETRIEVED_AT,

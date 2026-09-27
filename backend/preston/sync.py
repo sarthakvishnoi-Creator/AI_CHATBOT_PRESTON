@@ -92,19 +92,29 @@ async def reconcile_missing(
     inventory: CompleteInventory,
     *,
     counters: RunCounters,
+    scope: str,
 ) -> tuple[str, ...]:
-    """Flag active documents the source no longer lists.
+    """Flag active documents *in this adapter's scope* the source no longer lists.
 
     Accepts :class:`CompleteInventory` and nothing else. That is the
     safety property: an incomplete listing is a different type, so this
     function cannot be called with one — an outage cannot be mistaken for
     a mass deletion by any caller, including a future one.
 
+    ``scope`` is the calling adapter's :attr:`~preston.sources.contract.
+    SourceAdapter.source_scope`. The "known" set is restricted to
+    documents carrying that same ``source_scope`` before it is ever
+    compared against the inventory, so one adapter's inventory — however
+    incomplete or stale — can never flag a document owned by a different
+    adapter as missing.
+
     Increments ``gone_count`` only. Nothing is archived, deleted, or
     stripped of content.
     """
     result = await session.execute(
-        select(Document.canonical_uri).where(Document.status == "active")
+        select(Document.canonical_uri).where(
+            Document.status == "active", Document.source_scope == scope
+        )
     )
     known = set(result.scalars())
     missing = tuple(sorted(known - inventory.identities))
@@ -123,8 +133,9 @@ async def _reconcile(
     factory: async_sessionmaker[AsyncSession],
     inventory: Inventory,
     counters: RunCounters,
+    scope: str,
 ) -> tuple[str, ...]:
-    """Reconcile when — and only when — it is provably safe to."""
+    """Reconcile when — and only when — it is provably safe to, within ``scope``."""
     counters.inventory_size = len(inventory.identities)
 
     if not isinstance(inventory, CompleteInventory):
@@ -137,15 +148,18 @@ async def _reconcile(
 
     async with factory() as session, session.begin():
         if not inventory.identities:
-            # A complete-but-empty inventory would mark the entire corpus
-            # missing in one run. A source that genuinely holds nothing is
-            # indistinguishable here from one that answered without error
-            # and returned nothing, so this refuses rather than guesses.
-            # The proportional case (a large but implausible drop) is
-            # OPEN-11 and is deliberately not decided here.
+            # A complete-but-empty inventory would mark this adapter's
+            # whole scope missing in one run. A source that genuinely
+            # holds nothing is indistinguishable here from one that
+            # answered without error and returned nothing, so this
+            # refuses rather than guesses. Scoped to this adapter's own
+            # documents: another adapter's corpus being non-empty must
+            # never block or excuse this one's reconciliation. The
+            # proportional case (a large but implausible drop) is OPEN-11
+            # and is deliberately not decided here.
             active = await session.scalar(
                 select(Document.canonical_uri)
-                .where(Document.status == "active")
+                .where(Document.status == "active", Document.source_scope == scope)
                 .limit(1)
             )
             if active is not None:
@@ -154,7 +168,9 @@ async def _reconcile(
                 )
                 return ()
 
-        missing = await reconcile_missing(session, inventory, counters=counters)
+        missing = await reconcile_missing(
+            session, inventory, counters=counters, scope=scope
+        )
         counters.reconciled = True
         return missing
 
@@ -223,6 +239,6 @@ async def synchronize(
                 continue
             _count(counters, outcome)
 
-        missing = await _reconcile(factory, inventory, counters)
+        missing = await _reconcile(factory, inventory, counters, adapter.source_scope)
 
     return SyncReport(run_id=handle.run_id, counters=counters, missing=missing)

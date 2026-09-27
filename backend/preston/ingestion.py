@@ -20,15 +20,19 @@ reach the hash, because hashing a broken extraction and finding it
 """
 
 import enum
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+from typing import Final
 
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from preston.canonical import (
+    Block,
     CanonicalDocument,
+    FaqPair,
+    ImageRef,
+    block_text,
     blocks_to_json,
-    content_text,
     hash_document,
 )
 from preston.models import Document, DocumentChunk
@@ -39,11 +43,26 @@ from preston.models import Document, DocumentChunk
 CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 150
 
-# The character-window chunker below. The structure-aware chunker that
-# replaces it — heading tree, token budget, per-chunk hashes — is a later
-# phase; bumping this version is what makes that change a reprocess rather
-# than a corpus-wide false "changed".
-CHUNKER_VERSION = 1
+# The character window below still chunks ordinary prose. Bumped 1 -> 2
+# when ``build_chunks`` stopped feeding it a flattened document: an
+# ``FaqPair`` is now its own chunk and never enters the window at all.
+# The full structure-aware chunker — heading tree, token budget, per-chunk
+# hashes — is still a later phase; bumping this version is what makes such
+# a change a reprocess rather than a corpus-wide false "changed".
+#
+# Bumped 2 -> 3 when image alt text in :data:`NON_KNOWLEDGE_ALT_TEXT`
+# stopped reaching chunk text. No block and no hash changes, so without
+# this bump the affected rows would stay UNCHANGED with stale chunks; with
+# it, every row is REPROCESSED on its scope's next run.
+CHUNKER_VERSION = 3
+
+#: Image alt values that are never knowledge: a placeholder and a
+#: call-to-action label, each found verbatim on a published blog image.
+#: Matched exactly, after collapsing whitespace and case folding, so the
+#: list stays auditable — any other alt text still reaches retrieval.
+#: The ``ImageRef`` keeps its alt: the contract (§9) preserves authored
+#: alt verbatim and hashes it, so only chunk text is affected here.
+NON_KNOWLEDGE_ALT_TEXT: Final = frozenset({"test", "contact us"})
 
 
 class IngestionOutcome(enum.StrEnum):
@@ -99,18 +118,86 @@ def chunk_text(
     return chunks
 
 
+def _is_non_knowledge_image(block: Block) -> bool:
+    return (
+        isinstance(block, ImageRef)
+        and " ".join(block.alt.split()).casefold() in NON_KNOWLEDGE_ALT_TEXT
+    )
+
+
+def _chunk_text(block: Block) -> str:
+    """Render a block as ``block_text`` does, minus non-knowledge alt text."""
+    if _is_non_knowledge_image(block):
+        return ""
+    if isinstance(block, FaqPair):
+        answer = tuple(a for a in block.answer if not _is_non_knowledge_image(a))
+        return block_text(replace(block, answer=answer))
+    return block_text(block)
+
+
+def build_chunks(document: CanonicalDocument) -> list[str]:
+    """Split a document into retrieval units, in document order.
+
+    The block vocabulary decides the unit, which is why this reads
+    ``document.blocks`` rather than a flattened string:
+
+    * an :class:`~preston.canonical.FaqPair` is **one chunk, whole**. It
+      never enters the character window and never shares a chunk with a
+      neighbouring block, so a question can never be separated from its
+      answer, and no ordinary prose can dilute it. A pair longer than
+      ``CHUNK_SIZE`` stays one chunk — atomicity outranks the window,
+      because half an answer cited as authoritative is worse than an
+      oversized chunk.
+    * every other block joins the run of ordinary blocks around it, and
+      each run is windowed by :func:`chunk_text` exactly as before. An
+      FAQ therefore also acts as a run boundary, which is what keeps it
+      from being merged into a neighbouring window.
+    * an :class:`~preston.canonical.ImageRef` whose alt is in
+      :data:`NON_KNOWLEDGE_ALT_TEXT` contributes no text, wherever it sits.
+
+    Pure and deterministic: the same blocks always produce the same
+    chunks, with the same content, in the same order.
+    """
+    chunks: list[str] = []
+    run: list[str] = []
+
+    def flush_run() -> None:
+        """Window the ordinary blocks accumulated so far, then reset."""
+        if run:
+            chunks.extend(chunk_text("\n\n".join(run)))
+            run.clear()
+
+    for block in document.blocks:
+        rendered = _chunk_text(block)
+        if isinstance(block, FaqPair):
+            flush_run()
+            if rendered:
+                chunks.append(rendered)
+        elif rendered:
+            run.append(rendered)
+    flush_run()
+    return chunks
+
+
 def _versions_match(row: Document, document: CanonicalDocument) -> bool:
     """Return whether the stored rules are the ones in force now.
 
     Compared *before* hashes. Two hashes produced by different rule sets
     are not comparable, and a row carrying an older tuple is reprocessed
     rather than guessed at.
+
+    ``chunker_version`` is included even though it plays no part in the
+    hash itself: it is the only signal that can tell "this row's chunks
+    were built by an older chunker" apart from "nothing changed at all".
+    Without it here, a chunker-only version bump would leave every row
+    reporting ``UNCHANGED`` and its chunks stale forever.
     """
     provenance = document.provenance
     return (
         row.hash_version == provenance.hash_version
         and row.normalizer_version == provenance.normalizer_version
         and row.extractor_version == provenance.extractor_version
+        and row.chunker_version == CHUNKER_VERSION
     )
 
 
@@ -121,6 +208,7 @@ def _apply(row: Document, document: CanonicalDocument, content_hash: str) -> Non
     row.source_type = document.source_type
     row.source_ref = document.source_ref
     row.content_type = document.content_type
+    row.source_scope = document.source_scope
     row.title = document.title
     row.blocks = list(blocks_to_json(document.blocks))
     row.doc_metadata = dict(document.metadata)
@@ -129,6 +217,7 @@ def _apply(row: Document, document: CanonicalDocument, content_hash: str) -> Non
     row.hash_version = provenance.hash_version
     row.normalizer_version = provenance.normalizer_version
     row.extractor_version = provenance.extractor_version
+    row.chunker_version = CHUNKER_VERSION
     row.fetched_at = provenance.retrieved_at
     row.last_seen_at = provenance.retrieved_at
     row.last_run_id = provenance.run_id
@@ -145,7 +234,7 @@ async def _rebuild_chunks(
     await session.execute(
         delete(DocumentChunk).where(DocumentChunk.document_id == row.id)
     )
-    for index, chunk in enumerate(chunk_text(content_text(document))):
+    for index, chunk in enumerate(build_chunks(document)):
         session.add(DocumentChunk(document_id=row.id, chunk_index=index, content=chunk))
 
 

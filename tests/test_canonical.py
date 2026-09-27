@@ -25,9 +25,9 @@ from preston.canonical import (
     Paragraph,
     Provenance,
     Table,
+    block_text,
     blocks_from_json,
     blocks_to_json,
-    content_text,
     hash_content,
     hash_document,
     serialize_for_hash,
@@ -53,6 +53,7 @@ def make_document(
         canonical_uri=canonical_uri,
         source_type="mysql",
         content_type="blog",
+        source_scope="blog",
         title=title,
         blocks=blocks,  # pyright: ignore[reportArgumentType]
         source_ref="subone_newblogs#1421",
@@ -367,28 +368,34 @@ def test_unreadable_blocks_are_rejected_rather_than_guessed_at() -> None:
 
 
 # ---------------------------------------------------------------------------
-# content_text — the bridge to the current chunker
+# block_text — what one block contributes to a chunk
 # ---------------------------------------------------------------------------
 
 
-def test_content_text_renders_blocks_in_order() -> None:
-    """Blocks are separated; their own text is untouched."""
-    document = make_document(
-        blocks=(Heading(level=2, text="Benefits"), Paragraph(text="Certified."))
-    )
-    assert content_text(document) == "Benefits\n\nCertified."
+def test_block_text_leaves_a_block_s_own_text_untouched() -> None:
+    assert block_text(Heading(level=2, text="Benefits")) == "Benefits"
+    assert block_text(Paragraph(text="Certified.")) == "Certified."
 
 
-def test_content_text_excludes_the_title() -> None:
-    """The title is a column, not body text."""
-    document = make_document(title="A Title", blocks=(Paragraph(text="Body."),))
-    assert "A Title" not in content_text(document)
-
-
-def test_content_text_keeps_list_items_on_their_own_lines() -> None:
+def test_block_text_keeps_list_items_on_their_own_lines() -> None:
     """Item boundaries are meaning and are lost irrecoverably if flattened."""
-    document = make_document(blocks=(ListBlock(ordered=False, items=("a", "b")),))
-    assert content_text(document) == "a\nb"
+    assert block_text(ListBlock(ordered=False, items=("a", "b"))) == "a\nb"
+
+
+def test_block_text_renders_a_faq_pair_as_question_then_answer() -> None:
+    """The retrieval unit's text: the question, then everything under it."""
+    pair = FaqPair(
+        question="Is it mandatory?",
+        answer=(Paragraph(text="No."), ListBlock(ordered=False, items=("a", "b"))),
+    )
+    assert block_text(pair) == "Is it mandatory?\nNo.\na\nb"
+
+
+def test_block_text_of_a_decorative_image_is_empty() -> None:
+    """Why an answer of only a decorative image is not an answer: it
+    renders to nothing, so a chunk built from it would carry a bare
+    question. ``build_faq_pair`` refuses that pair for this reason."""
+    assert block_text(ImageRef(src="spacer.png", alt="", role="decorative")) == ""
 
 
 # ---------------------------------------------------------------------------

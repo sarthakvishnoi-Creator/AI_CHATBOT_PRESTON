@@ -45,12 +45,14 @@ def make_record(
     extractor_version: int = 1,
     blocks: tuple[object, ...] | None = None,
     metadata: Mapping[str, object] | None = None,
+    source_scope: str = "blog",
 ) -> SourceRecord:
     """Build a minimal valid source record."""
     return SourceRecord(
         canonical_uri=canonical_uri,
         source_type="mysql",
         content_type="blog",
+        source_scope=source_scope,
         title=title,
         blocks=cast(
             tuple[Paragraph, ...],
@@ -111,6 +113,12 @@ def test_to_canonical_stamps_system_versions_not_caller_claims() -> None:
     assert document.provenance.extractor_version == 7
     assert document.provenance.normalizer_version == NORMALIZER_VERSION
     assert document.provenance.hash_version == HASH_VERSION
+
+
+def test_to_canonical_carries_the_adapters_source_scope() -> None:
+    """The reconciliation boundary is copied through, never derived."""
+    document = to_canonical(make_record(source_scope="grc"))
+    assert document.source_scope == "grc"
 
 
 # ---------------------------------------------------------------------------

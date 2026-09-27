@@ -91,8 +91,10 @@ from preston.sources.mysql import SourceDatabaseError, run_source_unit
 #: every field, including this one, both before and after this change.
 #: What changed is this adapter's own choice of which already-produced
 #: block kinds count as a question label, which is squarely this file's
-#: own version, not the normalizer's. Safe to bump freely: 0 rows exist
-#: in ``documents``, so nothing is REPROCESSED by this change.
+#: own version, not the normalizer's. That bump was free at the time: no
+#: document had been persisted yet. It would not be free now -- 368 Blog
+#: documents are stored at extractor version 2, so any further bump makes
+#: the whole corpus REPROCESSED.
 EXTRACTOR_VERSION: Final = 2
 
 #: Verified against the live site in the Q2 URL investigation: the public
@@ -103,6 +105,13 @@ _BLOG_BASE_URL: Final = "https://www.intercert.com/blogs/"
 
 _CONTENT_TYPE: Final[ContentType] = "blog"
 _SOURCE_TYPE: Final[SourceType] = "mysql"
+#: This adapter's reconciliation boundary (contract §20.1). Distinct from
+#: ``_SOURCE_TYPE``/``_CONTENT_TYPE`` on purpose: a future GRC, audit or
+#: STC adapter may share ``source_type="api"`` (and possibly a
+#: ``content_type``) with each other, but each must reconcile only its
+#: own documents. ``"blog"`` is this adapter's identity, not a taxonomy
+#: value, and never changes once documents exist under it.
+_SOURCE_SCOPE: Final = "blog"
 _FAQ_SLOTS: Final = (1, 2, 3, 4, 5)
 
 
@@ -407,6 +416,7 @@ def build_record(
         canonical_uri=uri,
         source_type=_SOURCE_TYPE,
         content_type=_CONTENT_TYPE,
+        source_scope=_SOURCE_SCOPE,
         title=normalize_content_text(title) if isinstance(title, str) else "",
         blocks=body_blocks + faq_blocks,
         retrieved_at=retrieved_at,
@@ -448,6 +458,10 @@ class BlogAdapter:
     @property
     def extractor_version(self) -> int:
         return EXTRACTOR_VERSION
+
+    @property
+    def source_scope(self) -> str:
+        return _SOURCE_SCOPE
 
     async def inventory(self) -> Inventory:
         return await _build_inventory(self._engine)
