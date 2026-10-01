@@ -33,6 +33,7 @@ from preston.canonical import (
     ImageRef,
     block_text,
     blocks_to_json,
+    hash_content,
     hash_document,
 )
 from preston.models import Document, DocumentChunk
@@ -230,12 +231,23 @@ def _apply(row: Document, document: CanonicalDocument, content_hash: str) -> Non
 async def _rebuild_chunks(
     session: AsyncSession, document: CanonicalDocument, row: Document
 ) -> None:
-    """Replace a document's chunks with a fresh set."""
+    """Replace a document's chunks with a fresh set.
+
+    Each chunk carries ``hash_content`` of its exact text: the identity an
+    embedding is keyed on, since the row id does not survive a rebuild.
+    """
     await session.execute(
         delete(DocumentChunk).where(DocumentChunk.document_id == row.id)
     )
     for index, chunk in enumerate(build_chunks(document)):
-        session.add(DocumentChunk(document_id=row.id, chunk_index=index, content=chunk))
+        session.add(
+            DocumentChunk(
+                document_id=row.id,
+                chunk_index=index,
+                content=chunk,
+                content_hash=hash_content(chunk),
+            )
+        )
 
 
 async def ingest_document(

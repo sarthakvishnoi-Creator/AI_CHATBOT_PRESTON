@@ -1,11 +1,11 @@
 """Shared test fixtures."""
 
 import logging
-from collections.abc import Callable, Generator, Iterator
+import re
+from collections.abc import Callable, Generator, Iterator, Mapping
 from contextlib import AbstractContextManager, contextmanager
 from pathlib import Path
 
-import httpx
 import psycopg
 import pytest
 from fastapi import FastAPI
@@ -18,7 +18,7 @@ from preston.core.config import get_settings
 from preston.main import create_app
 from preston.sources.mysql import build_source_engine
 
-ClientFactory = Callable[[FastAPI], AbstractContextManager[httpx.Client]]
+ClientFactory = Callable[[FastAPI], AbstractContextManager[TestClient]]
 
 APP_LOGGER = "preston.main"
 
@@ -34,12 +34,8 @@ def clear_settings_cache() -> Iterator[None]:
 
 
 @contextmanager
-def _open_client(app: FastAPI) -> Generator[httpx.Client, None, None]:
-    """Run an application's lifespan and yield a client bound to it.
-
-    Yielded as ``httpx.Client`` (TestClient's base) because starlette annotates
-    its request methods with unresolvable ``httpx._types`` references.
-    """
+def _open_client(app: FastAPI) -> Generator[TestClient, None, None]:
+    """Run an application's lifespan and yield a client bound to it."""
     with TestClient(app) as test_client:
         yield test_client
 
@@ -51,7 +47,7 @@ def open_client() -> ClientFactory:
 
 
 @pytest.fixture
-def client() -> Iterator[httpx.Client]:
+def client() -> Iterator[TestClient]:
     """Return a client bound to a freshly built application."""
     with _open_client(create_app()) as test_client:
         yield test_client
@@ -85,28 +81,47 @@ def _database_identity(url: str) -> tuple[str | None, int | None, str | None] | 
     return (parsed.host, parsed.port or 5432, parsed.database)
 
 
-@pytest.fixture
-def real_database_url() -> str | None:
-    """Return the dedicated PostgreSQL *test* database URL, or ``None``.
+#: Server replies that mean "not ready yet", not "you are misconfigured".
+_SERVER_NOT_READY = (
+    "the database system is starting up",
+    "the database system is shutting down",
+    "the database system is in recovery mode",
+)
 
-    Resolves ``PRESTON_TEST_DATABASE_URL`` and nothing else. It is
-    deliberately not derived from ``POSTGRES_*`` and deliberately never
-    falls back to ``PRESTON_DATABASE_URL``: ``synchronize`` commits per
-    document and ``reconcile_missing`` reads *every* active row in the
-    database, so a suite pointed at the ingestion database mutates the
-    stored corpus — it raised ``gone_count`` on all 368 Blog documents
-    before this fixture was narrowed. No per-test URI namespace can
-    contain a corpus-wide query, so the isolation has to be the database
-    itself.
 
-    An unset variable returns ``None`` and the DB-backed tests skip. A
-    variable pointing at the application's own database is a
-    misconfiguration that must be loud rather than skipped, so it fails
-    the run instead. A short synchronous connection attempt confirms the
-    server is actually up, so tests skip cleanly rather than failing with
-    a connection error. The URL itself is never printed.
+def connection_failure_reason(error: psycopg.OperationalError) -> str | None:
+    """Return why the server *rejected* a connection, or ``None``.
+
+    psycopg attaches no SQLSTATE to a failed connection, so the one
+    reliable signal is whether the server answered at all. A ``FATAL:``
+    reply means the server was reached and refused us — wrong password,
+    unknown role or database, no permission — which is a broken test
+    configuration. No reply (refused, timed out, unresolvable host) or a
+    not-ready reply means the database is simply unavailable.
+
+    Quoted identifiers are redacted from the returned reason: they can
+    name a role or database, and nothing here prints configuration.
     """
-    values = _env_values()
+    message = str(error)
+    _, fatal, reason = message.partition("FATAL:")
+    if not fatal or any(phrase in reason for phrase in _SERVER_NOT_READY):
+        return None
+    return re.sub(r'"[^"]*"', '"…"', " ".join(reason.split()))
+
+
+def resolve_test_database_url(
+    values: Mapping[str, str],
+    connect: Callable[..., AbstractContextManager[object]] = psycopg.connect,
+) -> str | None:
+    """Return a usable test-database URL, ``None``, or fail loudly.
+
+    ``None`` — and so a skip — only when no test database is configured
+    or its server is unreachable. A misconfiguration fails the run: a
+    URL that names the application's database, a URL that cannot be
+    parsed, or a server that rejects the connection. Before this
+    distinction existed, a wrong password skipped every DB-backed test
+    and the suite still reported green.
+    """
     url = values.get("PRESTON_TEST_DATABASE_URL")
     if not url:
         return None
@@ -123,14 +138,48 @@ def real_database_url() -> str | None:
         )
 
     try:
-        with psycopg.connect(
+        with connect(
             conninfo=url.replace("postgresql+psycopg://", "postgresql://", 1),
             connect_timeout=1,
         ):
             pass
-    except psycopg.OperationalError:
-        return None
-    return url
+    except psycopg.OperationalError as error:
+        reason = connection_failure_reason(error)
+        if reason is None:
+            return None
+    else:
+        return url
+    # Failed outside the ``except`` block on purpose: raised inside it,
+    # pytest would print the chained driver error, which names the host
+    # and role verbatim.
+    pytest.fail(
+        "The test database rejected the connection configured by "
+        f"PRESTON_TEST_DATABASE_URL ({reason}). Fix the test database "
+        "configuration; DB-backed tests will not be skipped for this.",
+        pytrace=False,
+    )
+
+
+@pytest.fixture
+def real_database_url() -> str | None:
+    """Return the dedicated PostgreSQL *test* database URL, or ``None``.
+
+    Resolves ``PRESTON_TEST_DATABASE_URL`` and nothing else. It is
+    deliberately not derived from ``POSTGRES_*`` and deliberately never
+    falls back to ``PRESTON_DATABASE_URL``: ``synchronize`` commits per
+    document and ``reconcile_missing`` reads *every* active row in the
+    database, so a suite pointed at the ingestion database mutates the
+    stored corpus — it raised ``gone_count`` on all 368 Blog documents
+    before this fixture was narrowed. No per-test URI namespace can
+    contain a corpus-wide query, so the isolation has to be the database
+    itself.
+
+    An unset variable, or a server that cannot be reached, returns
+    ``None`` and the DB-backed tests skip. Every misconfiguration fails
+    the run instead — see :func:`resolve_test_database_url`. The URL
+    itself is never printed.
+    """
+    return resolve_test_database_url(_env_values())
 
 
 @pytest.fixture

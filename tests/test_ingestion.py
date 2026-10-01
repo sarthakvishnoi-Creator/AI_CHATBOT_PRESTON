@@ -29,6 +29,7 @@ from preston.canonical import (
     block_text,
     blocks_from_json,
     blocks_to_json,
+    hash_content,
     hash_document,
 )
 from preston.cleaning.blocks import build_blocks
@@ -528,6 +529,47 @@ async def _chunks_of(session: AsyncSession, document_id: object) -> list[Documen
     return list(result.scalars())
 
 
+def assert_rebuilt_from(
+    chunks: list[DocumentChunk], document: CanonicalDocument
+) -> None:
+    """The stored chunks are exactly ``build_chunks(document)``, each hashed.
+
+    Read back from the database, so this checks what ``_rebuild_chunks``
+    actually persisted: the hash of every row's own text, a contiguous
+    position sequence, and no embedding — nothing embeds during ingestion.
+    """
+    assert [chunk.content for chunk in chunks] == build_chunks(document)
+    assert [chunk.chunk_index for chunk in chunks] == list(range(len(chunks)))
+    for chunk in chunks:
+        assert chunk.content_hash == hash_content(chunk.content)
+        assert chunk.embedding is None
+        assert chunk.embedding_model is None
+
+
+def multi_chunk_document(
+    canonical_uri: str, *, answer: str = "Yes.", extractor_version: int = 1
+) -> CanonicalDocument:
+    """Two windowed runs around an FAQ pair — several chunks, each kind."""
+    return CanonicalDocument(
+        canonical_uri=canonical_uri,
+        source_type="mysql",
+        content_type="blog",
+        source_scope="blog",
+        title="Multi",
+        blocks=(
+            Paragraph(text="Scope. " * 250),
+            FaqPair(question="Is it certified?", answer=(Paragraph(text=answer),)),
+            Paragraph(text="Café — naïve 認証. " * 80),
+        ),
+        source_ref="subone_newblogs#1",
+        provenance=Provenance(
+            retrieved_at=RETRIEVED_AT,
+            extractor_version=extractor_version,
+            normalizer_version=NORMALIZER_VERSION,
+        ),
+    )
+
+
 @pytest.mark.anyio
 async def test_ingest_new_document_creates_document_and_chunks(
     session: AsyncSession,
@@ -829,16 +871,120 @@ async def test_a_chunker_version_change_alone_is_reprocessed_and_rebuilds_chunks
         delete(DocumentChunk).where(DocumentChunk.document_id == document_id)
     )
     session.add(
-        DocumentChunk(document_id=document_id, chunk_index=0, content="stale chunk")
+        DocumentChunk(
+            document_id=document_id,
+            chunk_index=0,
+            content="stale chunk",
+            content_hash=hash_content("stale chunk"),
+        )
     )
     await session.flush()
 
-    result = await ingest_document(
-        session, make_document(canonical_uri, text="same content")
-    )
+    document = make_document(canonical_uri, text="same content")
+    result = await ingest_document(session, document)
     await session.flush()
 
     assert result.outcome is IngestionOutcome.REPROCESSED
     assert result.document.chunker_version == CHUNKER_VERSION
     chunks = await _chunks_of(session, document_id)
     assert [c.content for c in chunks] == ["same content"]
+    assert_rebuilt_from(chunks, document)
+
+
+# ---------------------------------------------------------------------------
+# Chunk content hashes through the real rebuild path (Phase 7A)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.anyio
+async def test_a_new_document_stores_a_hash_for_every_chunk(
+    session: AsyncSession,
+) -> None:
+    document = multi_chunk_document("https://example.com/hash-new")
+
+    result = await ingest_document(session, document)
+    await session.flush()
+
+    assert result.outcome is IngestionOutcome.NEW
+    chunks = await _chunks_of(session, result.document.id)
+    assert len(chunks) > 2
+    assert_rebuilt_from(chunks, document)
+
+
+@pytest.mark.anyio
+async def test_a_changed_document_rehashes_its_rebuilt_chunks(
+    session: AsyncSession,
+) -> None:
+    canonical_uri = "https://example.com/hash-changed"
+    await ingest_document(session, multi_chunk_document(canonical_uri))
+    await session.flush()
+
+    changed = multi_chunk_document(canonical_uri, answer="Yes, since 2019.")
+    result = await ingest_document(session, changed)
+    await session.flush()
+
+    assert result.outcome is IngestionOutcome.CHANGED
+    assert_rebuilt_from(await _chunks_of(session, result.document.id), changed)
+
+
+@pytest.mark.anyio
+async def test_a_reprocessed_document_stores_a_hash_for_every_chunk(
+    session: AsyncSession,
+) -> None:
+    """The main regression path once ``content_hash`` became NOT NULL."""
+    canonical_uri = "https://example.com/hash-reprocessed"
+    first = await ingest_document(session, multi_chunk_document(canonical_uri))
+    await session.flush()
+    before = await _chunks_of(session, first.document.id)
+    before_hashes = [chunk.content_hash for chunk in before]
+    before_ids = {chunk.id for chunk in before}
+
+    reprocessed = multi_chunk_document(canonical_uri, extractor_version=2)
+    result = await ingest_document(session, reprocessed)
+    await session.flush()
+
+    assert result.outcome is IngestionOutcome.REPROCESSED
+    after = await _chunks_of(session, result.document.id)
+    assert_rebuilt_from(after, reprocessed)
+    # Same text, so the same hashes — under new row ids. The hash, not the
+    # id, is what survives a rebuild.
+    assert [chunk.content_hash for chunk in after] == before_hashes
+    assert before_ids.isdisjoint(chunk.id for chunk in after)
+
+
+@pytest.mark.anyio
+async def test_a_restored_document_keeps_hashed_chunks(session: AsyncSession) -> None:
+    canonical_uri = "https://example.com/hash-restored"
+    first = await ingest_document(session, multi_chunk_document(canonical_uri))
+    await session.flush()
+    first.document.status = "archived"
+    await session.flush()
+
+    document = multi_chunk_document(canonical_uri)
+    result = await ingest_document(session, document)
+    await session.flush()
+
+    assert result.outcome is IngestionOutcome.RESTORED
+    assert_rebuilt_from(await _chunks_of(session, result.document.id), document)
+
+
+@pytest.mark.anyio
+async def test_an_unchanged_document_keeps_its_chunk_rows_and_hashes(
+    session: AsyncSession,
+) -> None:
+    canonical_uri = "https://example.com/hash-unchanged"
+    document = multi_chunk_document(canonical_uri)
+    first = await ingest_document(session, document)
+    await session.flush()
+    before = [
+        (chunk.id, chunk.content_hash)
+        for chunk in await _chunks_of(session, first.document.id)
+    ]
+
+    result = await ingest_document(session, document)
+    await session.flush()
+
+    assert result.outcome is IngestionOutcome.UNCHANGED
+    after = await _chunks_of(session, result.document.id)
+    assert [(chunk.id, chunk.content_hash) for chunk in after] == before
+    assert_rebuilt_from(after, document)

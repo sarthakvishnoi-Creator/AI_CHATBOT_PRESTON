@@ -1,9 +1,9 @@
 """Application ORM models.
 
 One module, not a package: the schema is small enough to read in one
-sitting. Tables carry no vector column yet — pgvector is enabled in the
-database, but the embedding model (and therefore the vector dimension)
-has not been approved, so that column belongs to the phase that picks one.
+sitting. The one vector column lives on ``document_chunks`` beside the
+text it was computed from; its dimension is fixed by the approved
+embedding model (Phase 7, :data:`EMBEDDING_DIMENSIONS`).
 
 Relationships are deliberately absent. Foreign keys and ``ON DELETE
 CASCADE`` enforce integrity in the database; ORM-level ``relationship()``
@@ -15,6 +15,7 @@ import uuid
 from datetime import datetime
 from typing import Any
 
+from pgvector.sqlalchemy import HALFVEC
 from sqlalchemy import (
     CheckConstraint,
     DateTime,
@@ -30,6 +31,12 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
 from preston.core.db import Base
+
+#: The approved embedding model's output dimension (OpenAI
+#: ``text-embedding-3-large``). A schema commitment, not a setting: changing
+#: it is a migration. Stored as ``halfvec`` because pgvector indexes plain
+#: ``vector`` only up to 2,000 dimensions.
+EMBEDDING_DIMENSIONS = 3072
 
 
 class Conversation(Base):
@@ -106,6 +113,10 @@ class IngestionRun(Base):
             "status IN ('running', 'succeeded', 'failed', 'aborted')",
             name="ck_ingestion_runs_status",
         ),
+        CheckConstraint(
+            "mode = 'backfill' OR extractor_version IS NOT NULL",
+            name="ck_ingestion_runs_extractor_version",
+        ),
         # Health queries and the next run's stale-``running`` sweep both
         # order by start time; a btree serves either direction.
         Index("ix_ingestion_runs_started_at", "started_at"),
@@ -123,11 +134,12 @@ class IngestionRun(Base):
     counts: Mapped[dict[str, Any]] = mapped_column(JSONB, server_default="{}")
     abort_reason: Mapped[str | None] = mapped_column(Text)
     notes: Mapped[str | None] = mapped_column(Text)
-    extractor_version: Mapped[int]
+    # Null only for an embedding backfill, which runs no extractor
+    # (``ck_ingestion_runs_extractor_version``); every other run names one.
+    extractor_version: Mapped[int | None]
     normalizer_version: Mapped[int]
     hash_version: Mapped[int]
     chunker_version: Mapped[int]
-    # No embedding model is approved, so a run cannot yet name one.
     embedding_model: Mapped[str | None] = mapped_column(Text)
 
 
@@ -250,6 +262,13 @@ class DocumentChunk(Base):
 
     Immutable once written: re-chunking replaces a document's rows rather
     than editing them, so there is no ``updated_at``.
+
+    ``content_hash`` is ``hash_content(content)`` — the SHA-256 of the
+    exact text that is embedded. It, not the row id, is the chunk's
+    semantic identity: ids are regenerated on every rebuild, while the
+    hash survives unchanged text. ``embedding`` is derived data and may be
+    absent; ``embedding_model`` names what produced it, and the two are
+    null together or set together.
     """
 
     __tablename__ = "document_chunks"
@@ -259,6 +278,13 @@ class DocumentChunk(Base):
         UniqueConstraint(
             "document_id", "chunk_index", name="uq_document_chunks_document_id_index"
         ),
+        # A vector without its model, or a model without its vector, could
+        # be compared against vectors from a different model.
+        CheckConstraint(
+            "(embedding IS NULL) = (embedding_model IS NULL)",
+            name="ck_document_chunks_embedding_model",
+        ),
+        Index("ix_document_chunks_content_hash", "content_hash"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -269,6 +295,9 @@ class DocumentChunk(Base):
     )
     chunk_index: Mapped[int]
     content: Mapped[str] = mapped_column(Text)
+    content_hash: Mapped[str] = mapped_column(Text)
+    embedding: Mapped[list[float] | None] = mapped_column(HALFVEC(EMBEDDING_DIMENSIONS))
+    embedding_model: Mapped[str | None] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
