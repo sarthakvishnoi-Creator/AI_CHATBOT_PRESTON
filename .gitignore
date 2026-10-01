@@ -23,6 +23,16 @@ build/
 # IDE
 .vscode/
 
+# Offline embedding-evaluation artifacts (vectors and reports; evaluation only)
+evaluation_artifacts/
+
+# Generated image-host mapping outputs (scripts/map_image_hosts.py and
+# scripts/verify_image_hosts.py write these to the repository root). Anchored
+# and explicit so the tracked input image_manifest.json is never matched.
+/image_mapping_report.md
+/image_service_*.json
+/image_service_verification_report.md
+
 # Logs / temporary files
 *.log
 *.tmp

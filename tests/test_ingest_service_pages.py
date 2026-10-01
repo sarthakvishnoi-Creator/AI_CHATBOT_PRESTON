@@ -34,6 +34,7 @@ from preston.sources.fixed_pages import (
     FixedPageAdapter,
     FixedPageFamily,
 )
+from preston.sources.image_descriptions import ImageDescriptionAdapter
 from preston.sources.service_faq import ServiceFaqAdapter
 from preston.sources.service_page import (
     AUDIT_ASSESSMENT,
@@ -230,6 +231,24 @@ async def test_the_faq_run_needs_no_mysql_engine(
 
 
 @pytest.mark.anyio
+async def test_the_image_description_run_needs_no_mysql_engine(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    wiring = Wiring().install(monkeypatch)
+
+    await ingest_service_pages.run_image_descriptions_ingestion(
+        Settings(database_url=PostgresDsn(POSTGRES_URL), source_mysql_url=None)
+    )
+
+    assert wiring.source_urls == []
+    (adapter,) = wiring.adapters
+    assert isinstance(adapter, ImageDescriptionAdapter)
+    assert isinstance(adapter, SourceAdapter)
+    assert adapter.source_scope == "image_descriptions"
+    assert [engine.disposed for engine in wiring.engines] == [True]
+
+
+@pytest.mark.anyio
 async def test_the_faq_run_releases_its_engine_on_failure(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -402,8 +421,10 @@ def test_every_known_scope_carries_its_own_reconciliation_boundary() -> None:
         "standalone_faq",
         "office_locations",
         "service_faq",
+        "image_descriptions",
     }
     assert "blog" not in ingest_service_pages.SCOPES
+    assert "image_descriptions" not in ingest_service_pages.DEFAULT_SCOPES
 
 
 # ---------------------------------------------------------------------------

@@ -31,7 +31,9 @@ through the *same* generic adapter with different specs; the fixed-route
 pages and collections (``resource_process``, ``privacy_policy``,
 ``corporate``, ``standalone_faq``, ``office_locations``) come from MySQL
 through :mod:`preston.sources.fixed_pages`; the service FAQ
-set (``service_faq``) comes from the committed frontend dataset. Each takes
+set (``service_faq``) comes from the committed frontend dataset, and the
+vision-derived diagram descriptions (``image_descriptions``) from the
+committed image dataset. Each takes
 the advisory lock on its own, gets its own run row and its own report,
 and reconciles only its own scope, so no run can mark another scope's
 documents — or a Blog document — missing. That independence is not
@@ -79,6 +81,7 @@ from preston.sources.fixed_pages import (
     FixedPageAdapter,
     FixedPageFamily,
 )
+from preston.sources.image_descriptions import ImageDescriptionAdapter
 from preston.sources.mysql import build_source_engine
 from preston.sources.service_faq import ServiceFaqAdapter
 from preston.sources.service_page import (
@@ -302,6 +305,21 @@ async def run_service_faq_ingestion(
         await engine.dispose()
 
 
+async def run_image_descriptions_ingestion(
+    settings: Settings, *, mode: RunMode = "sync"
+) -> SyncReport:
+    """Compose the image-description pipeline and run one synchronization.
+
+    No MySQL engine and no model: the source is the committed dataset
+    inside :mod:`preston.sources.image_descriptions`.
+    """
+    engine = build_async_engine(_require_database_url(settings))
+    try:
+        return await synchronize(engine, ImageDescriptionAdapter(), mode=mode)
+    finally:
+        await engine.dispose()
+
+
 def log_summary(scope: str, report: SyncReport) -> None:
     """Log what one run did.
 
@@ -362,6 +380,7 @@ SCOPES: Final = (
     "standalone_faq",
     "office_locations",
     "service_faq",
+    "image_descriptions",
 )
 
 
@@ -386,6 +405,7 @@ def _runners() -> Mapping[str, FamilyRunner]:
         "standalone_faq": run_standalone_faq_ingestion,
         "office_locations": run_office_locations_ingestion,
         "service_faq": run_service_faq_ingestion,
+        "image_descriptions": run_image_descriptions_ingestion,
     }
 
 

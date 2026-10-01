@@ -1,0 +1,1137 @@
+{
+  "version": 1,
+  "generated_by": "scripts/export_image_descriptions.py",
+  "collection": "Intercert_Img",
+  "inputs": {
+    "descriptions_sha256": "b9dfc3036ccc5b26ae52bc792e252e4a5e46951a87a45b293c3c417733deb443",
+    "manifest_sha256": "918a2a201723a2f9555f862d622ddb17831b9fa0362e0b27316f3314e6bd0bdb",
+    "mapping_final_sha256": "d0b8137d3cb13197cbfa09b435394d6fed6ee83266f3a11391c8bf6ae4a1b178",
+    "verification_sha256": "1a5b62f8e363faaecb2c4b6dc93d67fe8c6a8e74cbbe9773abcbd11d88ebb9e1"
+  },
+  "images": [
+    {
+      "image_key": "Intercert_Img/CMMC-Cybersecurity-Maturity-Model-Certification_xMsbXsE.png",
+      "filename": "CMMC-Cybersecurity-Maturity-Model-Certification_xMsbXsE.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "59ee5f71cdcf427909daa4006253f8b9de226c625ff3d6e7760d990a372bd657",
+      "image_dimensions": "2880x1656",
+      "framework": "CMMC 2.0",
+      "title_in_image": "CMMC (Cybersecurity Maturity Model Certification)",
+      "diagram_type": "sequential_roadmap",
+      "has_explicit_order": true,
+      "summary": "A suggestive roadmap titled \"Path to CMMC 2.0\" that shows a sequential process from GAP Assessment through Remediation and Assessment to Optimization. Each stage includes a short action statement describing the activity to be completed at that stage.",
+      "description": "Path title: \"Path to CMMC 2.0\"\n\nStages in visual order (left to right):\n\n1) GAP Assessment\n- Visible label: \"GAP Assessment\"\n- Contained text: \"Identify the gap between your current state and desired CMMC level\"\n- Circular icon above/near stage: document with checklist and a clock (icon only, no text label)\n\n2) REMEDIATION\n- Visible label: \"REMEDIATION\"\n- Contained text: \"Fix the GAP as per remediation plan and implement changes\"\n- Circular icon at bottom of this stage: triangular/flag-like icon (icon only, no text label)\n\n3) ASSESSMENT\n- Visible label: \"ASSESSMENT\"\n- Contained text: \"Conduct self-assessment or third party assessment\"\n- Circular icon above/near stage: clipboard with checklist (icon only, no text label)\n\n4) OPTIMIZATION\n- Visible label: \"OPTIMIZATION\"\n- Contained text: \"Optimize and improve operation in an ongoing basis\"\n- Circular icon at bottom of this stage: gear with ascending graph inside (icon only, no text label)\n\nFooter notes visible (not transcribed into main description):\n- \"*This is the suggestive roadmap to be followed for achieving compliance frameworks/standards.\" (visible)\n- \"*INTERCERT provides audit and assessment services to comply with frameworks/standards.\" (visible)\n",
+      "summary_clean": "A suggestive roadmap titled \"Path to CMMC 2.0\" that shows a sequential process from GAP Assessment through Remediation and Assessment to Optimization. Each stage includes a short action statement describing the activity to be completed at that stage.",
+      "description_clean": "Path title: \"Path to CMMC 2.0\"\n\nStages in visual order (left to right):\n\n1) GAP Assessment\n- Visible label: \"GAP Assessment\"\n- Contained text: \"Identify the gap between your current state and desired CMMC level\"\n\n2) REMEDIATION\n- Visible label: \"REMEDIATION\"\n- Contained text: \"Fix the GAP as per remediation plan and implement changes\"\n\n3) ASSESSMENT\n- Visible label: \"ASSESSMENT\"\n- Contained text: \"Conduct self-assessment or third party assessment\"\n\n4) OPTIMIZATION\n- Visible label: \"OPTIMIZATION\"\n- Contained text: \"Optimize and improve operation in an ongoing basis\"",
+      "source_issues": [],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 3725,
+          "output_tokens": 657,
+          "reasoning_tokens": 192
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "ambiguous",
+        "verification_outcome": "needs_review",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_ambiguous.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/CSA-STAR-Cloud-Security-Alliance-Security-Trust-Assurance-and-Risk_XgH52Yd.png",
+      "filename": "CSA-STAR-Cloud-Security-Alliance-Security-Trust-Assurance-and-Risk_XgH52Yd.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "26fc876a9af38108f18801290ff13ade1c02967c3b94fd0245724089ef04fe4b",
+      "image_dimensions": "2880x1952",
+      "framework": "CSA STAR",
+      "title_in_image": "CSA STAR (Cloud Security Alliance Security Trust Assurance and Risk)",
+      "diagram_type": "categorical",
+      "has_explicit_order": false,
+      "summary": "A visual roadmap titled 'Open Certification Framework' showing CSA STAR certification levels (STAR Level 3, STAR Level 2, STAR Level 1) with their associated audit types and example certifications/self-assessments. It highlights audit frequency, security, and privacy as top categories and shows an upward arrow for transparency/assurance.",
+      "description": "Header: CSA STAR (Cloud Security Alliance Security Trust Assurance and Risk)\nSubheader: Open Certification Framework\nTop horizontal dark bar (three labeled items left-to-right):\n- \"Audit Frequency\"\n- \"Security\"\n- \"Privacy\"\nLeft vertical label (rotated):\n- \"Type of Audit\"\nRight vertical arrow (upwards):\n- \"Transparency & Assuranc\"\nMain content (stacked boxes representing STAR levels) - each item transcribed exactly as printed:\n- STAR Level 3 | Continuous Auditing | -----\n- STAR Level 2 Continuous | Level 2 + Continuous Auditing | -----\n- STAR Level 2 | 3rd Party Certification | GDPR CoC Certification\n- STAR Level 1 Continuous | Continuous Self Assessment | -----\n- STAR Level 1 | Self Assessment | GDPR CoC Self Assessment\nFooter (visible lines, not included in description per diagram rules — see has_intercert_disclaimer):\n- \"*This is the suggestive roadmap to be followed for achieving compliance frameworks/standards.\"\n- \"*INTERCERT provides audit and assessment services to comply with frameworks/standards.\"",
+      "summary_clean": "A visual roadmap titled 'Open Certification Framework' showing CSA STAR certification levels (STAR Level 3, STAR Level 2, STAR Level 1) with their associated audit types and example certifications/self-assessments. It highlights audit frequency, security, and privacy as top categories and shows an upward arrow for transparency/assurance.",
+      "description_clean": "Header: CSA STAR (Cloud Security Alliance Security Trust Assurance and Risk)\nSubheader: Open Certification Framework\nTop horizontal dark bar (three labeled items left-to-right):\n- \"Audit Frequency\"\n- \"Security\"\n- \"Privacy\"\nLeft vertical label (rotated):\n- \"Type of Audit\"\nRight vertical arrow (upwards):\n- \"Transparency & Assuranc\"\nMain content (stacked boxes representing STAR levels) - each item transcribed exactly as printed:\n- STAR Level 3 | Continuous Auditing | -----\n- STAR Level 2 Continuous | Level 2 + Continuous Auditing | -----\n- STAR Level 2 | 3rd Party Certification | GDPR CoC Certification\n- STAR Level 1 Continuous | Continuous Self Assessment | -----\n- STAR Level 1 | Self Assessment | GDPR CoC Self Assessment",
+      "source_issues": [
+        "Right vertical arrow text appears cut off: \"Transparency & Assuranc\""
+      ],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 4265,
+          "output_tokens": 833,
+          "reasoning_tokens": 384
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "ambiguous",
+        "verification_outcome": "needs_review",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_ambiguous.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/California_Consumer_Privacy_Act_CCPA_twwoy3E.png",
+      "filename": "California_Consumer_Privacy_Act_CCPA_twwoy3E.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "7ccd246c036ef6dddfd9b8ef3e33323e36cad8f411b9149a25246e72a89dab76",
+      "image_dimensions": "1440x965",
+      "framework": "CCPA",
+      "title_in_image": "California Consumer Privacy Act (CCPA) High Level Requirements",
+      "diagram_type": "cycle",
+      "has_explicit_order": false,
+      "summary": "A circular diagram showing high-level requirements for CCPA compliance arranged around a central 'CCPA' label. Each segment around the circle lists one requirement (e.g., Legal Purposes, Data Protection Officer, Breach Procedure, Privacy by Design, Privacy Notice, Encryption, Data Anonymization, Security Risk Assessment, Information Flow). A two-line footer references suggestive requirements and INTERCERT audit services.",
+      "description": "Center:\n- \"CCPA\" (over a silhouette/map of California)\n\nRing segments (presented as a flat, unordered list as shown around the circle):\n- \"Legal Purposes\"\n- \"Data Protection Officer\"\n- \"Breach Procedure\"\n- \"Privacy by Design\"\n- \"Privacy Notice\"\n- \"Encryption\"\n- \"Data Anonymization\"\n- \"Security Risk Assessment\"\n- \"Information Flow\"\n\nFooter text (exact lines as printed):\n- \"*This is the suggestive requirements to be followed for achieving compliance on frameworks/standards.\"\n- \"*INTERCERT provides audit and assessment services to comply with frameworks/standards.\"",
+      "summary_clean": "A circular diagram showing high-level requirements for CCPA compliance arranged around a central 'CCPA' label. Each segment around the circle lists one requirement (e.g., Legal Purposes, Data Protection Officer, Breach Procedure, Privacy by Design, Privacy Notice, Encryption, Data Anonymization, Security Risk Assessment, Information Flow).",
+      "description_clean": "Center:\n- \"CCPA\" (over a silhouette/map of California)\n\nRing segments (presented as a flat, unordered list as shown around the circle):\n- \"Legal Purposes\"\n- \"Data Protection Officer\"\n- \"Breach Procedure\"\n- \"Privacy by Design\"\n- \"Privacy Notice\"\n- \"Encryption\"\n- \"Data Anonymization\"\n- \"Security Risk Assessment\"\n- \"Information Flow\"",
+      "source_issues": [
+        "Footer text: \"This is the suggestive requirements to be followed for achieving compliance on frameworks/standards.\" appears ungrammatical (prints 'the suggestive requirements')."
+      ],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 2551,
+          "output_tokens": 541,
+          "reasoning_tokens": 192
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "ambiguous",
+        "verification_outcome": "needs_review",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_ambiguous.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/EU-GDPR-General-Data-Protection-Regulation_kTyOp2X.png",
+      "filename": "EU-GDPR-General-Data-Protection-Regulation_kTyOp2X.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "4e4a8154e77622b3a58e67b05acb2cf37cea4fd901f9ad36c1b31101a42d16be",
+      "image_dimensions": "2880x2072",
+      "framework": "EU GDPR",
+      "title_in_image": "EU-GDPR-General Data Protection Regulation",
+      "diagram_type": "sequential_roadmap",
+      "has_explicit_order": true,
+      "summary": "A six-step roadmap for EU GDPR compliance showing activities from strategic planning through go-live and ongoing monitoring. Each step is numbered (STEP 1 to STEP 6) and labeled with a specific activity.",
+      "description": "Ordered steps (use printed STEP numbers):\n\n- STEP 1\n  - Strategic Planning for GDPR in your business\n\n- STEP 2\n  - Data Monitoring & Audit\n\n- STEP 3\n  - Policy Review & Development\n\n- STEP 4\n  - Staff training & awareness\n\n- STEP 5\n  - Business support & monitoring compliance\n\n- STEP 6\n  - Go live & follow up with ongoing monitoring\n\nAdditional visible elements:\n- A winding road graphic runs horizontally behind the top row of steps, visually connecting the timeline.\n- There is faint world map imagery in the background.\n- Footer contains two lines of small-print disclaimers (partially visible) starting with asterisks; these mention a suggestive roadmap and INTERCERT providing audit and assessment services (footer text is present but not included in the step content).",
+      "summary_clean": "A six-step roadmap for EU GDPR compliance showing activities from strategic planning through go-live and ongoing monitoring. Each step is numbered (STEP 1 to STEP 6) and labeled with a specific activity.",
+      "description_clean": "Ordered steps (use printed STEP numbers):\n\n- STEP 1\n  - Strategic Planning for GDPR in your business\n\n- STEP 2\n  - Data Monitoring & Audit\n\n- STEP 3\n  - Policy Review & Development\n\n- STEP 4\n  - Staff training & awareness\n\n- STEP 5\n  - Business support & monitoring compliance\n\n- STEP 6\n  - Go live & follow up with ongoing monitoring\n\nAdditional visible elements:\n- A winding road graphic runs horizontally behind the top row of steps, visually connecting the timeline.\n- There is faint world map imagery in the background.",
+      "source_issues": [],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 4487,
+          "output_tokens": 541,
+          "reasoning_tokens": 192
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "ambiguous",
+        "verification_outcome": "needs_review",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_ambiguous.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/EU-NIS2--Network-and-Information-Security-Directive_ofA82c7.png",
+      "filename": "EU-NIS2--Network-and-Information-Security-Directive_ofA82c7.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "597561825e7158566dd108fd5370974704d67d00b2c1e73692c8426fe618a357",
+      "image_dimensions": "2880x2238",
+      "framework": "EU NIS2",
+      "title_in_image": "EU NIS2 ( Network and Information Security Directive)",
+      "diagram_type": "timeline",
+      "has_explicit_order": true,
+      "summary": "A timeline showing NIS2 response obligations for entities in the event of a significant incident or cyber threat. It lists required notifications and reports at specific time points: occurrence, within 24 hours, within 72 hours, upon request, and within one month after the first report.",
+      "description": "Timeline (left to right) describing NIS2 response obligations:\n\n- Start event (orange hex/label connected to timeline):\n  - \"Occurance of a \\n\"significant incident\" or \" cyber threat\"\"\n\n- First milestone (blue circle above timeline):\n  - \"Within 24 hours\"\n  - Text below (paragraph):\n    - \"An initial notiifcation to competent authorities of the CSIRT, indicating whether it is suspected of being caused by unlawful ir makucious acts or could have a cross border impact\"\n\n- Second milestone (blue circle above timeline):\n  - \"Within 72 hours\"\n  - Text below (paragraph):\n    - \"An incident notification to update the previous information and indicate an initial assessment of the significant incident, including its severity and impact, as well as where available, the indicates of compromise.\"\n\n- Third milestone (orange hex above timeline):\n  - \"Upon the request of a competent authority or a CSIRT\"\n  - Text below (single line):\n    - \"An intermediate report on relevant status updates\"\n\n- Fourth milestone (orange hex above timeline, rightmost):\n  - \"Within one month after the submission of the first report\"\n  - Heading below (orange):\n    - \"A final including at lease the following:\"\n  - Bullet items visible under that heading:\n    - \"A detailed description of the incident, its security and impact.\"\n    - \"The type of threat or root cause that likely triggered the incident.\"\n    - \"Applied and ongoing mitigation measures.\"\n  - Additional paragraph further right (orange heading visible):\n    - \"If the incident is still ongoing at that time, entities should provide\"\n    - Visible bullets under that heading:\n      - \"A progress report at that time\"\n      - \"A final report within one month of their handling of the incinet\"\n\n- Footer (small print, centered):\n  - \"*This is the suggestive roadmap to be followed for achieving compliance frameworks/standards.\"\n  - \"*INTERCERT provides audit and assessment services to comply with frameworks/standards.\"",
+      "summary_clean": "A timeline showing NIS2 response obligations for entities in the event of a significant incident or cyber threat. It lists required notifications and reports at specific time points: occurrence, within 24 hours, within 72 hours, upon request, and within one month after the first report.",
+      "description_clean": "Timeline (left to right) describing NIS2 response obligations:\n\n- Start event (orange hex/label connected to timeline):\n  - \"Occurance of a\n\"significant incident\" or \" cyber threat\"\"\n\n- First milestone (blue circle above timeline):\n  - \"Within 24 hours\"\n  - Text below (paragraph):\n    - \"An initial notiifcation to competent authorities of the CSIRT, indicating whether it is suspected of being caused by unlawful ir makucious acts or could have a cross border impact\"\n\n- Second milestone (blue circle above timeline):\n  - \"Within 72 hours\"\n  - Text below (paragraph):\n    - \"An incident notification to update the previous information and indicate an initial assessment of the significant incident, including its severity and impact, as well as where available, the indicates of compromise.\"\n\n- Third milestone (orange hex above timeline):\n  - \"Upon the request of a competent authority or a CSIRT\"\n  - Text below (single line):\n    - \"An intermediate report on relevant status updates\"\n\n- Fourth milestone (orange hex above timeline, rightmost):\n  - \"Within one month after the submission of the first report\"\n  - Heading below (orange):\n    - \"A final including at lease the following:\"\n  - Bullet items visible under that heading:\n    - \"A detailed description of the incident, its security and impact.\"\n    - \"The type of threat or root cause that likely triggered the incident.\"\n    - \"Applied and ongoing mitigation measures.\"\n  - Additional paragraph further right (orange heading visible):\n    - \"If the incident is still ongoing at that time, entities should provide\"\n    - Visible bullets under that heading:\n      - \"A progress report at that time\"\n      - \"A final report within one month of their handling of the incinet\"",
+      "source_issues": [
+        "Occurance is misspelled as printed: \"Occurance of a ...\"",
+        "Typo: \"notiifcation\" in paragraph under \"Within 24 hours\"",
+        "Typo/garbled: \"unlawful ir makucious\" in paragraph under \"Within 24 hours\"",
+        "Potential typo: \"indicates of compromise\" (appears in paragraph under \"Within 72 hours\")",
+        "Heading typo: \"A final including at lease the following:\" (\"lease\" printed instead of \"least\")",
+        "Truncated/typo: \"incinet\" at end of bullet \"A final report within one month of their handling of the incinet\"",
+        "Rightmost lower text is partially cut off and may be incomplete"
+      ],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 4722,
+          "output_tokens": 1359,
+          "reasoning_tokens": 576
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "ambiguous",
+        "verification_outcome": "needs_review",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_ambiguous.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/Essential-Eight-Maturity-Model-Compliances-Services_KSYCWH0.png",
+      "filename": "Essential-Eight-Maturity-Model-Compliances-Services_KSYCWH0.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "c1a55ca6e8f31d86243ac672a7193940b2553efad682a139bf03eac3fc30694b",
+      "image_dimensions": "2592x1762",
+      "framework": "Essential Eight Maturity Model",
+      "title_in_image": "Essential Eight Maturity Model Compliances Services",
+      "diagram_type": "cycle",
+      "has_explicit_order": true,
+      "summary": "A circular depiction of the Essential Eight Maturity Model Compliance Services showing eight numbered controls around a central label. Each numbered segment is paired with a labeled control and a short description of recommended actions.",
+      "description": "Center: \"Essential Eight Maturity Model Compliance Services\"\n\nNumbered segments (numbers printed on the circular diagram):\n\n01 (red segment)\n- Label (left column near 01): \"Application Control\"\n- Description: \"To prevent execution of unapproved/malicious programs including.exe,DLL, scripts (e.g. Windows Scripts host, Powershell and HTA) an installer\"\n\n02 (yellow segment)\n- Label (left column near 02): \"Application Patching\"\n- Description: \"Flash, web browsers, Microsoft Office, Java and PDF viewers. Patch/mitigate computers with ‘extreme risk’ vulnerabilities within 48 hours. Use the latest version of applications.\"\n\n03 (blue segment)\n- Label (left column near 03): \"Configure Microsoft Office Macro Settings\"\n- Description: \"To prevent execution of unapproved/ malicious programs including.exe,DLL, scripts (e.g. Windows Scripts host, Powershell and HTA) an installer\"\n\n04 (green segment)\n- Label (left column near 04): \"User Application Hardening\"\n- Description: \"Configure browsers to block Flash (ideally uninstall it), ads and Java on the internet. Disable unneeded features in Microsoft Office (e.g OLE), web browsers and PDF viewers\"\n\n05 (red segment)\n- Label (right column near 05): \"Restrict Administrative Privileges\"\n- Description: \"Restrict Administrative Privileges Restrict administrative privileges to operating systems and applications based on user duties. Regularly revalidate the need for privileges. Don't use privileged accounts for reading email and web browsing\"\n\n06 (yellow segment)\n- Label (right column near 06): \"Patch Operating Systems\"\n- Description: \"Patch/mitigate computers (including network devices) with ‘extreme risk’ vulnerabilities within 48 hours. Use the latest operating system version. Don't use unsupported versions.\"\n\n07 (blue segment)\n- Label (right column near 07): \"Multi-Factor Authentication\"\n- Description: \"Implement multi-factor authentication ( MFA) for VPNs, RDP,SSH and other remote access, and for all users when they perform a privileged action or access an important ( sensitive/high availability) data repository.\"\n\n08 (green segment)\n- Label (right column near 08): \"Daily Backups\"\n- Description: \"Maintain a daily backup of important new/ changed data, software and configuration settings. stored, disconnected, retained for at least three months. Test restoration initially, annually and when IT infrastructure changes.\"",
+      "summary_clean": "A circular depiction of the Essential Eight Maturity Model Compliance Services showing eight numbered controls around a central label. Each numbered segment is paired with a labeled control and a short description of recommended actions.",
+      "description_clean": "Center: \"Essential Eight Maturity Model Compliance Services\"\n\nNumbered segments (numbers printed on the circular diagram):\n\n01 (red segment)\n- Label (left column near 01): \"Application Control\"\n- Description: \"To prevent execution of unapproved/malicious programs including.exe,DLL, scripts (e.g. Windows Scripts host, Powershell and HTA) an installer\"\n\n02 (yellow segment)\n- Label (left column near 02): \"Application Patching\"\n- Description: \"Flash, web browsers, Microsoft Office, Java and PDF viewers. Patch/mitigate computers with ‘extreme risk’ vulnerabilities within 48 hours. Use the latest version of applications.\"\n\n03 (blue segment)\n- Label (left column near 03): \"Configure Microsoft Office Macro Settings\"\n- Description: \"To prevent execution of unapproved/ malicious programs including.exe,DLL, scripts (e.g. Windows Scripts host, Powershell and HTA) an installer\"\n\n04 (green segment)\n- Label (left column near 04): \"User Application Hardening\"\n- Description: \"Configure browsers to block Flash (ideally uninstall it), ads and Java on the internet. Disable unneeded features in Microsoft Office (e.g OLE), web browsers and PDF viewers\"\n\n05 (red segment)\n- Label (right column near 05): \"Restrict Administrative Privileges\"\n- Description: \"Restrict Administrative Privileges Restrict administrative privileges to operating systems and applications based on user duties. Regularly revalidate the need for privileges. Don't use privileged accounts for reading email and web browsing\"\n\n06 (yellow segment)\n- Label (right column near 06): \"Patch Operating Systems\"\n- Description: \"Patch/mitigate computers (including network devices) with ‘extreme risk’ vulnerabilities within 48 hours. Use the latest operating system version. Don't use unsupported versions.\"\n\n07 (blue segment)\n- Label (right column near 07): \"Multi-Factor Authentication\"\n- Description: \"Implement multi-factor authentication ( MFA) for VPNs, RDP,SSH and other remote access, and for all users when they perform a privileged action or access an important ( sensitive/high availability) data repository.\"\n\n08 (green segment)\n- Label (right column near 08): \"Daily Backups\"\n- Description: \"Maintain a daily backup of important new/ changed data, software and configuration settings. stored, disconnected, retained for at least three months. Test restoration initially, annually and when IT infrastructure changes.\"",
+      "source_issues": [
+        "The description for \"Configure Microsoft Office Macro Settings\" ends with \"an installer\" and appears cut off.",
+        "The description for \"Application Control\" ends with \"an installer\" and appears cut off.",
+        "The description for \"Restrict Administrative Privileges\" repeats the phrase \"Restrict Administrative Privileges\" at the start (duplicated wording).",
+        "The sentence for \"Daily Backups\" contains a lowercase \"stored,\" after a period which may indicate a formatting or sentence-break issue.",
+        "Some items have inconsistent spacing around punctuation (e.g. \"including.exe,DLL,\")."
+      ],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 4260,
+          "output_tokens": 1400,
+          "reasoning_tokens": 576
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "ambiguous",
+        "verification_outcome": "needs_review",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_ambiguous.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/FISMA-Federal-Information-Security-Management_5GnLdG7.png",
+      "filename": "FISMA-Federal-Information-Security-Management_5GnLdG7.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "43263cce1f2f63a4417f16f17f713884d49d52d260d38bf416cc6f432f21e55c",
+      "image_dimensions": "2880x2524",
+      "framework": "FISMA",
+      "title_in_image": "FISMA ( Federal Information Security Management Act)",
+      "diagram_type": "hierarchy",
+      "has_explicit_order": true,
+      "summary": "A hierarchical/pyramid diagram showing FISMA at the top and the related federal standards and programs underneath (FedRAMP, FIPS 199 & FIPS 200, NIST SP 800-53). Each layer contains a short descriptive line and the formal name of the standard/program.",
+      "description": "Top (smallest triangle):\n- \"FISMA\"\n- \"The law that covers processing and storage or all federal data\"\n- \"Federal Information Security Management Act\"\n\nNext layer down:\n- \"FedRAMP\" (orange text)\n- \"A tailored set of legal requirements for government systems hosted in the cloud\"\n- \"Federal Risk and Authorization Management Program\"\n\nNext layer down:\n- \"FIPS 199 & FIPS 200\" (orange text)\n- \"A combined framework for determining which set of NIST SP 800-53 apply to your organization\"\n- \"Federal Information Processing Standard\"\n\nNext layer down (larger, near bottom):\n- \"NIST SP 800-53\" (orange text)\n- \"A library of controls for maintaining the security and resiliency of federal information systems\"\n- \"National Institute of Standards and Technology\"\n\nFooter / disclaimers (partially visible at bottom of image):\n- \"*This is the suggestive roadmap to be followed for achieving compliance frameworks/standards.\"\n- \"*INTERCERT provides audit and assessment services to comply with frameworks/standards.\"",
+      "summary_clean": "A hierarchical/pyramid diagram showing FISMA at the top and the related federal standards and programs underneath (FedRAMP, FIPS 199 & FIPS 200, NIST SP 800-53). Each layer contains a short descriptive line and the formal name of the standard/program.",
+      "description_clean": "Top (smallest triangle):\n- \"FISMA\"\n- \"The law that covers processing and storage or all federal data\"\n- \"Federal Information Security Management Act\"\n\nNext layer down:\n- \"FedRAMP\" (orange text)\n- \"A tailored set of legal requirements for government systems hosted in the cloud\"\n- \"Federal Risk and Authorization Management Program\"\n\nNext layer down:\n- \"FIPS 199 & FIPS 200\" (orange text)\n- \"A combined framework for determining which set of NIST SP 800-53 apply to your organization\"\n- \"Federal Information Processing Standard\"\n\nNext layer down (larger, near bottom):\n- \"NIST SP 800-53\" (orange text)\n- \"A library of controls for maintaining the security and resiliency of federal information systems\"\n- \"National Institute of Standards and Technology\"",
+      "source_issues": [
+        "Text reads \"The law that covers processing and storage or all federal data\" — contains 'or' which appears to be a typo or grammatical error.",
+        "Text reads \"which set of NIST SP 800-53 apply to your organization\" — grammatical number disagreement ('apply' vs expected 'applies')."
+      ],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 5257,
+          "output_tokens": 846,
+          "reasoning_tokens": 384
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "ambiguous",
+        "verification_outcome": "needs_review",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_ambiguous.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/Group_48097416.png",
+      "filename": "Group_48097416.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "6693a3366282555423e9b5ec27822a11ca58e9e98d07711dc0f092558c2cca73",
+      "image_dimensions": "2419x1060",
+      "framework": "ISMS implementation (likely ISO/IEC 27001)",
+      "title_in_image": "",
+      "diagram_type": "sequential_roadmap",
+      "has_explicit_order": true,
+      "summary": "Seven-stage roadmap for implementing an ISMS (information security management system): gap analysis and planning, information asset identification and risk assessment, policy and process review, technical control implementation, process roll out, ISMS readiness check, and certification audit (Stage 1 and Stage 2 audits).",
+      "description": "Roadmap for implementing an Information Security Management System (ISMS), shown as seven stages along one curved path from left to right. The printed step labels repeat (Step 1, Step 2, Step 3, Step 4, Step 2, Step 2, Step 1), so the stages below follow the drawn path order, with each printed label quoted.\n\nStage 1 of 7 (printed label \"Step 1\"):\n1.Gap analysis & Closure Planing\n2.Set up ISMS through a Governance & Management Framework\n3.ISMS Objective, Plans, Roles & Responsibilities\n4.ISMS Implementer training\n\nStage 2 of 7 (printed label \"Step 2\") - Information Assets Identification & Risk Assessment:\n1.Identification of Information assets\n2.Risk Assessment\n3.Risk Treatment Planning\n4.Statement of Appplicability\n\nStage 3 of 7 (printed label \"Step 3\") - Policies & Process Defamation and Review:\n1.ISMS Policies & Procedures\n2.Process Awareness Sessions\n3.Policies & Process Approvals\n4.Closure of the Identified Gaps\n\nStage 4 of 7 (printed label \"Step 4\") - Technical Control Implementation:\n1.ISMS Policies & Procedures\n2.Process Awareness Sessions\n3.Policies & Process Approvals\n4.Closure of the Identified Gaps\n\nStage 5 of 7 (printed label \"Step 2\") - Process Roll Out:\n1.Process Implementation\n2.Awarness & Training Sessions\n3.Policies & Process Approvals\n4.Closure of the Identified Gaps\n\nStage 6 of 7 (printed label \"Step 2\") - ISMS Readiness Check:\n1.ISMS Audit Training\n2.ISMS Internet Audit\n\nStage 7 of 7 (printed label \"Step 1\") - Certification Audit:\n1.Stage 1 Audit\n2.Stage 2 Audit",
+      "summary_clean": "Seven-stage roadmap for implementing an ISMS (information security management system): gap analysis and planning, information asset identification and risk assessment, policy and process review, technical control implementation, process roll out, ISMS readiness check, and certification audit (Stage 1 and Stage 2 audits).",
+      "description_clean": "Roadmap for implementing an Information Security Management System (ISMS), shown as seven stages along one curved path from left to right. The printed step labels repeat (Step 1, Step 2, Step 3, Step 4, Step 2, Step 2, Step 1), so the stages below follow the drawn path order, with each printed label quoted.\n\nStage 1 of 7 (printed label \"Step 1\"):\n1.Gap analysis & Closure Planing\n2.Set up ISMS through a Governance & Management Framework\n3.ISMS Objective, Plans, Roles & Responsibilities\n4.ISMS Implementer training\n\nStage 2 of 7 (printed label \"Step 2\") - Information Assets Identification & Risk Assessment:\n1.Identification of Information assets\n2.Risk Assessment\n3.Risk Treatment Planning\n4.Statement of Appplicability\n\nStage 3 of 7 (printed label \"Step 3\") - Policies & Process Defamation and Review:\n1.ISMS Policies & Procedures\n2.Process Awareness Sessions\n3.Policies & Process Approvals\n4.Closure of the Identified Gaps\n\nStage 4 of 7 (printed label \"Step 4\") - Technical Control Implementation:\n1.ISMS Policies & Procedures\n2.Process Awareness Sessions\n3.Policies & Process Approvals\n4.Closure of the Identified Gaps\n\nStage 5 of 7 (printed label \"Step 2\") - Process Roll Out:\n1.Process Implementation\n2.Awarness & Training Sessions\n3.Policies & Process Approvals\n4.Closure of the Identified Gaps\n\nStage 6 of 7 (printed label \"Step 2\") - ISMS Readiness Check:\n1.ISMS Audit Training\n2.ISMS Internet Audit\n\nStage 7 of 7 (printed label \"Step 1\") - Certification Audit:\n1.Stage 1 Audit\n2.Stage 2 Audit",
+      "source_issues": [
+        "Printed step labels repeat and do not match the drawn order: \"Step 1, Step 2, Step 3, Step 4, Step 2, Step 2, Step 1\".",
+        "\"Technical Control Implementation\" lists the same four items as \"Policies & Process Defamation and Review\".",
+        "Typos as printed: \"Closure Planing\", \"Appplicability\", \"Awarness\", \"Defamation\" (likely \"Definition\").",
+        "\"ISMS Internet Audit\" is printed; \"Internal\" may be intended."
+      ],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": true,
+      "hand_edited": true,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "medium",
+        "max_output_tokens_used": 6000,
+        "usage": {
+          "input_tokens": 3127,
+          "output_tokens": 3793,
+          "reasoning_tokens": 3008
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "ambiguous",
+        "verification_outcome": "needs_review",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_ambiguous.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/Group_48097490_p6yVpLZ.png",
+      "filename": "Group_48097490_p6yVpLZ.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "a2b75228610812887dd316e117ea430cd2d0483b5744de8c7981c6e66765e6c0",
+      "image_dimensions": "1272x589",
+      "framework": "Auditor career path",
+      "title_in_image": "Steps to Become an Auditor",
+      "diagram_type": "sequential_roadmap",
+      "has_explicit_order": true,
+      "summary": "A left-to-right roadmap showing the sequential steps to become an auditor. It lists actions from choosing an audit standard through training, passing exams, getting certified, and gaining work experience.",
+      "description": "Ordered steps as shown from left to right along the roadmap:\n1. Pick an audit standard\n2. Choose a reputed institute and enroll yourself in the auditor training program\n3. Attend all the classes to become an effective auditor\n4. Clear all the necessary exams to get certification\n5. Get certified\n6. Start working to gain experience",
+      "summary_clean": "A left-to-right roadmap showing the sequential steps to become an auditor. It lists actions from choosing an audit standard through training, passing exams, getting certified, and gaining work experience.",
+      "description_clean": "Ordered steps as shown from left to right along the roadmap:\n1. Pick an audit standard\n2. Choose a reputed institute and enroll yourself in the auditor training program\n3. Attend all the classes to become an effective auditor\n4. Clear all the necessary exams to get certification\n5. Get certified\n6. Start working to gain experience",
+      "source_issues": [],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": false,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 1804,
+          "output_tokens": 481,
+          "reasoning_tokens": 256
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "unmatched",
+        "verification_outcome": "still_unmatched",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_unmatched.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/Group_48097640.png",
+      "filename": "Group_48097640.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "16091ced48f6bfa6f46122c3f255fd70b47d7ac160125a6c749d382704d34dba",
+      "image_dimensions": "1357x706",
+      "framework": "SOC 2",
+      "title_in_image": "SOC 2 System and Organization Controls",
+      "diagram_type": "timeline",
+      "has_explicit_order": true,
+      "summary": "Chronological SOC 2 audit roadmap covering Year One and Year Two with an optional Type 1 SOC branch and a Type 2 SOC track. Shows preparatory steps, readiness assessment, Type 1 optional reporting, and the Type 2 audit periods and report delivery dates.",
+      "description": "Overall structure:\n- Two-year timeline labeled \"Year One\" (left) and \"Year Two\" (right).\n- Branching after initial readiness steps into an upward blue track labeled \"Type 1 SOC (optional)\" and a lower/mid red track labeled \"Type 2 SOC\".\n- Bottom center text: \"20 months elapsed\".\n\nShared Year One (pre-branch) events (in chronological order):\n- January 1: \"Company starts SOC process\"\n- February 1: \"Company has selected auditor and signed the contract\"\n- February 15: \"Auditor schedules work, sends document request list for company to prepare\"\n- March 1: \"Auditor performs readiness assessment fieldwork\"\n- April 1: \"Auditor delivers readiness assessment report, company begins remediation efforts\"\n\nType 1 SOC (optional) track (blue, branches upward from central node):\n- June 30: \"As of date for SOC 2 Type 1 Report, official fieldwork begins\"\n- (blue curved line continues to a dotted horizontal)\n- [label on blue horizontal near dotted line] \"Auditor provides report\"\n- August 31: \"SOC 2 Type 2 Report in hand\"\n\nType 2 SOC track (red, continues from central node and runs through Year Two):\n- July 1: \"Audit period begins for SOC 2 Type 2 reports\"\n\nYear Two events on Type 2 track (chronological):\n- December 31: \"Audit period ends for SOC 2 Type 2 Report (6 month period covering July 1 - December 31, Y1)\"\n- [dotted segment continuing right] \"Auditor provides report\"\n- February 28: \"SOC 2 Type 2 Report in hand\"\n\nContinued 12-month Type 2 track (later in Year Two):\n- June 30: \"Audit period ends for SOC 2 Type 2 report (12 month period covering July 1, Y1 - June 30 Y2)\"\n- June 30: \"SOC 2 Type 2 report in hand (12 month period covering July 1 Y1 - June 30, Y2)\"\n- [near final target icon] \"Auditor provides report\"\n\nOther visible labels and badges:\n- Left badge: \"Year One\"\n- Right badge: \"Year Two\"\n- Mid blue badge: \"Type 1 SOC (optional)\"\n- Mid red badge: \"Type 2 SOC\"\n- Bottom center small text: \"20 months elapsed\"\n\nNotes on repeated/identical labels (kept as printed):\n- The diagram shows multiple occurrences of the date label \"June 30\" with different context labels.\n- The text \"Auditor provides report\" appears on both the blue (Type 1) and red (Type 2) tracks and again at the final red target.\n",
+      "summary_clean": "Chronological SOC 2 audit roadmap covering Year One and Year Two with an optional Type 1 SOC branch and a Type 2 SOC track. Shows preparatory steps, readiness assessment, Type 1 optional reporting, and the Type 2 audit periods and report delivery dates.",
+      "description_clean": "Overall structure:\n- Two-year timeline labeled \"Year One\" (left) and \"Year Two\" (right).\n- Branching after initial readiness steps into an upward blue track labeled \"Type 1 SOC (optional)\" and a lower/mid red track labeled \"Type 2 SOC\".\n- Bottom center text: \"20 months elapsed\".\n\nShared Year One (pre-branch) events (in chronological order):\n- January 1: \"Company starts SOC process\"\n- February 1: \"Company has selected auditor and signed the contract\"\n- February 15: \"Auditor schedules work, sends document request list for company to prepare\"\n- March 1: \"Auditor performs readiness assessment fieldwork\"\n- April 1: \"Auditor delivers readiness assessment report, company begins remediation efforts\"\n\nType 1 SOC (optional) track (blue, branches upward from central node):\n- June 30: \"As of date for SOC 2 Type 1 Report, official fieldwork begins\"\n- (blue curved line continues to a dotted horizontal)\n- [label on blue horizontal near dotted line] \"Auditor provides report\"\n- August 31: \"SOC 2 Type 2 Report in hand\"\n\nType 2 SOC track (red, continues from central node and runs through Year Two):\n- July 1: \"Audit period begins for SOC 2 Type 2 reports\"\n\nYear Two events on Type 2 track (chronological):\n- December 31: \"Audit period ends for SOC 2 Type 2 Report (6 month period covering July 1 - December 31, Y1)\"\n- [dotted segment continuing right] \"Auditor provides report\"\n- February 28: \"SOC 2 Type 2 Report in hand\"\n\nContinued 12-month Type 2 track (later in Year Two):\n- June 30: \"Audit period ends for SOC 2 Type 2 report (12 month period covering July 1, Y1 - June 30 Y2)\"\n- June 30: \"SOC 2 Type 2 report in hand (12 month period covering July 1 Y1 - June 30, Y2)\"\n- [near final target icon] \"Auditor provides report\"\n\nOther visible labels and badges:\n- Left badge: \"Year One\"\n- Right badge: \"Year Two\"\n- Mid blue badge: \"Type 1 SOC (optional)\"\n- Mid red badge: \"Type 2 SOC\"\n- Bottom center small text: \"20 months elapsed\"\n\nNotes on repeated/identical labels (kept as printed):\n- The diagram shows multiple occurrences of the date label \"June 30\" with different context labels.\n- The text \"Auditor provides report\" appears on both the blue (Type 1) and red (Type 2) tracks and again at the final red target.",
+      "source_issues": [
+        "Label inconsistency: \"SOC 2 Type 2 Report in hand\" is printed above the August 31 date on the upward blue (Type 1) branch, which appears contradictory given it is on the Type 1 track.",
+        "Repeated/ambiguous use of \"June 30\" appears at least twice with different surrounding labels/contexts."
+      ],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": false,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "medium",
+        "max_output_tokens_used": 6000,
+        "usage": {
+          "input_tokens": 2085,
+          "output_tokens": 3089,
+          "reasoning_tokens": 2240
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "unmatched",
+        "verification_outcome": "still_unmatched",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_unmatched.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/Group_48097758.png",
+      "filename": "Group_48097758.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "6047422fdb479c621b6048e98c002a67cbe4ccedb18e5d5e2f46dce83e00ffca",
+      "image_dimensions": "1933x1122",
+      "framework": "InterCert certification process",
+      "title_in_image": "",
+      "diagram_type": "flowchart_with_decisions",
+      "has_explicit_order": true,
+      "summary": "Flowchart showing InterCert's certification process from application submission through contract review, Stage-1 audit (with handling of non-conformities), Stage-2 audit, certification recommendation and award, surveillance, and re-certification. Decision points around contract review and non-conformities direct applicants to information requests, rejection, corrective-action pathways, or certification progression.",
+      "description": "Flowchart of the InterCert certification process. Branch arrows have no printed labels.\n\nStart:\n- \"Applicant\" -> \"Submission of Application\" -> \"CONTRACT REVIEW BY INTERCERT\" (decision)\n\n\"CONTRACT REVIEW BY INTERCERT\" has three outcomes:\n- \"Need more information from Applicant\" -> loops back to \"Applicant\"\n- \"Rejection of Application and informed to\" -> end of process (no further arrow)\n- \"Audit Team Appoinment\" -> \"Stage-1 Audit\"\n\n\"Stage-1 Audit\" has two outcomes, both leading to \"Stage-2 Audit\":\n- \"No Non-Conformity\" -> \"Stage-2 Audit\"\n- \"Non-Conformity (If any)\" -> \"Non-Conformity Closure\" -> \"Stage-2 Audit\"\n\n\"Stage-2 Audit\" -> \"NON-CONFORMITY (IF ANY)\" (decision), which has two outcomes:\n- \"Non-Conformity Closed\" -> \"Certification Recommendation\" -> \"Award of Certification\" -> \"Surveillance (Year 1 & 2)\" -> \"Re-Certification\"\n- \"Non-Submission of Corrective Actions\" -> \"Applicant Closed\" (end of process)",
+      "summary_clean": "Flowchart showing InterCert's certification process from application submission through contract review, Stage-1 audit (with handling of non-conformities), Stage-2 audit, certification recommendation and award, surveillance, and re-certification. Decision points around contract review and non-conformities direct applicants to information requests, rejection, corrective-action pathways, or certification progression.",
+      "description_clean": "Flowchart of the InterCert certification process. Branch arrows have no printed labels.\n\nStart:\n- \"Applicant\" -> \"Submission of Application\" -> \"CONTRACT REVIEW BY INTERCERT\" (decision)\n\n\"CONTRACT REVIEW BY INTERCERT\" has three outcomes:\n- \"Need more information from Applicant\" -> loops back to \"Applicant\"\n- \"Rejection of Application and informed to\" -> end of process (no further arrow)\n- \"Audit Team Appoinment\" -> \"Stage-1 Audit\"\n\n\"Stage-1 Audit\" has two outcomes, both leading to \"Stage-2 Audit\":\n- \"No Non-Conformity\" -> \"Stage-2 Audit\"\n- \"Non-Conformity (If any)\" -> \"Non-Conformity Closure\" -> \"Stage-2 Audit\"\n\n\"Stage-2 Audit\" -> \"NON-CONFORMITY (IF ANY)\" (decision), which has two outcomes:\n- \"Non-Conformity Closed\" -> \"Certification Recommendation\" -> \"Award of Certification\" -> \"Surveillance (Year 1 & 2)\" -> \"Re-Certification\"\n- \"Non-Submission of Corrective Actions\" -> \"Applicant Closed\" (end of process)",
+      "source_issues": [
+        "\"Rejection of Application and informed to\" appears to end mid-sentence (cut off).",
+        "Inconsistent wording/capitalization between nodes: \"Non-Conformity Closure\" (used after Stage-1) vs \"Non-Conformity Closed\" (used after Stage-2).",
+        "Inconsistent capitalization of the non-conformity diamond labels: \"Non-Conformity (If any)\" vs \"NON-CONFORMITY (IF ANY)\".",
+        "Box text \"Rejection of Application and informed to\" ends mid-sentence as printed."
+      ],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": false,
+      "needs_review": true,
+      "hand_edited": true,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "medium",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 3529,
+          "output_tokens": 2607,
+          "reasoning_tokens": 1792
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "unmatched",
+        "verification_outcome": "still_unmatched",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_unmatched.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/HIPAA-_The_Health_Insurance_Portability_and_Accountability_Act_hO4r5A3.png",
+      "filename": "HIPAA-_The_Health_Insurance_Portability_and_Accountability_Act_hO4r5A3.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "e84723a5bb1d0d21a4050bb1f3d90c3bdbb566d15e1d1601f8d60c04f3149abc",
+      "image_dimensions": "1440x818",
+      "framework": "HIPAA",
+      "title_in_image": "HIPAA - Compliance Roadmap",
+      "diagram_type": "sequential_roadmap",
+      "has_explicit_order": true,
+      "summary": "A suggestive sequential roadmap showing steps to achieve HIPAA compliance from start through final compliance. The diagram presents seven labeled stages along a curved path: Start, Risk Assessment (Audit), Training, Co-create Policies, Implement Security, Re-Assess & Monitor, and Compliance.",
+      "description": "Ordered steps as shown along the curved roadmap path (left to right):\n\n1. \"Start\"  \n   - Visible icon: rocket.\n\n2. \"Risk Assessment (Audit)\"  \n   - Visible icon: gauge with exclamation triangle.\n\n3. \"Training\"  \n   - Visible icon: person at a flip-chart/presentation.\n\n4. \"Co-create Policies\"  \n   - Visible icon: magic wand/spark.\n\n5. \"Implement Security\"  \n   - Visible icon: shield with checkmark.\n\n6. \"Re-Assess & Monitor\"  \n   - Visible icon: monitor with magnifying-glass and bar-chart.\n\n7. \"Compliance\"  \n   - Visible icon: clipboard with checkmark.\n\nAdditional visible text (footer):\n- \"*This is the suggestive roadmap to be followed for achieving compliance on frameworks/standards.\"  \n- \"*INTERCERT provides audit and assessment services to comply with frameworks/standards.\"",
+      "summary_clean": "A suggestive sequential roadmap showing steps to achieve HIPAA compliance from start through final compliance. The diagram presents seven labeled stages along a curved path: Start, Risk Assessment (Audit), Training, Co-create Policies, Implement Security, Re-Assess & Monitor, and Compliance.",
+      "description_clean": "Ordered steps as shown along the curved roadmap path (left to right):\n\n1. \"Start\"\n\n2. \"Risk Assessment (Audit)\"\n\n3. \"Training\"\n\n4. \"Co-create Policies\"\n\n5. \"Implement Security\"\n\n6. \"Re-Assess & Monitor\"\n\n7. \"Compliance\"",
+      "source_issues": [],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 2289,
+          "output_tokens": 592,
+          "reasoning_tokens": 192
+        }
+      },
+      "mapping": {
+        "status": "confirmed",
+        "service_document": {
+          "canonical_uri": "https://www.intercert.com/services/governance-risk-compliance/hipaa",
+          "source_scope": "grc",
+          "source_ref": "subone_grcsubpage#43",
+          "title": "HIPAA Compliance Roadmap",
+          "document_id": "b170d4b7-af27-4171-9412-305cb8fa0951"
+        },
+        "evidence": {
+          "match_method": "mysql_exact_filename",
+          "mysql_table": "subone_grcsecfive",
+          "mysql_record_id": 14,
+          "matched_column": "img",
+          "matched_value": "images/HIPAA-_The_Health_Insurance_Portability_and_Accountability_Act_hO4r5A3.png",
+          "verification_status": "confirmed_exact",
+          "source_url": "https://intercert-web.s3.ap-south-1.amazonaws.com/media/images/HIPAA-_The_Health_Insurance_Portability_and_Accountability_Act_hO4r5A3.png",
+          "public_sha256": "e84723a5bb1d0d21a4050bb1f3d90c3bdbb566d15e1d1601f8d60c04f3149abc"
+        }
+      }
+    },
+    {
+      "image_key": "Intercert_Img/HITRUST_gcr9cfF.png",
+      "filename": "HITRUST_gcr9cfF.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "67eb1550b5631f23ec8d96b8c61b7e427d05d7353a5afadc6b1eb5b7fbc12d29",
+      "image_dimensions": "2880x1450",
+      "framework": "HITRUST CSF",
+      "title_in_image": "HITRUST",
+      "diagram_type": "mapping",
+      "has_explicit_order": false,
+      "summary": "Diagram mapping elements of the NIST CSF (Core Functions, Categories, Subcategories, Target/Current Profiles, and Tiers) to HITRUST CSF elements (Control Categories, Control Objectives, Tailored Baseline, Assessment, Assessment Domains) and showing how they relate to the HITRUST CSF Controls. All connections shown are two-way mappings.",
+      "description": "- Top center title: \"HITRUST\".\n- Long horizontal orange bar at top-left: \"NIST CSF Core Functions\".\n- Left column (stacked dark teal boxes and arrows):\n  - Dark teal box: \"NIST CSF Core Categories\". There is a red double-headed horizontal arrow pointing between this box and the adjacent orange box \"HITRUST CSF Control Categories\" (see below). There is also a red vertical two-headed arrow connecting it with the box below \"NIST CSF Core Subcategories\".\n  - Dark teal box below: \"NIST CSF Core Subcategories\". There is a red double-headed horizontal arrow pointing between this box and the adjacent orange box \"HITRUST CSF Control Objectives\" (see below). A two-way red vertical arrow connects this box and the orange horizontal \"HITRUST CSF Controls\" bar at the bottom.\n- Middle-left column (stacked orange boxes opposite the NIST CSF boxes):\n  - Orange box opposite \"NIST CSF Core Categories\": \"HITRUST CSF Control Categories\". It has a red bidirectional horizontal arrow with \"NIST CSF Core Categories\" and a red vertical two-headed arrow connecting down to the orange box below \"HITRUST CSF Control Objectives\".\n  - Orange box opposite \"NIST CSF Core Subcategories\": \"HITRUST CSF Control Objectives\". It has a red bidirectional horizontal arrow with \"NIST CSF Core Subcategories\" and a two-way red vertical arrow connecting it with the long orange bar at the bottom \"HITRUST CSF Controls\".\n- Bottom-most long orange bar across the diagram: \"HITRUST CSF Controls\". Several two-way red arrows connect this bar from elements above (described below).\n- Center-right area inside a large dashed rounded rectangle (representing a grouped area) contains four boxes arranged 2x2:\n  - Top-left dark teal box: \"NIST CSF Target Profile\".\n  - Top-right dark teal box: \"NIST CSF Current Profile\".\n  - Bottom-left orange box: \"HITRUST CSF Tailored Baseline\". A two-way red vertical arrow connects this box and the \"HITRUST CSF Controls\" bar.\n  - Bottom-right orange box: \"HITRUST CSF Assessment\". A two-way red vertical arrow connects this box and the \"HITRUST CSF Controls\" bar.\n- Right column:\n  - Dark teal box near top-right: \"NIST CSF Tiers\". A two-way red vertical arrow connects this box and the \"HITRUST CSF Controls\" bar.\n  - Orange box below it: \"HITRUST CSF Assessment Domains\". A two-way red vertical arrow connects this box and the \"HITRUST CSF Controls\" bar.\n- Visual flow/relationships summarized:\n  - \"NIST CSF Core Functions\" is connected to \"NIST CSF Core Categories\" by a two-way red vertical arrow.\n  - \"NIST CSF Core Categories\" <--> \"HITRUST CSF Control Categories\" (bidirectional horizontal arrow).\n  - \"NIST CSF Core Subcategories\" <--> \"HITRUST CSF Control Objectives\" (bidirectional horizontal arrow).\n  - \"HITRUST CSF Control Objectives\" and \"NIST CSF Core Subcategories\" have two-way links with \"HITRUST CSF Controls\" (via two-way vertical arrows).\n  - Within the dashed grouped area, \"HITRUST CSF Tailored Baseline\" and \"HITRUST CSF Assessment\" each have two-way mappings with \"HITRUST CSF Controls\".\n  - \"NIST CSF Tiers\" and \"HITRUST CSF Assessment Domains\" each have two-way mappings with \"HITRUST CSF Controls\" via vertical arrows.\n- Footer text partially visible (disclaimer lines). The file shows the disclaimer lines beginning with \"*This is the suggestive roadmap to be followed for achieving compliance frameworks/standards.\" and \"*INTERCERT provides audit and assessment services to comply with frameworks/standards.\" (these are visible but placed outside the main diagram).\n\nNote: every red arrow in this diagram is double-headed, so all connections shown are two-way mappings.",
+      "summary_clean": "Diagram mapping elements of the NIST CSF (Core Functions, Categories, Subcategories, Target/Current Profiles, and Tiers) to HITRUST CSF elements (Control Categories, Control Objectives, Tailored Baseline, Assessment, Assessment Domains) and showing how they relate to the HITRUST CSF Controls. All connections shown are two-way mappings.",
+      "description_clean": "- Top center title: \"HITRUST\".\n- Long horizontal orange bar at top-left: \"NIST CSF Core Functions\".\n- Left column (stacked dark teal boxes and arrows):\n  - Dark teal box: \"NIST CSF Core Categories\". There is a red double-headed horizontal arrow pointing between this box and the adjacent orange box \"HITRUST CSF Control Categories\" (see below). There is also a red vertical two-headed arrow connecting it with the box below \"NIST CSF Core Subcategories\".\n  - Dark teal box below: \"NIST CSF Core Subcategories\". There is a red double-headed horizontal arrow pointing between this box and the adjacent orange box \"HITRUST CSF Control Objectives\" (see below). A two-way red vertical arrow connects this box and the orange horizontal \"HITRUST CSF Controls\" bar at the bottom.\n- Middle-left column (stacked orange boxes opposite the NIST CSF boxes):\n  - Orange box opposite \"NIST CSF Core Categories\": \"HITRUST CSF Control Categories\". It has a red bidirectional horizontal arrow with \"NIST CSF Core Categories\" and a red vertical two-headed arrow connecting down to the orange box below \"HITRUST CSF Control Objectives\".\n  - Orange box opposite \"NIST CSF Core Subcategories\": \"HITRUST CSF Control Objectives\". It has a red bidirectional horizontal arrow with \"NIST CSF Core Subcategories\" and a two-way red vertical arrow connecting it with the long orange bar at the bottom \"HITRUST CSF Controls\".\n- Bottom-most long orange bar across the diagram: \"HITRUST CSF Controls\". Several two-way red arrows connect this bar from elements above (described below).\n- Center-right area inside a large dashed rounded rectangle (representing a grouped area) contains four boxes arranged 2x2:\n  - Top-left dark teal box: \"NIST CSF Target Profile\".\n  - Top-right dark teal box: \"NIST CSF Current Profile\".\n  - Bottom-left orange box: \"HITRUST CSF Tailored Baseline\". A two-way red vertical arrow connects this box and the \"HITRUST CSF Controls\" bar.\n  - Bottom-right orange box: \"HITRUST CSF Assessment\". A two-way red vertical arrow connects this box and the \"HITRUST CSF Controls\" bar.\n- Right column:\n  - Dark teal box near top-right: \"NIST CSF Tiers\". A two-way red vertical arrow connects this box and the \"HITRUST CSF Controls\" bar.\n  - Orange box below it: \"HITRUST CSF Assessment Domains\". A two-way red vertical arrow connects this box and the \"HITRUST CSF Controls\" bar.\n- Visual flow/relationships summarized:\n  - \"NIST CSF Core Functions\" is connected to \"NIST CSF Core Categories\" by a two-way red vertical arrow.\n  - \"NIST CSF Core Categories\" <--> \"HITRUST CSF Control Categories\" (bidirectional horizontal arrow).\n  - \"NIST CSF Core Subcategories\" <--> \"HITRUST CSF Control Objectives\" (bidirectional horizontal arrow).\n  - \"HITRUST CSF Control Objectives\" and \"NIST CSF Core Subcategories\" have two-way links with \"HITRUST CSF Controls\" (via two-way vertical arrows).\n  - Within the dashed grouped area, \"HITRUST CSF Tailored Baseline\" and \"HITRUST CSF Assessment\" each have two-way mappings with \"HITRUST CSF Controls\".\n  - \"NIST CSF Tiers\" and \"HITRUST CSF Assessment Domains\" each have two-way mappings with \"HITRUST CSF Controls\" via vertical arrows.\n\nNote: every red arrow in this diagram is double-headed, so all connections shown are two-way mappings.",
+      "source_issues": [
+        "Footer disclaimer text is partially visible and may be truncated at the bottom of the image."
+      ],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": false,
+      "hand_edited": true,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 3407,
+          "output_tokens": 1510,
+          "reasoning_tokens": 384
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "ambiguous",
+        "verification_outcome": "needs_review",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_ambiguous.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/IEC_27001_2019_Privacy_Information_Management_System.png",
+      "filename": "IEC_27001_2019_Privacy_Information_Management_System.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "1c60ae1e8a80832e77e4630302c00ff392b40a29eafc6fd1e791f0d5a2473d97",
+      "image_dimensions": "1440x955",
+      "framework": "ISO/IEC 27701 (PIMS)",
+      "title_in_image": "ISO/IEC 27001:2019 Privacy Information Management System",
+      "diagram_type": "mapping",
+      "has_explicit_order": false,
+      "summary": "A radial mapping of a Privacy Information Management System (PIMS) showing a central process labeled \"PROCESS ISO 27701\" connected to eight surrounding control/requirement items plus two additional note boxes (Privacy Notices and Processing Limitations). The diagram lists specific privacy-related responsibilities and requirements around the central process.",
+      "description": "Central elements:\n- Top center small box: \"Privacy Information Management System (PIMS)\"\n- Center circle: \"PROCESS ISO 27701\"\n\nEight peripheral nodes connected around the central circle (listed in approximate clockwise order as printed labels around the circle):\n- \"Training\"\n- \"Confidentiality\"\n- \"Analyse Risk\"\n- \"Responsibility\"\n- \"Identify Processor Requirements\"\n- \"Identify Controller Requirements\"\n- \"Record Keeping\"\n- \"Internal Process\"\n\nTwo separate bottom note boxes and their exact visible contents:\n- Left bottom note box title: \"Privacy Notices\"\n  - Body text (exact lines as printed):\n    - \"Processor Contract\"\n    - \"Requirements Individual\"\n    - \"Rights Privacy by Design and\"\n    - \"Default\"\n\n- Right bottom note box title: \"Processing Limitations\"\n  - Body text (exact lines as printed):\n    - \"Assist with individual Rights\"\n    - \"Transfers and Disclosure\"\n    - \"Subcontractors\"\n\nOther visible text:\n- Large top title: \"ISO/IEC 27001:2019 Privacy Information Management System\"\n\nVisual/structural notes (transcribed facts about the diagram layout):\n- The central \"PROCESS ISO 27701\" circle is connected by radial lines to eight surrounding nodes, each with an icon and a short label (labels transcribed above). The top small box \"Privacy Information Management System (PIMS)\" has a vertical line connecting down to the central circle.\n\nSource issues (transcribe inconsistencies, typos, cutoffs exactly as printed):\n- Central circle text reads \"PROCESS ISO 27701\" while the title and file name reference \"ISO/IEC 27001:2019\" (inconsistent standard numbers shown: 27001 vs 27701).\n- In the left bottom note box under \"Privacy Notices\", lines are broken and read: \"Requirements Individual\" and \"Rights Privacy by Design and\" which may be incomplete line breaks but are transcribed exactly as printed.\n\nunreadable_text: []\n",
+      "summary_clean": "A radial mapping of a Privacy Information Management System (PIMS) showing a central process labeled \"PROCESS ISO 27701\" connected to eight surrounding control/requirement items plus two additional note boxes (Privacy Notices and Processing Limitations). The diagram lists specific privacy-related responsibilities and requirements around the central process.",
+      "description_clean": "Central elements:\n- Top center small box: \"Privacy Information Management System (PIMS)\"\n- Center circle: \"PROCESS ISO 27701\"\n\nEight peripheral nodes connected around the central circle (listed in approximate clockwise order as printed labels around the circle):\n- \"Training\"\n- \"Confidentiality\"\n- \"Analyse Risk\"\n- \"Responsibility\"\n- \"Identify Processor Requirements\"\n- \"Identify Controller Requirements\"\n- \"Record Keeping\"\n- \"Internal Process\"\n\nTwo separate bottom note boxes and their exact visible contents:\n- Left bottom note box title: \"Privacy Notices\"\n  - Body text (exact lines as printed):\n    - \"Processor Contract\"\n    - \"Requirements Individual\"\n    - \"Rights Privacy by Design and\"\n    - \"Default\"\n\n- Right bottom note box title: \"Processing Limitations\"\n  - Body text (exact lines as printed):\n    - \"Assist with individual Rights\"\n    - \"Transfers and Disclosure\"\n    - \"Subcontractors\"\n\nOther visible text:\n- Large top title: \"ISO/IEC 27001:2019 Privacy Information Management System\"\n\nVisual/structural notes (transcribed facts about the diagram layout):\n- The central \"PROCESS ISO 27701\" circle is connected by radial lines to eight surrounding nodes, each with an icon and a short label (labels transcribed above). The top small box \"Privacy Information Management System (PIMS)\" has a vertical line connecting down to the central circle.",
+      "source_issues": [
+        "Central circle text reads \"PROCESS ISO 27701\" while the title references \"ISO/IEC 27001:2019\" (inconsistent standard numbers).",
+        "Left bottom note box text lines are broken: \"Requirements Individual\" and \"Rights Privacy by Design and\" (line breaks may indicate incomplete phrases but are transcribed exactly as printed)."
+      ],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": false,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 2504,
+          "output_tokens": 1055,
+          "reasoning_tokens": 320
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "unmatched",
+        "verification_outcome": "still_unmatched",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_unmatched.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/ISO31000_2018-Risk-Management-System.png",
+      "filename": "ISO31000_2018-Risk-Management-System.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "afa93b762229114dd16b010f69be7d7dac34c846ac729c24324da7001e83f528",
+      "image_dimensions": "2880x2814",
+      "framework": "ISO 31000:2018",
+      "title_in_image": "ISO31000:2018-Risk Management System",
+      "diagram_type": "cycle",
+      "has_explicit_order": true,
+      "summary": "A circular/loop diagram showing the ISO31000:2018 risk management system elements. It centers on defining scope, context & criteria, the risk assessment (identification, analysis, evaluation), and risk treatment, with supporting activities placed around the cycle.",
+      "description": "Top title: \"ISO31000:2018-Risk Management System\"\n\nCentral column (stacked boxes, top to bottom):\n- \"Scope, Context & Criteria\"\n\n- Large box labeled \"Risk Assessment\" containing, from top to bottom:\n  - \"Risk Identification\"\n  - \"Risk Analysis\"\n  - \"Risk Evaluation\"\n\n- \"Risk Treatment\"\n\nSurrounding/supporting vertical elements (positioned left and right of the central column):\n- Left vertical dark teal panel (text oriented vertically): \"Communication & Consultation\"\n  - a small icon of people and speech bubbles appears at the bottom of this panel\n\n- Right vertical dark teal panel (text oriented vertically): \"Monitoring & Review\"\n  - a small icon of a folder with a medical/first-aid cross appears at the bottom of this panel\n\nBottom centered dark teal box with icon: \"Recording & Reporting\"\n  - a small icon of a document and pencil appears to the left of the text\n\nCycle indicator:\n- A large curved circular arrow wraps around the diagram (showing a continuous cycle). The arrowheads indicate direction around the circle.\n\nFooter/disclaimer text visible (partially outside main diagram area):\n- \"*This is the suggestive roadmap to be followed for achieving compliance frameworks/standards.\" (visible)\n- \"*INTERCERT provides audit and assessment services to comply with frameworks/standards.\" (visible)\n",
+      "summary_clean": "A circular/loop diagram showing the ISO31000:2018 risk management system elements. It centers on defining scope, context & criteria, the risk assessment (identification, analysis, evaluation), and risk treatment, with supporting activities placed around the cycle.",
+      "description_clean": "Top title: \"ISO31000:2018-Risk Management System\"\n\nCentral column (stacked boxes, top to bottom):\n- \"Scope, Context & Criteria\"\n\n- Large box labeled \"Risk Assessment\" containing, from top to bottom:\n  - \"Risk Identification\"\n  - \"Risk Analysis\"\n  - \"Risk Evaluation\"\n\n- \"Risk Treatment\"\n\nSurrounding/supporting vertical elements (positioned left and right of the central column):\n- Left vertical dark teal panel (text oriented vertically): \"Communication & Consultation\"\n\n- Right vertical dark teal panel (text oriented vertically): \"Monitoring & Review\"\n\nBottom centered dark teal box with icon: \"Recording & Reporting\"\n\nCycle indicator:\n- A large curved circular arrow wraps around the diagram (showing a continuous cycle). The arrowheads indicate direction around the circle.",
+      "source_issues": [],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 6000,
+        "usage": {
+          "input_tokens": 5716,
+          "output_tokens": 636,
+          "reasoning_tokens": 192
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "ambiguous",
+        "verification_outcome": "needs_review",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_ambiguous.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/ISO_22301_2019-Business_Continuity_Management_System_1.png",
+      "filename": "ISO_22301_2019-Business_Continuity_Management_System_1.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "360d4cda33cc4a8eba9b7dea26440120aa432772ca45a6d6aee6cd3843ee5e33",
+      "image_dimensions": "1718x1052",
+      "framework": "ISO 22301:2019",
+      "title_in_image": "ISO 22301:2019 - Business Continuity Management Systems",
+      "diagram_type": "sequential_roadmap",
+      "has_explicit_order": true,
+      "summary": "A 12-step suggestive roadmap for achieving ISO 22301:2019 Business Continuity Management System certification. The diagram lists numbered steps 01 through 12 describing actions from creating a business case to getting the certification audit conducted by a certification body.",
+      "description": "01 - Create a Business Case for ISO 22301 Certification\n02 - Get Top Management commitment for the Project\n03 - Establish Project Team & Appoint a Consultant\n04 - Determine the Scope of the System\n05 - Establish Business Continuity Policy / Objectives\n06 - Conduct Business Impact Analysis & Risk Assessment\n07 - Develop Business Continuity Plan & Recovery Procedures\n08 - Implement Continuity & Recovery Arrangements\n09 - Impart Trainings\n10 - Conduct Internal Audits\n11 - Conduct Management Reviews\n12 - Get Certification Audit Conducted by a Certification Body",
+      "summary_clean": "A 12-step suggestive roadmap for achieving ISO 22301:2019 Business Continuity Management System certification. The diagram lists numbered steps 01 through 12 describing actions from creating a business case to getting the certification audit conducted by a certification body.",
+      "description_clean": "01 - Create a Business Case for ISO 22301 Certification\n02 - Get Top Management commitment for the Project\n03 - Establish Project Team & Appoint a Consultant\n04 - Determine the Scope of the System\n05 - Establish Business Continuity Policy / Objectives\n06 - Conduct Business Impact Analysis & Risk Assessment\n07 - Develop Business Continuity Plan & Recovery Procedures\n08 - Implement Continuity & Recovery Arrangements\n09 - Impart Trainings\n10 - Conduct Internal Audits\n11 - Conduct Management Reviews\n12 - Get Certification Audit Conducted by a Certification Body",
+      "source_issues": [],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 3022,
+          "output_tokens": 410,
+          "reasoning_tokens": 128
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "unmatched",
+        "verification_outcome": "still_unmatched",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_unmatched.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/ISO_27018_2019_Cloud_Privacy_WkGpIhQ.png",
+      "filename": "ISO_27018_2019_Cloud_Privacy_WkGpIhQ.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "e2181c29b1270b5fa06e3583ff06f4aeee0bd990b9bba1f133ddb9c574e83982",
+      "image_dimensions": "2880x1824",
+      "framework": "ISO/IEC 27018:2019",
+      "title_in_image": "ISO 27018:2019 - Cloud Privacy",
+      "diagram_type": "sequential_roadmap",
+      "has_explicit_order": true,
+      "summary": "A two-column numbered roadmap summarizing Controls and Guidance from ISO 27018:2019 for cloud data processors (CDP). Six numbered items (01–06) list controls and guidance points for CDPs and their customers.",
+      "description": "Ordered items (by printed numbers):\n\n01\nControls:\nCloud data processor (CDP) shows that it is a data processor ( not a controller) by processing data only to implement customer instructions\n\n02\nControls:\nCDP knows where data is stored and is sure where it is sending it\n\n03\nControls:\nCDP ensures its sub-contractors also implement relevant security and data protection measures, and disclose changes in sub-contracting\n\n04\nControls:\nCDP implements the means to cooperate with its customer to allow the customer to meet obligations to data subjects\n\n05\nGuidance:\nIssues a CDP should disclose to a prospective customer before entering the contract to process personal data\n\n06\nGuidance:\nIssue where CDP and the customer should agree on the split of responsibilities",
+      "summary_clean": "A two-column numbered roadmap summarizing Controls and Guidance from ISO 27018:2019 for cloud data processors (CDP). Six numbered items (01–06) list controls and guidance points for CDPs and their customers.",
+      "description_clean": "Ordered items (by printed numbers):\n\n01\nControls:\nCloud data processor (CDP) shows that it is a data processor ( not a controller) by processing data only to implement customer instructions\n\n02\nControls:\nCDP knows where data is stored and is sure where it is sending it\n\n03\nControls:\nCDP ensures its sub-contractors also implement relevant security and data protection measures, and disclose changes in sub-contracting\n\n04\nControls:\nCDP implements the means to cooperate with its customer to allow the customer to meet obligations to data subjects\n\n05\nGuidance:\nIssues a CDP should disclose to a prospective customer before entering the contract to process personal data\n\n06\nGuidance:\nIssue where CDP and the customer should agree on the split of responsibilities",
+      "source_issues": [
+        "03: The line ending with 'sub-contracting' may be truncated or continue beyond the visible text.",
+        "06: The item 'Issue where CDP and the customer should agree on the split of responsibilities' may be truncated or incomplete.",
+        "The subheading under the main title (orange line) is long and extends across the image; verify full text if exact full wording is required.",
+        "Item 01 is printed as \"customer instructons\" (typo for \"instructions\")."
+      ],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": false,
+      "hand_edited": true,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 4035,
+          "output_tokens": 965,
+          "reasoning_tokens": 576
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "ambiguous",
+        "verification_outcome": "needs_review",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_ambiguous.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/ISO_42001_2023-Artificial_Intelligence_Management_System_Z3EF53r.png",
+      "filename": "ISO_42001_2023-Artificial_Intelligence_Management_System_Z3EF53r.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "62cc5ab251ee638f03430c3ac4b8161d8d8a7ecc578110bd58d86c1ee9df4c25",
+      "image_dimensions": "2362x1755",
+      "framework": "ISO/IEC 42001:2023",
+      "title_in_image": "ISO/IEC 42001:2023 - Artificial Intelligence Management Systems Requirement",
+      "diagram_type": "mapping",
+      "has_explicit_order": false,
+      "summary": "Diagram centers on ISO/IEC 42001:2023 and maps key AI management system requirement areas around it (e.g., Understanding and Commitment; Scope Definition; Leadership and Governance; Monitoring and Measurement; Continual Improvement; Internal Audits; Documentation; Risk Assessment; AI Implementation). Each area contains short bulleted guidance items.",
+      "description": "Center:\n- \"ISO/IEC 42001:2023\"\n\nTop center box:\n- Title: \"Understanding and Commitment\"\n  - \"Awareness: Ensure stakeholders grasp ISO/IEC 42001’s purpose and benefits.\"\n  - \"Commitment: Gain top management’s commitment to implementing and maintaining an AI management system.\" \n\nRight column, top to bottom (unordered with respect to center spokes):\n- Box Title: \"Scope Definition\"\n  - \"Identify AI Activities: Determine with AI processes, products, or services are included.\"\n  - \"Exclusions: Clearly define any excluded areas.\"\n\n- Box Title: \"Leadership and Governance\"\n  - \"Appoint a Responsible Person: Designate someone to oversee AI management.\"\n  - \"Policy Development: Create an AI policy aligned with organizational goals.\"\n\n- Box Title: \"Risk Assessment and Opportunity Identification\"\n  - \"Assess Risks: Identity and evaluate risks linked to AI deployment.\"\n  - \"Identity Opportunities: Spot chances to enhance AI Processes.\" \n\n- Box Title: \"AI Implementation and Operation\"\n  - \"Design and Development: Implement AI systems following established guidelines.\"\n  - \"Data Management: Ensure data quality, privacy and security.\"\n  - \"Testing and Validation: Validate AI models and algorithms.\"\n  - \"Deployment: Roll out AI solutions in a controlled manner.\" \n\nBottom center box:\n- Title: \"Monitoring and Measurement\"\n  - \"Performance Metrics: Define metrics to gauge AI performance.\"\n  - \"Monitoring: Continuously monitor AI systems for effectiveness and compliance.\" \n\nLeft column, top to bottom (unordered with respect to center spokes):\n- Box Title: \"Continual Improvement\"\n  - \"Learn and Adapt: Continuously learn form experiences and adapt AI Technology.\"\n  - \"Stay Updated: Keep abreast of AI technology advancements and best practices.\" \n\n- Box Title: \"Internal Audits and Reviews\"\n  - \"Regular Audits: Conduct internal audits to check compliance with ISO/IEC 42001.\"\n  - \"Management Review: Periodically assess the AI management system’s effectiveness.\" \n\n- Box Title: \"Documentation and Records\"\n  - \"Document Control: Maintain records related to AI management.\"\n  - \"Training Materials: Develop training materials for employees involves in AI activities.\" \n\n- Box Title: \"Feedback and Improvement\"\n  - \"Feedback Loop: Set up channels to gather feedback from users, stakeholders, and employees.\"\n  - \"Improvement Actions: Regularly review and enhance AI processes based on feedback and performance data.\"",
+      "summary_clean": "Diagram centers on ISO/IEC 42001:2023 and maps key AI management system requirement areas around it (e.g., Understanding and Commitment; Scope Definition; Leadership and Governance; Monitoring and Measurement; Continual Improvement; Internal Audits; Documentation; Risk Assessment; AI Implementation). Each area contains short bulleted guidance items.",
+      "description_clean": "Center:\n- \"ISO/IEC 42001:2023\"\n\nTop center box:\n- Title: \"Understanding and Commitment\"\n  - \"Awareness: Ensure stakeholders grasp ISO/IEC 42001’s purpose and benefits.\"\n  - \"Commitment: Gain top management’s commitment to implementing and maintaining an AI management system.\"\n\nRight column, top to bottom (unordered with respect to center spokes):\n- Box Title: \"Scope Definition\"\n  - \"Identify AI Activities: Determine with AI processes, products, or services are included.\"\n  - \"Exclusions: Clearly define any excluded areas.\"\n\n- Box Title: \"Leadership and Governance\"\n  - \"Appoint a Responsible Person: Designate someone to oversee AI management.\"\n  - \"Policy Development: Create an AI policy aligned with organizational goals.\"\n\n- Box Title: \"Risk Assessment and Opportunity Identification\"\n  - \"Assess Risks: Identity and evaluate risks linked to AI deployment.\"\n  - \"Identity Opportunities: Spot chances to enhance AI Processes.\"\n\n- Box Title: \"AI Implementation and Operation\"\n  - \"Design and Development: Implement AI systems following established guidelines.\"\n  - \"Data Management: Ensure data quality, privacy and security.\"\n  - \"Testing and Validation: Validate AI models and algorithms.\"\n  - \"Deployment: Roll out AI solutions in a controlled manner.\"\n\nBottom center box:\n- Title: \"Monitoring and Measurement\"\n  - \"Performance Metrics: Define metrics to gauge AI performance.\"\n  - \"Monitoring: Continuously monitor AI systems for effectiveness and compliance.\"\n\nLeft column, top to bottom (unordered with respect to center spokes):\n- Box Title: \"Continual Improvement\"\n  - \"Learn and Adapt: Continuously learn form experiences and adapt AI Technology.\"\n  - \"Stay Updated: Keep abreast of AI technology advancements and best practices.\"\n\n- Box Title: \"Internal Audits and Reviews\"\n  - \"Regular Audits: Conduct internal audits to check compliance with ISO/IEC 42001.\"\n  - \"Management Review: Periodically assess the AI management system’s effectiveness.\"\n\n- Box Title: \"Documentation and Records\"\n  - \"Document Control: Maintain records related to AI management.\"\n  - \"Training Materials: Develop training materials for employees involves in AI activities.\"\n\n- Box Title: \"Feedback and Improvement\"\n  - \"Feedback Loop: Set up channels to gather feedback from users, stakeholders, and employees.\"\n  - \"Improvement Actions: Regularly review and enhance AI processes based on feedback and performance data.\"",
+      "source_issues": [
+        "'Learn and Adapt: Continuously learn form experiences and adapt AI Technology.' contains 'form' which appears to be a typo but is transcribed as printed.",
+        "'Assess Risks: Identity and evaluate risks linked to AI deployment.' uses 'Identity' where 'Identify' might be intended; transcribed as printed."
+      ],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 4574,
+          "output_tokens": 1018,
+          "reasoning_tokens": 256
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "ambiguous",
+        "verification_outcome": "needs_review",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_ambiguous.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/Microsoft_SSPA__Supplier_Security_and_Privacy_Assurance_EzcuQNm.png",
+      "filename": "Microsoft_SSPA__Supplier_Security_and_Privacy_Assurance_EzcuQNm.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "ad7f8eeab971a1d23ca7ed5c6f1045059eb80077b8e8335b4d0a121f46c144dd",
+      "image_dimensions": "2562x1966",
+      "framework": "Microsoft SSPA",
+      "title_in_image": "Microsoft SSPA (Supplier Security and Privacy Assurance)",
+      "diagram_type": "cycle",
+      "has_explicit_order": false,
+      "summary": "A circular roadmap for Microsoft SSPA (Supplier Security and Privacy Assurance) showing steps around a central \"Microsoft SSPA\" hub. Callouts around the circle name actions such as enrolling, setting up profiles, completing tasks, submitting for review, and status turning green.",
+      "description": "Central element: \"Microsoft SSPA\"\n\nVisible callout labels around the circular roadmap (presented as a flat list; no explicit numeric ordering shown):\n- \"Enroll in SSPA\"\n- \"Set up Data Processing Profile\"\n- \"Complete required compliance tasks\"\n- \"Complete self- attestation & other assurance requirement\"\n- \"Submit for SSPA review\"\n- \"SSPA status turns green\"\n\nOther visible elements:\n- The circle contains repeating colored segments with icons (chevrons, gear, lightbulb, location pin, rocket, envelope, people) but no textual labels inside those segments beyond icons.\n- Two short footer lines visible (disclaimer lines) below the diagram: \"*This is the suggestive roadmap to be followed for achieving compliance frameworks/standards.\" and \"*INTERCERT provides audit and assessment services to comply with frameworks/standards.\"",
+      "summary_clean": "A circular roadmap for Microsoft SSPA (Supplier Security and Privacy Assurance) showing steps around a central \"Microsoft SSPA\" hub. Callouts around the circle name actions such as enrolling, setting up profiles, completing tasks, submitting for review, and status turning green.",
+      "description_clean": "Central element: \"Microsoft SSPA\"\n\nVisible callout labels around the circular roadmap (presented as a flat list; no explicit numeric ordering shown):\n- \"Enroll in SSPA\"\n- \"Set up Data Processing Profile\"\n- \"Complete required compliance tasks\"\n- \"Complete self- attestation & other assurance requirement\"\n- \"Submit for SSPA review\"\n- \"SSPA status turns green\"",
+      "source_issues": [
+        "The label \"Complete self- attestation & other assurance requirement\" contains a hyphenated line break/spacing as printed.",
+        "Diagram is circular with chevron icons suggesting progression but contains no printed step numbers; ordering is therefore ambiguous."
+      ],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 4721,
+          "output_tokens": 664,
+          "reasoning_tokens": 256
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "ambiguous",
+        "verification_outcome": "needs_review",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_ambiguous.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/NIST-800-53-National-Institute-of-Standards-and-a-Technology-Special-Publication-800-53.png",
+      "filename": "NIST-800-53-National-Institute-of-Standards-and-a-Technology-Special-Publication-800-53.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "7db50ccd09d648a9140bebb11a8e97f628a7a3678b3b58ef2f9e2e30d8f54d7c",
+      "image_dimensions": "2880x2102",
+      "framework": "NIST SP 800-53",
+      "title_in_image": "NIST 800-53 (National Institute of Standards and a Technology Special Publication 800-53",
+      "diagram_type": "sequential_roadmap",
+      "has_explicit_order": true,
+      "summary": "A suggestive roadmap for implementation of the NIST SP 800-53 framework showing a central implementation goal and a series of connected steps: Setting the Stage for success; Assessing your current position; Customize it; Identifying gaps and creating an action plan; Implementing and Continuously improving. The diagram visually links these steps around a central circle labelled \"Implementation of NIST 800 53 Framework.\"",
+      "description": "Central element:\n- \"Implementation of NIST 800 53 Framework\" (large central white circle partially visible)\n\nConnected steps (each is a callout connected to the central circle or to each other):\n- \"Setting the Stage for success\" (yellow callout connected via a yellow line to a small yellow circular icon showing a person flexing arms)\n- \"Assessing your current position\" (orange callout connected via an orange line to an orange circular icon showing a network/plug symbol)\n- \"Customize it\" (blue callout connected via a blue line to a blue circular icon showing sliders/controls)\n- \"Identifying gaps and creating an action plan\" (teal/aqua callout connected via a teal line to a teal circular icon showing a document with location markers)\n- \"Implementing and Continuously improving\" (peach/orange callout connected via a peach/orange line to a peach/orange circular icon showing an upward chart with a phone/handset)\n\nFooter disclaimers (visible but not transcribed into description):\n- Blue small-text footer lines are visible starting with \"*This is the suggestive roadmap to be followed for achieving compliance frameworks/standards.\" and \"*INTERCERT provides audit and assessment services to comply with frameworks/standards.\"",
+      "summary_clean": "A suggestive roadmap for implementation of the NIST SP 800-53 framework showing a central implementation goal and a series of connected steps: Setting the Stage for success; Assessing your current position; Customize it; Identifying gaps and creating an action plan; Implementing and Continuously improving. The diagram visually links these steps around a central circle labelled \"Implementation of NIST 800 53 Framework.\"",
+      "description_clean": "Central element:\n- \"Implementation of NIST 800 53 Framework\" (large central white circle partially visible)\n\nConnected steps (each is a callout connected to the central circle or to each other):\n- \"Setting the Stage for success\"\n- \"Assessing your current position\"\n- \"Customize it\"\n- \"Identifying gaps and creating an action plan\"\n- \"Implementing and Continuously improving\"",
+      "source_issues": [
+        "Top title reads \"NIST 800-53 (National Institute of Standards and a Technology Special Publication 800-53\" — contains the phrase \"and a Technology\" which appears anomalous",
+        "Central circle text uses \"NIST 800 53\" (space between 800 and 53) rather than the hyphenated form used in the title",
+        "The callout 'Implementing and Continuously improving' shows inconsistent capitalization (lowercase 'improving')"
+      ],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 4503,
+          "output_tokens": 953,
+          "reasoning_tokens": 384
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "ambiguous",
+        "verification_outcome": "needs_review",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_ambiguous.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/NIST_800-171_National_Institute_of_Standards_and_Technology_Special_Publication_800-171.png",
+      "filename": "NIST_800-171_National_Institute_of_Standards_and_Technology_Special_Publication_800-171.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "b417b2377cda2ad437eb78112369efa7a64dd79a4f84758044b9f8b9fad208f3",
+      "image_dimensions": "2851x1656",
+      "framework": "NIST SP 800-171",
+      "title_in_image": "NIST 800-171",
+      "diagram_type": "categorical",
+      "has_explicit_order": false,
+      "summary": "Infographic listing the NIST 800-171 control categories arranged left and right around a central NIST 800-171 circle. The diagram visually groups multiple control category labels with icons; it does not present numbered steps or dates.",
+      "description": "Central title: \"NIST 800-171\"\n\nLeft-side control labels (top to bottom as visually presented):\n- Access Control\n- Awareness & Training\n- Audit & Accountability\n- Configuration Management\n- Identification & Authentication\n- Incident Response\n- Maintenance\n\nRight-side control labels (top to bottom as visually presented):\n- Media Protection\n- Personnel Security\n- Physical Protection\n- Risk Assessment\n- Security Assessment\n- System & Communications Protection\n- System & Information Integrity\n\nFooter note (visible):\n- \"*This is the suggestive roadmap to be followed for achieving compliance frameworks/standards.\"\n- \"*INTERCERT provides audit and assessment services to comply with frameworks/standards.\"",
+      "summary_clean": "Infographic listing the NIST 800-171 control categories arranged left and right around a central NIST 800-171 circle. The diagram visually groups multiple control category labels with icons; it does not present numbered steps or dates.",
+      "description_clean": "Central title: \"NIST 800-171\"\n\nLeft-side control labels (top to bottom as visually presented):\n- Access Control\n- Awareness & Training\n- Audit & Accountability\n- Configuration Management\n- Identification & Authentication\n- Incident Response\n- Maintenance\n\nRight-side control labels (top to bottom as visually presented):\n- Media Protection\n- Personnel Security\n- Physical Protection\n- Risk Assessment\n- Security Assessment\n- System & Communications Protection\n- System & Information Integrity",
+      "source_issues": [],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": false,
+      "hand_edited": true,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 3812,
+          "output_tokens": 393,
+          "reasoning_tokens": 64
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "ambiguous",
+        "verification_outcome": "needs_review",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_ambiguous.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/PCI_DSS_V4.0.1-_Payment_Card_Industry_Data_Security_Standard_VStpf06.png",
+      "filename": "PCI_DSS_V4.0.1-_Payment_Card_Industry_Data_Security_Standard_VStpf06.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "4919cea4efbbf93b4dd63244ee216890c6df5da8a4f5697636db924a0f74ab38",
+      "image_dimensions": "1375x1324",
+      "framework": "PCI DSS v4.0.1",
+      "title_in_image": "PCI DSS V4.0.1- Payment Card Industry Data Security Standard",
+      "diagram_type": "timeline",
+      "has_explicit_order": true,
+      "summary": "A timeline showing the introduction and releases of PCI DSS versions from 2004 through projected dates in 2025, with months and short notes for each milestone. The timeline includes historical releases (v1.0 through v3.2.1), the introduction of v4.0, projected retirement/replacement notes, and a statement about future-dated requirements for v4.0.1.",
+      "description": "Chronological events shown on the timeline (month and year exactly as printed, followed by the boxed text beneath each marker):\n\n- December 2004\n  - PCI DSS 1.0 is Introduced\n\n- September 2006\n  - PCI DSS v1.1 is released\n\n- October 2008\n  - PCI DSS v1.2 is introduced\n\n- August 2009\n  - PCI DSS v1.2.1 is introduced\n\n- October 2010\n  - PCI DSS v2.0 is introduced\n\n- November 2013\n  - PCI DSS v3.0 is Introduced\n\n- April 2015\n  - PCI DSS v3.1 is released as a short-term\n\n- April 2016\n  - PCI DSS v3.2 is introduced\n\n- May 2018\n  - PCI DSS v3.2.1 is introduced\n\n- March 2022\n  - PCI DSS v4.0 is introduced\n\n- March 2024\n  - PCI DSS v3.2.1 will be retired and replaced with v4.0\n\n- March 2025\n  - All Future-dated requirements in PCI DSS v4.0.1 are now effective and must be validated in assessments.\n\nAdditional notes printed on the diagram:\n- \"*Note: These dates are based on projections from the PCI SSC and may be subject to change.\" (printed below the March 2025 box)\n\nFooter statement (not included in main description per instructions):\n- \"*INTERCERT provides audit and assessment services to comply with frameworks/standards.\"",
+      "summary_clean": "A timeline showing the introduction and releases of PCI DSS versions from 2004 through projected dates in 2025, with months and short notes for each milestone. The timeline includes historical releases (v1.0 through v3.2.1), the introduction of v4.0, projected retirement/replacement notes, and a statement about future-dated requirements for v4.0.1.",
+      "description_clean": "Chronological events shown on the timeline (month and year exactly as printed, followed by the boxed text beneath each marker):\n\n- December 2004\n  - PCI DSS 1.0 is Introduced\n\n- September 2006\n  - PCI DSS v1.1 is released\n\n- October 2008\n  - PCI DSS v1.2 is introduced\n\n- August 2009\n  - PCI DSS v1.2.1 is introduced\n\n- October 2010\n  - PCI DSS v2.0 is introduced\n\n- November 2013\n  - PCI DSS v3.0 is Introduced\n\n- April 2015\n  - PCI DSS v3.1 is released as a short-term\n\n- April 2016\n  - PCI DSS v3.2 is introduced\n\n- May 2018\n  - PCI DSS v3.2.1 is introduced\n\n- March 2022\n  - PCI DSS v4.0 is introduced\n\n- March 2024\n  - PCI DSS v3.2.1 will be retired and replaced with v4.0\n\n- March 2025\n  - All Future-dated requirements in PCI DSS v4.0.1 are now effective and must be validated in assessments.\n\nAdditional notes printed on the diagram:\n- \"*Note: These dates are based on projections from the PCI SSC and may be subject to change.\" (printed below the March 2025 box)",
+      "source_issues": [
+        "The text box under April 2015 reads \"PCI DSS v3.1 is released as a short-term\" and appears cut off or incomplete.",
+        "Inconsistent capitalization: e.g., \"PCI DSS 1.0 is Introduced\" vs \"PCI DSS v1.1 is released\" vs \"PCI DSS v3.0 is Introduced\" (kept as printed)."
+      ],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 3059,
+          "output_tokens": 937,
+          "reasoning_tokens": 320
+        }
+      },
+      "mapping": {
+        "status": "confirmed",
+        "service_document": {
+          "canonical_uri": "https://www.intercert.com/services/governance-risk-compliance/pci-dss",
+          "source_scope": "grc",
+          "source_ref": "subone_grcsubpage#14",
+          "title": "PCI DSS",
+          "document_id": "028fb909-4bbe-4d2a-b2bf-f25307a1556b"
+        },
+        "evidence": {
+          "match_method": "mysql_exact_filename",
+          "mysql_table": "subone_grcsecfive",
+          "mysql_record_id": 11,
+          "matched_column": "img",
+          "matched_value": "images/PCI_DSS_V4.0.1-_Payment_Card_Industry_Data_Security_Standard_VStpf06.png",
+          "verification_status": "confirmed_exact",
+          "source_url": "https://intercert-web.s3.ap-south-1.amazonaws.com/media/images/PCI_DSS_V4.0.1-_Payment_Card_Industry_Data_Security_Standard_VStpf06.png",
+          "public_sha256": "4919cea4efbbf93b4dd63244ee216890c6df5da8a4f5697636db924a0f74ab38"
+        }
+      }
+    },
+    {
+      "image_key": "Intercert_Img/PIPEDA--Personal-Information-Protection-and-Electronic-Documents-Act_EHjUpyk.png",
+      "filename": "PIPEDA--Personal-Information-Protection-and-Electronic-Documents-Act_EHjUpyk.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "f7f5de2bceb44290ba3d3bcf4c5bd4b22273d6dd3d86cdc03d500cb4b4f9118e",
+      "image_dimensions": "2880x2282",
+      "framework": "PIPEDA",
+      "title_in_image": "PIPEDA ( Personal Information Protection and Electronic Documents Act)",
+      "diagram_type": "categorical",
+      "has_explicit_order": false,
+      "summary": "Infographic showing which types of organizations must comply with PIPEDA. The diagram centers on “PIPEDA” and lists industry categories around it (e.g., Banking and Finance, Radio and Television Stations, Inter-Provincial Trucking, Telecommunication Companies, Airports and Airlines, Navigation and Shipping by Water).",
+      "description": "Center: \"PIPEDA\"\nHeading: \"Who Must Comply with PIPEDA?\"\nListed categories (items appear around the central PIPEDA hub):\n- \"Banking and Finance\"\n- \"Radio and Television Stations\"\n- \"Inter-Provincial Trucking\"\n- \"Telecommunication Companies\"\n- \"Airports and Airlines\"\n- \"Navigation and Shipping by Water\"\nFooter notes visible (not transcribed here): a suggestive roadmap/disclaimer about INTERCERT providing audit and assessment services.",
+      "summary_clean": "Infographic showing which types of organizations must comply with PIPEDA. The diagram centers on “PIPEDA” and lists industry categories around it (e.g., Banking and Finance, Radio and Television Stations, Inter-Provincial Trucking, Telecommunication Companies, Airports and Airlines, Navigation and Shipping by Water).",
+      "description_clean": "Center: \"PIPEDA\"\nHeading: \"Who Must Comply with PIPEDA?\"\nListed categories (items appear around the central PIPEDA hub):\n- \"Banking and Finance\"\n- \"Radio and Television Stations\"\n- \"Inter-Provincial Trucking\"\n- \"Telecommunication Companies\"\n- \"Airports and Airlines\"\n- \"Navigation and Shipping by Water\"",
+      "source_issues": [],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 4801,
+          "output_tokens": 421,
+          "reasoning_tokens": 128
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "ambiguous",
+        "verification_outcome": "needs_review",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_ambiguous.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/WCAG---ADA_X2plKzv.png",
+      "filename": "WCAG---ADA_X2plKzv.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "2c074be8f534b89106216e567084b1455ef329086b05eb674002c063c3870c33",
+      "image_dimensions": "2016x2533",
+      "framework": "WCAG & ADA",
+      "title_in_image": "WCAG & ADA",
+      "diagram_type": "matrix_table",
+      "has_explicit_order": false,
+      "summary": "A matrix mapping WCAG guidelines to suggested accessibility actions at Level A, Level AA and Level AAA across the four WCAG principles (Perceivable, Operable, Understandable, Robust). Each guideline row lists the recommended items for Level A, Level AA and Level AAA where provided.",
+      "description": "Columns: Principles | Guidelines | Level A | Level AA | Level AAA\n\nPerceivable\n- Guideline: Text Alternative\n  - Level A: Provide text alternative for all non text content\n  - Level AA: [empty]\n  - Level AAA: [empty]\n\n- Guideline: Time-based Media\n  - Level A: Provide alternative to video/ audio content Provide captions for video and audio Video with audio has a second alternative\n  - Level AA: Live video has captions. Users have access to audio descriptions of video content\n  - Level AAA: Provide sign language translations for videos Provide extended audio description for videos Provide text alternative to videos Provide alternatives for live audio\n\n- Guideline: Adaptable\n  - Level A: Logical structure Present content in a meaningful order Use more than one sense for instructions\n  - Level AA: [empty]\n  - Level AAA: [empty]\n\n- Guideline: Distinguishable\n  - Level A: Don't use presentation that relies solely on color Don't play audio and animations automatically\n  - Level AA: Content ratio between text and background is at least 4.5:1. Text can be resized to at least 200% without loss of content or function. Don't use image of text.\n  - Level AAA: Contrast ratio between text and background is at least 7:1. Audio is clear for listeners to hear. Offers users a range of presentation options. Don't use images of text.\n\nOperable\n- Guideline: Keyboard Accessible\n  - Level A: Accessible by keyboard only Don't trap keyboard users\n  - Level AA: [empty]\n  - Level AAA: Accessible by keyboard only.\n\n- Guideline: Enough Time\n  - Level A: Provide user controls for content with time limits Provide user controls for moving content\n  - Level AA: [empty]\n  - Level AAA: No time limits Let users control interruptions, except emergencies Preserve user data when re-authenticating.\n\n- Guideline: Seizures\n  - Level A: No content flashes for more than 3 times per second\n  - Level AA: [empty]\n  - Level AAA: Avoid flashing objects or limit to three flashes per second.\n\n- Guideline: Navigable\n  - Level A: Provide ability to skip duplicate content. Provide descriptive page titles. Support logical navigation and viewing order. Provide descriptive link text.\n  - Level AA: Offer Multiple ways to find pages. Use descriptive headings and labels. Ensure keyboard focus is visible and clear\n  - Level AAA: Let users know where they are Every link's purpose is clear from the next Break content with headings\n\nUnderstandable\n- Guideline: Readable\n  - Level A: Specify language of each page\n  - Level AA: Tell the user when the language within a page changes.\n  - Level AAA: Explain unusual words Explain any abbreviation or jargon Users with nine years of school can read your content Explain any words that are hard to pronounce\n\n- Guideline: Predictable\n  - Level A: Elements don't change when they receive focus Elements don't change when they receive input.\n  - Level AA: Keep menus consistent. Use icons and buttons consistently.\n  - Level AAA: Don't change elements on your website until user asks\n\n- Guideline: Input Assistance\n  - Level A: Clearly identify input errors Label elements and give instructions\n  - Level AA: Suggest corrections when the user makes an error. Reduce the risk of input errors for sensitive data.\n  - Level AAA: Provide detailed help and instructions. Reduce risk of input errors.\n\nRobust\n- Guideline: Compatible\n  - Level A: Clearly identify input errors Label elements and give instructions\n  - Level AA: [empty]\n  - Level AAA: [empty]\n\nFooter note (not included in table): The image includes two small footer lines beginning with \"*This is the suggestive roadmap to be followed for achieving compliance frameworks/standards.\" and \"*INTERCERT provides audit and assessment services to comply with frameworks/standards.\"",
+      "summary_clean": "A matrix mapping WCAG guidelines to suggested accessibility actions at Level A, Level AA and Level AAA across the four WCAG principles (Perceivable, Operable, Understandable, Robust). Each guideline row lists the recommended items for Level A, Level AA and Level AAA where provided.",
+      "description_clean": "Columns: Principles | Guidelines | Level A | Level AA | Level AAA\n\nPerceivable\n- Guideline: Text Alternative\n  - Level A: Provide text alternative for all non text content\n  - Level AA: [empty]\n  - Level AAA: [empty]\n\n- Guideline: Time-based Media\n  - Level A: Provide alternative to video/ audio content Provide captions for video and audio Video with audio has a second alternative\n  - Level AA: Live video has captions. Users have access to audio descriptions of video content\n  - Level AAA: Provide sign language translations for videos Provide extended audio description for videos Provide text alternative to videos Provide alternatives for live audio\n\n- Guideline: Adaptable\n  - Level A: Logical structure Present content in a meaningful order Use more than one sense for instructions\n  - Level AA: [empty]\n  - Level AAA: [empty]\n\n- Guideline: Distinguishable\n  - Level A: Don't use presentation that relies solely on color Don't play audio and animations automatically\n  - Level AA: Content ratio between text and background is at least 4.5:1. Text can be resized to at least 200% without loss of content or function. Don't use image of text.\n  - Level AAA: Contrast ratio between text and background is at least 7:1. Audio is clear for listeners to hear. Offers users a range of presentation options. Don't use images of text.\n\nOperable\n- Guideline: Keyboard Accessible\n  - Level A: Accessible by keyboard only Don't trap keyboard users\n  - Level AA: [empty]\n  - Level AAA: Accessible by keyboard only.\n\n- Guideline: Enough Time\n  - Level A: Provide user controls for content with time limits Provide user controls for moving content\n  - Level AA: [empty]\n  - Level AAA: No time limits Let users control interruptions, except emergencies Preserve user data when re-authenticating.\n\n- Guideline: Seizures\n  - Level A: No content flashes for more than 3 times per second\n  - Level AA: [empty]\n  - Level AAA: Avoid flashing objects or limit to three flashes per second.\n\n- Guideline: Navigable\n  - Level A: Provide ability to skip duplicate content. Provide descriptive page titles. Support logical navigation and viewing order. Provide descriptive link text.\n  - Level AA: Offer Multiple ways to find pages. Use descriptive headings and labels. Ensure keyboard focus is visible and clear\n  - Level AAA: Let users know where they are Every link's purpose is clear from the next Break content with headings\n\nUnderstandable\n- Guideline: Readable\n  - Level A: Specify language of each page\n  - Level AA: Tell the user when the language within a page changes.\n  - Level AAA: Explain unusual words Explain any abbreviation or jargon Users with nine years of school can read your content Explain any words that are hard to pronounce\n\n- Guideline: Predictable\n  - Level A: Elements don't change when they receive focus Elements don't change when they receive input.\n  - Level AA: Keep menus consistent. Use icons and buttons consistently.\n  - Level AAA: Don't change elements on your website until user asks\n\n- Guideline: Input Assistance\n  - Level A: Clearly identify input errors Label elements and give instructions\n  - Level AA: Suggest corrections when the user makes an error. Reduce the risk of input errors for sensitive data.\n  - Level AAA: Provide detailed help and instructions. Reduce risk of input errors.\n\nRobust\n- Guideline: Compatible\n  - Level A: Clearly identify input errors Label elements and give instructions\n  - Level AA: [empty]\n  - Level AAA: [empty]",
+      "source_issues": [
+        "Level AAA Navigable cell contains the fragment 'Every link's purpose is clear from the next' which appears to end mid-sentence.",
+        "The text 'Clearly identify input errors Label elements and give instructions' appears as Level A for both 'Input Assistance' and 'Compatible' (duplicate identical text in two guideline rows)."
+      ],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": true,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "medium",
+        "max_output_tokens_used": 10000,
+        "usage": {
+          "input_tokens": 4790,
+          "output_tokens": 4150,
+          "reasoning_tokens": 3072
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "ambiguous",
+        "verification_outcome": "needs_review",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_ambiguous.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/flowchart__MQUoag6.png",
+      "filename": "flowchart__MQUoag6.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "4c463ebd3553a16e36945fe8f9f57706e67d9b8b4422d684710106c8d9881d26",
+      "image_dimensions": "1920x1080",
+      "framework": "DPDP Act 2023 (India)",
+      "title_in_image": "DPDP (Digital Personal Data Protection Act 2023) Roadmap (Flowchart)",
+      "diagram_type": "sequential_roadmap",
+      "has_explicit_order": true,
+      "summary": "A nine-stage roadmap for DPDP (Digital Personal Data Protection Act 2023) compliance, showing key focus areas from lawful processing through enforcement. Each numbered stage includes 2–3 bullet points describing actions or requirements for that stage.",
+      "description": "Stage 1: Lawful Data Processing\n- Ensure all personal data is collected and used fairly.\n- Obtain explicit consent wherever required.\n- Limit processing to defined purposes.\n\nStage 2: Handling Sensitive Personal Data\n- Apply extra safeguards for sensitive categories (health, financial, biometric, etc.).\n- Collect and process with explicit consent.\n- Follow restrictions on international transfers.\n\nStage 3: Effective Consent Management\n- Consent must be informed, specific, and freely given.\n- Enable individuals to withdraw consent anytime.\n- Maintain verifiable consent records for audit.\n\nStage 4: Data Minimization & Purpose Alignment\n- Collect only what is necessary for the stated purpose.\n- Avoid using data for unrelated purposes without new consent.\n\nStage 5: Upholding Individual Rights\n- Enable access, correction, and deletion requests.\n- Support data portability where applicable.\n- Ensure processes respect the individual's control over their data.\n\nStage 6: Security & Safeguards\n- Implement technical and organizational measures to protect data.\n- Ensure confidentiality, integrity, and availability.\n- Report breaches promptly if required.\n\nStage 7: Accountability & Governance\n- Appoint a Data Protection Officer or responsible authority.\n- Maintain records of processing activities.\n- Conduct risk assessments and embed privacy by design.\n\nStage 8: Cross-Border Data Transfers\n- Ensure adequate protection when transferring sensitive data abroad.\n- Comply with government-mandated conditions for international transfers.\n\nStage 9: Enforcement & Compliance\n- Align with Data Protection Board directions.\n- Understand penalties and enforce corrective actions proactively.",
+      "summary_clean": "A nine-stage roadmap for DPDP (Digital Personal Data Protection Act 2023) compliance, showing key focus areas from lawful processing through enforcement. Each numbered stage includes 2–3 bullet points describing actions or requirements for that stage.",
+      "description_clean": "Stage 1: Lawful Data Processing\n- Ensure all personal data is collected and used fairly.\n- Obtain explicit consent wherever required.\n- Limit processing to defined purposes.\n\nStage 2: Handling Sensitive Personal Data\n- Apply extra safeguards for sensitive categories (health, financial, biometric, etc.).\n- Collect and process with explicit consent.\n- Follow restrictions on international transfers.\n\nStage 3: Effective Consent Management\n- Consent must be informed, specific, and freely given.\n- Enable individuals to withdraw consent anytime.\n- Maintain verifiable consent records for audit.\n\nStage 4: Data Minimization & Purpose Alignment\n- Collect only what is necessary for the stated purpose.\n- Avoid using data for unrelated purposes without new consent.\n\nStage 5: Upholding Individual Rights\n- Enable access, correction, and deletion requests.\n- Support data portability where applicable.\n- Ensure processes respect the individual's control over their data.\n\nStage 6: Security & Safeguards\n- Implement technical and organizational measures to protect data.\n- Ensure confidentiality, integrity, and availability.\n- Report breaches promptly if required.\n\nStage 7: Accountability & Governance\n- Appoint a Data Protection Officer or responsible authority.\n- Maintain records of processing activities.\n- Conduct risk assessments and embed privacy by design.\n\nStage 8: Cross-Border Data Transfers\n- Ensure adequate protection when transferring sensitive data abroad.\n- Comply with government-mandated conditions for international transfers.\n\nStage 9: Enforcement & Compliance\n- Align with Data Protection Board directions.\n- Understand penalties and enforce corrective actions proactively.",
+      "source_issues": [],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": false,
+      "needs_review": false,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 3000,
+        "usage": {
+          "input_tokens": 3324,
+          "output_tokens": 926,
+          "reasoning_tokens": 448
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "ambiguous",
+        "verification_outcome": "needs_review",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_ambiguous.json"
+        ]
+      }
+    },
+    {
+      "image_key": "Intercert_Img/infographic_4_qk0H6im.png",
+      "filename": "infographic_4_qk0H6im.png",
+      "collection": "Intercert_Img",
+      "image_sha256": "873cd41466b0f5b12b384e1909b2f7812c91db5a70cb356a7a3db042ba1471ce",
+      "image_dimensions": "1290x688",
+      "framework": "ISO/IEC 20000 / ITIL 4 / COBIT",
+      "title_in_image": "ISO2000 Service Management Systems (SMS) Content, Leadership, Planning and Support",
+      "diagram_type": "mapping",
+      "has_explicit_order": false,
+      "summary": "A mapping diagram linking COBIT® Domains (grey areas) with ITIL4® Service Value System (SVS) activities (red) and ISO/IEC 20000–2018 elements (orange). The diagram places governance, planning, build, delivery, monitoring and improvement concepts in corresponding COBIT domains and shows related ITIL/ISO labels.",
+      "description": "Legend (bottom):\n- Grey = COBIT® Domains\n- Red = ITIL4® Service Value System (SVS) Activities\n- Orange = ISO/IEC 20000–2018\n\nTop (single horizontal COBIT domain bar):\n- Orange box: \"Governance\"\n- Center red box: \"ISO2000 Service Management Systems (SMS) Content, Leadership, Planning and Support\"\n- Grey text/icon at right: \"Evaluate, Direct & Monitor\"\n\nSecond horizontal COBIT domain bar (Align, Plan & Organize area):\n- Orange box: \"Engage\"\n- Orange box: \"Plan\"\n- Red box (center): \"Operational Planning and Control\"\n- White text under center: \"Align, Plan & Organize\"\n- Right-hand red stacked boxes (three):\n  - \"Service Portfolio\"\n  - \"Relationship and Agreement\"\n  - \"Supply & Demand\"\n- Right-side grey area: empty except for orange vertical box overlapping into this column (see Improvement below) and grey text at far right: \"Monitor, Evaluate & Assess\"\n\nMiddle horizontal COBIT domain bar (Build, Acquire & Implement area):\n- Orange box (left): \"Obtain/Build\"\n- White text nearby: \"Build, Acquire & Implement\"\n- Orange box (center-left): \"Design and Transition\"\n- Red box (center-right): \"Service Design, Build & Transition\"\n\nVertical element overlapping middle and lower bars (improvement column):\n- Tall orange vertical box: \"Improvement\"\n- Small red box next to it: \"Improve\"\n- To the right in the grey column: red box: \"Performance Evaluation\"\n\nBottom horizontal COBIT domain bar (Deliver, Service & Support area):\n- Orange box (left): \"Deliver and Support\"\n- White text nearby: \"Deliver, Service & Support\"\n- Long red box across bottom center: \"Resolution and fulfillment\"\n\nFooter/Legend text (exact wording visible):\n- \"COBIT® Domains\" (grey swatch)\n- \"ITIL4® Service Value System (SVS) Activities\" (red swatch)\n- \"ISO/IEC 20000–2018\" (orange swatch)\n",
+      "summary_clean": "A mapping diagram linking COBIT® Domains (grey areas) with ITIL4® Service Value System (SVS) activities (red) and ISO/IEC 20000–2018 elements (orange). The diagram places governance, planning, build, delivery, monitoring and improvement concepts in corresponding COBIT domains and shows related ITIL/ISO labels.",
+      "description_clean": "Legend (bottom):\n- Grey = COBIT® Domains\n- Red = ITIL4® Service Value System (SVS) Activities\n- Orange = ISO/IEC 20000–2018\n\nTop (single horizontal COBIT domain bar):\n- Orange box: \"Governance\"\n- Center red box: \"ISO2000 Service Management Systems (SMS) Content, Leadership, Planning and Support\"\n- Grey text/icon at right: \"Evaluate, Direct & Monitor\"\n\nSecond horizontal COBIT domain bar (Align, Plan & Organize area):\n- Orange box: \"Engage\"\n- Orange box: \"Plan\"\n- Red box (center): \"Operational Planning and Control\"\n- White text under center: \"Align, Plan & Organize\"\n- Right-hand red stacked boxes (three):\n  - \"Service Portfolio\"\n  - \"Relationship and Agreement\"\n  - \"Supply & Demand\"\n- Right-side grey area: empty except for orange vertical box overlapping into this column (see Improvement below) and grey text at far right: \"Monitor, Evaluate & Assess\"\n\nMiddle horizontal COBIT domain bar (Build, Acquire & Implement area):\n- Orange box (left): \"Obtain/Build\"\n- White text nearby: \"Build, Acquire & Implement\"\n- Orange box (center-left): \"Design and Transition\"\n- Red box (center-right): \"Service Design, Build & Transition\"\n\nVertical element overlapping middle and lower bars (improvement column):\n- Tall orange vertical box: \"Improvement\"\n- Small red box next to it: \"Improve\"\n- To the right in the grey column: red box: \"Performance Evaluation\"\n\nBottom horizontal COBIT domain bar (Deliver, Service & Support area):\n- Orange box (left): \"Deliver and Support\"\n- White text nearby: \"Deliver, Service & Support\"\n- Long red box across bottom center: \"Resolution and fulfillment\"\n\n- \"COBIT® Domains\" (grey swatch)\n- \"ITIL4® Service Value System (SVS) Activities\" (red swatch)\n- \"ISO/IEC 20000–2018\" (orange swatch)",
+      "source_issues": [
+        "The center-top red box uses the text \"ISO2000 Service Management Systems (SMS) Content, Leadership, Planning and Support\" which appears to have a typographical inconsistency (\"ISO2000\" vs expected \"ISO20000\")."
+      ],
+      "unreadable_text": [],
+      "has_intercert_disclaimer": false,
+      "needs_review": true,
+      "hand_edited": false,
+      "extraction": {
+        "model": "gpt-5-mini-2025-08-07",
+        "prompt_version": "v2",
+        "reasoning_effort": "low",
+        "max_output_tokens_used": 6000,
+        "usage": {
+          "input_tokens": 1991,
+          "output_tokens": 1207,
+          "reasoning_tokens": 448
+        }
+      },
+      "mapping": {
+        "status": "unresolved",
+        "resolution_state": "unmatched",
+        "verification_outcome": "still_unmatched",
+        "evidence_files": [
+          "image_service_verification.json",
+          "image_service_unmatched.json"
+        ]
+      }
+    }
+  ]
+}
