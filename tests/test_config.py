@@ -3,7 +3,7 @@
 from pathlib import Path
 
 import pytest
-from pydantic import ValidationError
+from pydantic import SecretStr, ValidationError
 
 from preston.core.config import Settings, get_settings
 
@@ -19,6 +19,10 @@ def clean_environment(monkeypatch: pytest.MonkeyPatch) -> None:
         "API_V1_PREFIX",
         "DATABASE_URL",
         "SOURCE_MYSQL_URL",
+        "OPENAI_API_KEY",
+        "EMBEDDING_MODEL",
+        "EMBEDDING_DIMENSIONS",
+        "EMBEDDING_TIMEOUT_SECONDS",
     ):
         monkeypatch.delenv(f"PRESTON_{name}", raising=False)
 
@@ -154,3 +158,104 @@ def test_malformed_source_mysql_url_is_rejected(
 
     with pytest.raises(ValidationError):
         _ = settings_from(None)
+
+
+# ---------------------------------------------------------------------------
+# Embedding provider (Phase 7)
+# ---------------------------------------------------------------------------
+
+# Invented for these tests; not a real key.
+FAKE_API_KEY = "sk-test-not-a-real-key-0000"
+
+
+def test_embedding_defaults_are_the_approved_production_model() -> None:
+    settings = settings_from(None)
+
+    assert settings.embedding_model == "text-embedding-3-large"
+    assert settings.embedding_dimensions == 3072
+    assert settings.embedding_timeout_seconds == 10.0
+    assert settings.openai_api_key is None
+
+
+def test_the_evaluation_model_can_still_be_configured(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("PRESTON_EMBEDDING_MODEL", "text-embedding-3-small")
+    monkeypatch.setenv("PRESTON_EMBEDDING_DIMENSIONS", "1536")
+
+    settings = settings_from(None)
+
+    assert (settings.embedding_model, settings.embedding_dimensions) == (
+        "text-embedding-3-small",
+        1536,
+    )
+
+
+@pytest.mark.parametrize("timeout", ["0", "-1", "soon"])
+def test_an_unusable_embedding_timeout_is_rejected(
+    monkeypatch: pytest.MonkeyPatch, timeout: str
+) -> None:
+    monkeypatch.setenv("PRESTON_EMBEDDING_TIMEOUT_SECONDS", timeout)
+
+    with pytest.raises(ValidationError):
+        _ = settings_from(None)
+
+
+def test_production_embedding_model_is_set_through_the_environment(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("PRESTON_EMBEDDING_MODEL", "text-embedding-3-large")
+    monkeypatch.setenv("PRESTON_EMBEDDING_DIMENSIONS", "3072")
+
+    settings = settings_from(None)
+
+    assert settings.embedding_model == "text-embedding-3-large"
+    assert settings.embedding_dimensions == 3072
+
+
+def test_embedding_settings_are_read_from_the_env_file(tmp_path: Path) -> None:
+    env_file = tmp_path / ".env"
+    _ = env_file.write_text(
+        "PRESTON_EMBEDDING_MODEL=text-embedding-3-large\n"
+        "PRESTON_EMBEDDING_DIMENSIONS=3072\n",
+        encoding="utf-8",
+    )
+
+    settings = settings_from(env_file)
+
+    assert settings.embedding_model == "text-embedding-3-large"
+    assert settings.embedding_dimensions == 3072
+
+
+@pytest.mark.parametrize("dimensions", ["0", "-1536", "many"])
+def test_unusable_embedding_dimensions_are_rejected(
+    monkeypatch: pytest.MonkeyPatch, dimensions: str
+) -> None:
+    monkeypatch.setenv("PRESTON_EMBEDDING_DIMENSIONS", dimensions)
+
+    with pytest.raises(ValidationError):
+        _ = settings_from(None)
+
+
+def test_openai_api_key_is_a_secret(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("PRESTON_OPENAI_API_KEY", FAKE_API_KEY)
+
+    settings = settings_from(None)
+
+    assert isinstance(settings.openai_api_key, SecretStr)
+    assert settings.openai_api_key.get_secret_value() == FAKE_API_KEY
+
+
+def test_openai_api_key_is_never_rendered(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("PRESTON_OPENAI_API_KEY", FAKE_API_KEY)
+
+    settings = settings_from(None)
+
+    for rendered in (
+        repr(settings),
+        str(settings),
+        repr(settings.openai_api_key),
+        str(settings.openai_api_key),
+        settings.model_dump_json(),
+    ):
+        assert FAKE_API_KEY not in rendered

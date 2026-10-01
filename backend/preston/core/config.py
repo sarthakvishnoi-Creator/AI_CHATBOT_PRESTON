@@ -12,7 +12,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import MySQLDsn, PostgresDsn
+from pydantic import MySQLDsn, PositiveFloat, PositiveInt, PostgresDsn, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 Environment = Literal["local", "development", "production"]
@@ -50,6 +50,20 @@ class Settings(BaseSettings):
     # engine in ``preston.sources.mysql``, not here — this field only
     # carries the connection string.
     source_mysql_url: MySQLDsn | None = None
+
+    # The embedding provider (Phase 7). No default key: unset means
+    # embedding is not configured. ``SecretStr`` keeps the key out of
+    # ``repr``/``str`` and therefore out of logs and tracebacks.
+    openai_api_key: SecretStr | None = None
+    # The approved production model: what ``document_chunks.embedding``
+    # (``halfvec(3072)``) stores, so only a 3,072-dimension configuration
+    # can be searched or persisted. The evaluation scripts pin their own
+    # model and never read these two settings.
+    embedding_model: str = "text-embedding-3-large"
+    embedding_dimensions: PositiveInt = 3072
+    # Upper bound on one embedding request. The SDK's own default is ten
+    # minutes, far too long for a query embedded while a user waits.
+    embedding_timeout_seconds: PositiveFloat = 10.0
 
 
 @lru_cache(maxsize=1)
