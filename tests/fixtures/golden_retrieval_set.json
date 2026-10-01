@@ -1,0 +1,853 @@
+{
+  "version": 2,
+  "description": "Golden retrieval evaluation set. Evidence is any-of: a retrieved chunk counts if its content_hash is in expected_chunk_hashes, a retrieved document if its canonical_uri is in expected_document_uris. Identities are canonical_uri and chunk content_hash, never UUIDs, which are regenerated when chunks are rebuilt. Unanswerable cases list absent_terms that must not occur in any chunk. Version 2 adds blog-answer, short-identifier, ambiguous, structured (office) and further unanswerable cases; the version 1 cases are unchanged.",
+  "built_against": {
+    "documents": 541,
+    "chunks": 6973,
+    "as_of": "2026-10-01"
+  },
+  "cases": [
+    {
+      "id": "exact-01",
+      "category": "exact_identifier",
+      "query": "NIS2 compliance",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/governance-risk-compliance/eu-nis2"
+      ],
+      "expected_chunk_hashes": [
+        "d7b2d406d986580b7223b08e9539f7382f1d4784c2bd34c7c8b9ca097ed129a5"
+      ],
+      "expected_source_scopes": [
+        "grc"
+      ],
+      "notes": "The dedicated EU NIS2 service page; its opening chunk names the directive. Blog posts and the NIS2 diagram also discuss it, but this is the canonical page."
+    },
+    {
+      "id": "exact-02",
+      "category": "exact_identifier",
+      "query": "ISO/IEC 42001:2023",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/governance-risk-compliance/iso-42001-2023"
+      ],
+      "expected_chunk_hashes": [
+        "e2abb642cd3e021dbe52f0f3a7737cdf9f3760ced11d1778c157576128ffcc70"
+      ],
+      "expected_source_scopes": [
+        "grc"
+      ],
+      "notes": "Bare standard identifier with year; the GRC page opens with exactly this identifier."
+    },
+    {
+      "id": "exact-03",
+      "category": "exact_identifier",
+      "query": "TISAX",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/governance-risk-compliance/tisax"
+      ],
+      "expected_chunk_hashes": [
+        "90e79a819ce8683cd4f7073fd04c2830ada47fdd16593990c57825fffe4b1710"
+      ],
+      "expected_source_scopes": [
+        "grc"
+      ],
+      "notes": "Acronym-only query. The GRC TISAX page defines the acronym in its opening chunk."
+    },
+    {
+      "id": "exact-04",
+      "category": "exact_identifier",
+      "query": "FedRAMP and StateRAMP",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/governance-risk-compliance/fedramp"
+      ],
+      "expected_chunk_hashes": [
+        "956202084ad6acd76d383a846943e47d32941440829b57542df93200678b58c6"
+      ],
+      "expected_source_scopes": [
+        "grc"
+      ],
+      "notes": "Two related framework names that share one service page."
+    },
+    {
+      "id": "exact-05",
+      "category": "exact_identifier",
+      "query": "ISO 14064:2018",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/audit-and-assessment/iso-14064-2018",
+        "https://www.intercert.com/services/training/management-system-training/iso-14064-2018"
+      ],
+      "expected_chunk_hashes": [
+        "9e11f6ac46535097f9d841c54d1f16c98ab171c4eb7b31992e106edb650a9a04",
+        "5e91f2d4f0404d53d6e989cfc8cc9e4ad56de22943696c186ef60e65552eadcb"
+      ],
+      "expected_source_scopes": [
+        "audit_assessment",
+        "management_training"
+      ],
+      "notes": "One identifier, two legitimate pages in different scopes: the audit-and-assessment service and the management-system training course. Either satisfies the query."
+    },
+    {
+      "id": "paraphrase-01",
+      "category": "paraphrase",
+      "query": "Can you check whether the applications running in our containers are secure?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/security-testing-compliance/docker-vulnerability-assessment"
+      ],
+      "expected_chunk_hashes": [
+        "9d272800b8707719a0736dfec38a407d05aa40ab8d615f86a08d490243195360"
+      ],
+      "expected_source_scopes": [
+        "security_testing"
+      ],
+      "notes": "Says 'applications running in containers' rather than 'Docker vulnerability assessment'."
+    },
+    {
+      "id": "paraphrase-02",
+      "category": "paraphrase",
+      "query": "Do you review our software's code for security bugs before we release it?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/security-testing-compliance/source-code-review"
+      ],
+      "expected_chunk_hashes": [
+        "f71a83eb7b53394afb8e2daa827d61527e2a54fbf1002656dea5e4c818309f6c"
+      ],
+      "expected_source_scopes": [
+        "security_testing"
+      ],
+      "notes": "No use of the service name 'source code review'."
+    },
+    {
+      "id": "paraphrase-03",
+      "category": "paraphrase",
+      "query": "We're rolling out smart sensors across our factory. Can you test them for security weaknesses?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/security-testing-compliance/iot-vulnerability-assessment"
+      ],
+      "expected_chunk_hashes": [
+        "ed20261f1cd997a7506e7623f891bd513144d5480c742ed8315ba85ecaa214e8"
+      ],
+      "expected_source_scopes": [
+        "security_testing"
+      ],
+      "notes": "'Smart sensors' for 'IoT devices'; two chunks of the IoT page describe the service."
+    },
+    {
+      "id": "paraphrase-04",
+      "category": "paraphrase",
+      "query": "Is there a professional certification for someone who responds to cyber attacks and investigates incidents?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/training/professional-training/certified-cyber-security-analyst"
+      ],
+      "expected_chunk_hashes": [
+        "8338c128bdbeb7a5176e36eac36dc3b62d0c0a0e9a082e33a0a594e48019dd47"
+      ],
+      "expected_source_scopes": [
+        "professional_training"
+      ],
+      "notes": "Describes the role, not the certification title."
+    },
+    {
+      "id": "paraphrase-05",
+      "category": "paraphrase",
+      "query": "What are the different belt levels in Six Sigma certification?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/training/professional-training/six-sigma"
+      ],
+      "expected_chunk_hashes": [
+        "e2ffc4b9b529f906e3ed37d1d80ad06ed39c7acd70e77b105d46bb8da0451b79",
+        "2dd54cf4bbcb2513b2c78363ee014c53ea6522c2704cfbfa4455ecd74628c916"
+      ],
+      "expected_source_scopes": [
+        "professional_training"
+      ],
+      "notes": "The Six Sigma page lists the belt levels in two adjacent chunks."
+    },
+    {
+      "id": "paraphrase-06",
+      "category": "paraphrase",
+      "query": "How long will it take to hear back about a complaint I submitted?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/resources/complaint-handling-process",
+        "https://www.intercert.com/resources/appeal-handling-and-grievances"
+      ],
+      "expected_chunk_hashes": [
+        "8ea7dfab154ee233012182b2d21b44c586192e840703457df9c11ca133adef1d",
+        "524ec3075b29087c23225b72e421da61ffa20d05369ced446a60fdcbac533281"
+      ],
+      "expected_source_scopes": [
+        "resource_process"
+      ],
+      "notes": "The twelve-week close-out period is stated on both the complaint-handling page and the appeals-and-grievances page."
+    },
+    {
+      "id": "paraphrase-07",
+      "category": "paraphrase",
+      "query": "We manufacture surgical equipment. Which ISO standard covers our quality management?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/audit-and-assessment/iso-13485-2016"
+      ],
+      "expected_chunk_hashes": [
+        "32815a9a4aff9c88c6260efcd4794c0f151a449658ea9414080548569bca8528"
+      ],
+      "expected_source_scopes": [
+        "audit_assessment"
+      ],
+      "notes": "Never names ISO 13485 or 'medical device'."
+    },
+    {
+      "id": "paraphrase-08",
+      "category": "paraphrase",
+      "query": "We take card payments on our website. Which security standard do we have to follow?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/governance-risk-compliance/pci-dss"
+      ],
+      "expected_chunk_hashes": [
+        "508fdff1ff33f250042548046a4fb258c773eefc3c8291e758e00f13ca2f29af"
+      ],
+      "expected_source_scopes": [
+        "grc"
+      ],
+      "notes": "Describes the situation rather than naming PCI DSS."
+    },
+    {
+      "id": "paraphrase-09",
+      "category": "paraphrase",
+      "query": "Which compliance framework applies if we want to sell to the US Department of Defense?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/governance-risk-compliance/cmmc"
+      ],
+      "expected_chunk_hashes": [
+        "494049caf8da13bb3888f3f80d4253ec6e0a4c68eb13a7ef1bd5cd480bf2f890"
+      ],
+      "expected_source_scopes": [
+        "grc"
+      ],
+      "notes": "Describes the buyer, not the framework."
+    },
+    {
+      "id": "faq-01",
+      "category": "faq",
+      "query": "How many weeks or months does it usually take to get ISO certified?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/#faq"
+      ],
+      "expected_chunk_hashes": [
+        "bce7e35ffce480071d2c95f517ea4f2def4a9ea3fa79388d99cfc3c95444b3df"
+      ],
+      "expected_source_scopes": [
+        "standalone_faq"
+      ],
+      "notes": "Matches the standalone FAQ pair 'How long does it take to get ISO certified?' in different words."
+    },
+    {
+      "id": "faq-02",
+      "category": "faq",
+      "query": "What if the auditor finds more than one major problem during my audit?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/#faq"
+      ],
+      "expected_chunk_hashes": [
+        "c1d8568fedc1e6edef032da6aa13983d9be35e4aafa28da3f4956bf1dc68fe8f"
+      ],
+      "expected_source_scopes": [
+        "standalone_faq"
+      ],
+      "notes": "Matches the FAQ pair on non-conformities found during an audit."
+    },
+    {
+      "id": "faq-03",
+      "category": "faq",
+      "query": "Does the US government require ISO 28001 certification?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/training/management-system-training/iso-28001-2007#faq"
+      ],
+      "expected_chunk_hashes": [
+        "804d219fa83e3ff37e1dabc49b11bca9c84c9ea9f763a5eb1dbf6bcbf5e4c82b"
+      ],
+      "expected_source_scopes": [
+        "service_faq"
+      ],
+      "notes": "Matches the per-service FAQ 'Is ISO 28001 certification required in the USA?'."
+    },
+    {
+      "id": "faq-04",
+      "category": "faq",
+      "query": "Why should I choose an accredited certification body instead of a non-accredited one?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/#faq"
+      ],
+      "expected_chunk_hashes": [
+        "700b1192ef0a9f4e67890cee9a844a7ff6b1a6a30e68e7e6fe7c7dede94f62b3"
+      ],
+      "expected_source_scopes": [
+        "standalone_faq"
+      ],
+      "notes": "Matches the standalone FAQ on accredited versus non-accredited bodies."
+    },
+    {
+      "id": "faq-05",
+      "category": "faq",
+      "query": "What makes the AI management standard different from the usual ISO management system standards?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/training/management-system-training/iso-iec-42001-2023#faq"
+      ],
+      "expected_chunk_hashes": [
+        "e98cf4e17ab4ec7d4ebdeae530f488ee9b622ee8dd20516a52192cf272c84a0a"
+      ],
+      "expected_source_scopes": [
+        "service_faq"
+      ],
+      "notes": "Matches the ISO/IEC 42001 FAQ pair; the question avoids the standard's number."
+    },
+    {
+      "id": "faq-06",
+      "category": "faq",
+      "query": "How can I check that a certificate issued by INTERCERT is genuine?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/#faq"
+      ],
+      "expected_chunk_hashes": [
+        "b8b61045cbcc91b7954e7e6e38c1f053d25f43709db8b96816f69fe5b5758b7f"
+      ],
+      "expected_source_scopes": [
+        "standalone_faq"
+      ],
+      "notes": "Matches the FAQ pair on validating and verifying a certificate."
+    },
+    {
+      "id": "image-01",
+      "category": "image",
+      "query": "What are the steps to become an auditor?",
+      "answerable": true,
+      "expected_document_uris": [
+        "preston-image://intercert/Intercert_Img/Group_48097490_p6yVpLZ.png"
+      ],
+      "expected_chunk_hashes": [
+        "f60f0e0b1f22b95163b80ec239cd808e0a8a14fe20e634fc281af05a7a63a7fe"
+      ],
+      "expected_source_scopes": [
+        "image_descriptions"
+      ],
+      "notes": "Answered only by the 'Steps to Become an Auditor' diagram; no other chunk contains the phrase 'become an auditor'."
+    },
+    {
+      "id": "image-02",
+      "category": "image",
+      "query": "What happens to an application if the company never submits its corrective actions after the Stage 2 audit?",
+      "answerable": true,
+      "expected_document_uris": [
+        "preston-image://intercert/Intercert_Img/Group_48097758.png"
+      ],
+      "expected_chunk_hashes": [
+        "0ece7693d9d6d01e4c24d6a33e614287108f48df452f791bc10e9440cb551d96"
+      ],
+      "expected_source_scopes": [
+        "image_descriptions"
+      ],
+      "notes": "The outcome 'Applicant Closed' appears only in the certification-process flowchart."
+    },
+    {
+      "id": "image-03",
+      "category": "image",
+      "query": "What does the final stage of the DPDP compliance roadmap cover?",
+      "answerable": true,
+      "expected_document_uris": [
+        "preston-image://intercert/Intercert_Img/flowchart__MQUoag6.png"
+      ],
+      "expected_chunk_hashes": [
+        "2543c28929e10a347881b11a2cb39bff7c2d50b0acb13074b35a8b6ce9857437"
+      ],
+      "expected_source_scopes": [
+        "image_descriptions"
+      ],
+      "notes": "Stage numbering exists only in the DPDP roadmap diagram."
+    },
+    {
+      "id": "image-04",
+      "category": "image",
+      "query": "Under the Essential Eight model, how long should backups be kept and when should restoration be tested?",
+      "answerable": true,
+      "expected_document_uris": [
+        "preston-image://intercert/Intercert_Img/Essential-Eight-Maturity-Model-Compliances-Services_KSYCWH0.png"
+      ],
+      "expected_chunk_hashes": [
+        "ead7651aa012bda22eaf2b7751988903d0183976d855c7f5a7e51cf899e98639",
+        "eed890233d8ff5f00231ea971e28e0767f4093bd4e0fa477a68dc4afd5ee71bb"
+      ],
+      "expected_source_scopes": [
+        "image_descriptions"
+      ],
+      "notes": "The backup retention wording appears only in the Essential Eight diagram; it spans two overlapping chunks."
+    },
+    {
+      "id": "image-05",
+      "category": "image",
+      "query": "In an information security management system roadmap, what happens right before the certification audit?",
+      "answerable": true,
+      "expected_document_uris": [
+        "preston-image://intercert/Intercert_Img/Group_48097416.png"
+      ],
+      "expected_chunk_hashes": [
+        "40c9dd279cf9ad835c72453a88073679cefc80746b9ac09fbabf982238e861e2",
+        "95318414f4b5ec4df5233dfb40cd67d663a6aa31b89b279485ce9b3cb0602b8b"
+      ],
+      "expected_source_scopes": [
+        "image_descriptions"
+      ],
+      "notes": "Stage 6 of the ISMS roadmap diagram (readiness check, with audit training); it sits in two overlapping chunks."
+    },
+    {
+      "id": "cross-01",
+      "category": "cross_domain",
+      "query": "I work in compliance and want to learn to audit AI systems. Which ISO 42001 training is available and is it right for me?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/training/management-system-training/iso-iec-42001-2023",
+        "https://www.intercert.com/services/training/management-system-training/iso-iec-42001-2023#faq"
+      ],
+      "expected_chunk_hashes": [
+        "99b49af0d4148d08336953f4ab5a788f5ef1806f1d65d8852b7384246973d1a0",
+        "ca7df8c53a4cddf4432c210432a8323f1ab16733628eb099e4c069d9c653ea08",
+        "224c833432f9e9c05d95e61455172603907e0fee348a7f4ea4df937eb3154915"
+      ],
+      "expected_source_scopes": [
+        "management_training",
+        "service_faq"
+      ],
+      "notes": "Spans two scopes: the course catalogue (management_training) and the audience FAQ (service_faq)."
+    },
+    {
+      "id": "cross-02",
+      "category": "cross_domain",
+      "query": "Where is INTERCERT's headquarters?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/contactus#office-locations"
+      ],
+      "expected_chunk_hashes": [
+        "2a54a478b3f579589710f7fc73df4b6264d32caacd75e6afb1bef256c50be7a3"
+      ],
+      "expected_source_scopes": [
+        "office_locations"
+      ],
+      "notes": "Office locations document; the headquarters entry is in the last chunk."
+    },
+    {
+      "id": "cross-03",
+      "category": "cross_domain",
+      "query": "How long has INTERCERT been operating as a certification body?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/about"
+      ],
+      "expected_chunk_hashes": [
+        "dbb683d1e80117f35b217fe6cb619c763d0c882f270e621ce61f83433aa28cf2"
+      ],
+      "expected_source_scopes": [
+        "corporate"
+      ],
+      "notes": "Corporate About page, first chunk."
+    },
+    {
+      "id": "cross-04",
+      "category": "cross_domain",
+      "query": "Can we put the INTERCERT certification mark on our lab test reports?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/resources/certification-guideline"
+      ],
+      "expected_chunk_hashes": [
+        "d1ec62ba91a561a6eda597c87aef67165c1e8dd437afcef87f3d6085da5fb245",
+        "db92ee1f7d7e1299a56bca426e345452d0e0ebdfcebd244472dba54c637b2bb0"
+      ],
+      "expected_source_scopes": [
+        "resource_process"
+      ],
+      "notes": "Answered by prose and by a table row on the certification-mark guidelines page."
+    },
+    {
+      "id": "cross-05",
+      "category": "cross_domain",
+      "query": "Does INTERCERT pass my personal information on to other organisations?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/privacy-policy"
+      ],
+      "expected_chunk_hashes": [
+        "3dc3b028d8b9f9e714e3d59a0d9d752e256f354552c0a6e76d3cae9637cf19aa"
+      ],
+      "expected_source_scopes": [
+        "privacy_policy"
+      ],
+      "notes": "Privacy policy, disclosure section."
+    },
+    {
+      "id": "cross-06",
+      "category": "cross_domain",
+      "query": "What are the 17 COSO principles?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/blogs/17-coso-principles"
+      ],
+      "expected_chunk_hashes": [
+        "7eded4d796e3e07c03958171547edae22765f764e5e94d1be1d07bebd052735d"
+      ],
+      "expected_source_scopes": [
+        "blog"
+      ],
+      "notes": "Long-tail blog topic with no service page."
+    },
+    {
+      "id": "unanswerable-01",
+      "category": "unanswerable",
+      "query": "Do you offer ISO 26262 functional safety certification for automotive software?",
+      "answerable": false,
+      "expected_document_uris": [],
+      "expected_chunk_hashes": [],
+      "expected_source_scopes": [],
+      "absent_terms": [
+        "26262"
+      ],
+      "notes": "ISO 26262 does not appear anywhere in the KB; the nearest automotive content (TISAX) is information security, not functional safety."
+    },
+    {
+      "id": "unanswerable-02",
+      "category": "unanswerable",
+      "query": "Can INTERCERT accredit our testing laboratory to ISO/IEC 17025?",
+      "answerable": false,
+      "expected_document_uris": [],
+      "expected_chunk_hashes": [],
+      "expected_source_scopes": [],
+      "absent_terms": [
+        "17025"
+      ],
+      "notes": "ISO/IEC 17025 does not appear in the KB; the guidelines page only forbids using INTERCERT marks on lab reports."
+    },
+    {
+      "id": "unanswerable-03",
+      "category": "unanswerable",
+      "query": "Do you give discounts or scholarships on the lead auditor course?",
+      "answerable": false,
+      "expected_document_uris": [],
+      "expected_chunk_hashes": [],
+      "expected_source_scopes": [],
+      "absent_terms": [
+        "discount",
+        "scholarship"
+      ],
+      "notes": "The KB says nothing about course discounts or scholarships."
+    },
+    {
+      "id": "unanswerable-04",
+      "category": "unanswerable",
+      "query": "Who is the CEO of INTERCERT?",
+      "answerable": false,
+      "expected_document_uris": [],
+      "expected_chunk_hashes": [],
+      "expected_source_scopes": [],
+      "absent_terms": [
+        "chief executive",
+        "managing director"
+      ],
+      "notes": "No chunk names an INTERCERT executive; the About page describes the company and its values only."
+    },
+    {
+      "id": "unanswerable-05",
+      "category": "unanswerable",
+      "query": "What is the pass mark for the lead auditor exam?",
+      "answerable": false,
+      "expected_document_uris": [],
+      "expected_chunk_hashes": [],
+      "expected_source_scopes": [],
+      "absent_terms": [
+        "pass mark",
+        "passing score",
+        "passing marks",
+        "pass percentage",
+        "minimum score"
+      ],
+      "notes": "Lead auditor pages mention passing an examination but never a threshold."
+    },
+    {
+      "id": "blog-01",
+      "category": "blog",
+      "query": "What's the difference between risk appetite and risk tolerance?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/blogs/risk-appetite-and-risk-tolerance"
+      ],
+      "expected_chunk_hashes": [
+        "f2c7b07f5a02c28a5006cd16a716ba90a3e7172ef08ae0951f4dafdba0ae3105",
+        "27f343f2bd18b58da670ecba741fe3a917c9f68c6f803c9d5c255e621d5279a0"
+      ],
+      "expected_source_scopes": [
+        "blog"
+      ],
+      "notes": "Only this blog covers the topic: no other chunk in the KB mentions both terms. There is no service page for it, so a blog is the correct evidence."
+    },
+    {
+      "id": "blog-02",
+      "category": "blog",
+      "query": "Does a cloud provider need ISO 27017 or ISO 27018, and how are they different?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/blogs/iso-27017-vs-iso-27018"
+      ],
+      "expected_chunk_hashes": [
+        "ebf767acc88240c3f014e240168017e7bbb19e66bc5327959b3133ba24df7215",
+        "e1d2b720c59e080872a936a7aa4ca9fb743812936569e88824ab1ac648bc247f",
+        "381d894c008f096c22f82cd7e6794c222696eb09921a494721a0e124e8558655",
+        "18bd5f8ebd3e3f5dcf8db462a12e80f3b07c82c28ae5d5a253ddb8f199bc74cc"
+      ],
+      "expected_source_scopes": [
+        "blog"
+      ],
+      "notes": "The comparison exists only in this dedicated blog. The GRC 27017 and 27018 pages describe each standard separately, and three other blogs mention both only in passing."
+    },
+    {
+      "id": "blog-03",
+      "category": "blog",
+      "query": "How is red teaming different from a normal penetration test?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/blogs/red-teaming-vs-penetration-testing-africa"
+      ],
+      "expected_chunk_hashes": [
+        "1264fab445f68bc5e42f28f47401c787ea85bad3b5a035a079edbe04193b214a",
+        "07f587eb4d5b82ef48d6181255bc73171daffde09013e6edc763a34e8f360311",
+        "147de7cc5f2848af28549fc128f65986191bfa573e8bb6df3dbf34858e239b89",
+        "060a13f1cc4648e5f3bc09f104e9b675246c771a5d7719a86ad044173966056d"
+      ],
+      "expected_source_scopes": [
+        "blog"
+      ],
+      "notes": "Dedicated comparison blog; the comparison table and summary chunks answer directly. The VAPT service page describes testing but does not compare it with red teaming."
+    },
+    {
+      "id": "blog-04",
+      "category": "blog",
+      "query": "What is the difference between classified and unclassified data?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/blogs/classified-vs-unclassified-data"
+      ],
+      "expected_chunk_hashes": [
+        "be9ff90d458888f142af95b13524fbf68ceb98dab988ca84314e9d29a9f80cc1"
+      ],
+      "expected_source_scopes": [
+        "blog"
+      ],
+      "notes": "Dedicated blog whose FAQ chunk states the definition. Several CMMC blogs discuss controlled unclassified information, but none defines the distinction as directly."
+    },
+    {
+      "id": "exact-06",
+      "category": "exact_identifier",
+      "query": "SOC 2",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/governance-risk-compliance/soc-2",
+        "preston-image://intercert/Intercert_Img/Group_48097640.png"
+      ],
+      "expected_chunk_hashes": [
+        "eec5fb48c8fff2d42b02c2b8b8acea8805610ff3c19b5c52c8c2620f8037b674",
+        "d580581315a1dcd442ec92e7641f8d67aa563507803d70d87ba8e42fa90f28c4"
+      ],
+      "expected_source_scopes": [
+        "grc",
+        "image_descriptions"
+      ],
+      "notes": "Short identifier-only query. Many blogs discuss SOC 2; the expected evidence is INTERCERT's SOC 2 service page and its reviewed roadmap diagram."
+    },
+    {
+      "id": "exact-07",
+      "category": "exact_identifier",
+      "query": "HITRUST",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/governance-risk-compliance/hitrust",
+        "preston-image://intercert/Intercert_Img/HITRUST_gcr9cfF.png"
+      ],
+      "expected_chunk_hashes": [
+        "cd3ccb0dcf0f727ab58c41094543ac364db0c1d560af836ca72719d36e4597b8",
+        "f93352115c2ea7ef46e81faade424a3448ee78267a9df4874d3760d5b96d0576"
+      ],
+      "expected_source_scopes": [
+        "grc",
+        "image_descriptions"
+      ],
+      "notes": "Acronym-only query. Many blogs discuss HITRUST; the expected evidence is the GRC service page and the HITRUST CSF diagram."
+    },
+    {
+      "id": "exact-08",
+      "category": "exact_identifier",
+      "query": "DORA",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/governance-risk-compliance/dora"
+      ],
+      "expected_chunk_hashes": [
+        "0275eb77e68929591a5dbc43ecdfd231cb2c96a5e3f2323e5a88897bc732a09c"
+      ],
+      "expected_source_scopes": [
+        "grc"
+      ],
+      "notes": "Acronym-only query; 100 chunks contain 'DORA'. The GRC page's opening chunk defines it."
+    },
+    {
+      "id": "ambiguous-01",
+      "category": "ambiguous",
+      "query": "Do you offer anything for business continuity?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/governance-risk-compliance/iso-22301-2019",
+        "https://www.intercert.com/services/training/management-system-training/iso-22301-2019",
+        "https://www.intercert.com/services/training/management-system-training/iso-22301-2019#faq",
+        "preston-image://intercert/Intercert_Img/ISO_22301_2019-Business_Continuity_Management_System_1.png"
+      ],
+      "expected_chunk_hashes": [
+        "243726275c9ddb268e4c8d2055a196586cbbc3c16073122d8a6d3cad8a947a43",
+        "1f48f56bcfcf03dafae99a6c21ee4bcae84c9c1fbe91c82374821c70e90af1a5",
+        "5b2f237438c38b7ef8046ffc64208b93609fb1589835f9359215db5dc5b26f3d",
+        "05dc6a6d9943e04925e42ac2daf1887d2f6bd808cca134292df20464ed17ba14"
+      ],
+      "expected_source_scopes": [
+        "grc",
+        "image_descriptions",
+        "management_training",
+        "service_faq"
+      ],
+      "notes": "Ambiguous between compliance service, training course, FAQ and roadmap diagram. Any of the four ISO 22301 sources is a valid answer."
+    },
+    {
+      "id": "ambiguous-02",
+      "category": "ambiguous",
+      "query": "Can you help us with risk management?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/services/governance-risk-compliance/iso-31000-2018",
+        "https://www.intercert.com/services/training/management-system-training/iso-31000-2018",
+        "https://www.intercert.com/services/training/management-system-training/iso-31000-2018#faq",
+        "preston-image://intercert/Intercert_Img/ISO31000_2018-Risk-Management-System.png"
+      ],
+      "expected_chunk_hashes": [
+        "9770894881356cdd40ce2bca0fc1a263e1f0a4350b3317a4aa92cf09b6646ffd",
+        "5cc7c3101cb7b3c1baba2fb77b048a55648153d88aaff646b34e5be4902f80e1",
+        "1ad94b6e93565cc7ca73cb61c5bc143c0e84f63ffa59a3aac37a9e0f5f2653a5",
+        "5ff709e3565f4c446ed41d353e2a890bc6ff79939294fa94045c7a5a8db782bc"
+      ],
+      "expected_source_scopes": [
+        "grc",
+        "image_descriptions",
+        "management_training",
+        "service_faq"
+      ],
+      "notes": "Ambiguous between ISO 31000 service, training, FAQ and diagram. The query never names the standard. Risk-management blogs are related, but not INTERCERT's offering."
+    },
+    {
+      "id": "structured-01",
+      "category": "structured",
+      "query": "Do you have an office in Japan?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/contactus#office-locations"
+      ],
+      "expected_chunk_hashes": [
+        "6aa75da7437dcaf69047970da3ee90155cb2fed7b92006db086dd4dcb4775f80"
+      ],
+      "expected_source_scopes": [
+        "office_locations"
+      ],
+      "notes": "Office-location lookup; the Japan entry is in one chunk of the office document."
+    },
+    {
+      "id": "structured-02",
+      "category": "structured",
+      "query": "Is there an INTERCERT office in South Africa?",
+      "answerable": true,
+      "expected_document_uris": [
+        "https://www.intercert.com/contactus#office-locations"
+      ],
+      "expected_chunk_hashes": [
+        "044205a8ae0d731ee3120242fc4696e30f1489d80b90254df1c5c9940b754405"
+      ],
+      "expected_source_scopes": [
+        "office_locations"
+      ],
+      "notes": "Office-location lookup; the Cape Town entry sits in a different office chunk from structured-01. Many South Africa blogs compete with it."
+    },
+    {
+      "id": "unanswerable-06",
+      "category": "unanswerable",
+      "query": "What are your office opening hours?",
+      "answerable": false,
+      "expected_document_uris": [],
+      "expected_chunk_hashes": [],
+      "expected_source_scopes": [],
+      "absent_terms": [
+        "opening hours",
+        "office hours",
+        "working hours",
+        "business hours"
+      ],
+      "notes": "Addresses exist, but no opening or working hours appear anywhere in the KB."
+    },
+    {
+      "id": "unanswerable-07",
+      "category": "unanswerable",
+      "query": "Can I pay for a training course with PayPal?",
+      "answerable": false,
+      "expected_document_uris": [],
+      "expected_chunk_hashes": [],
+      "expected_source_scopes": [],
+      "absent_terms": [
+        "paypal"
+      ],
+      "notes": "No payment methods for courses are described in the KB."
+    },
+    {
+      "id": "unanswerable-08",
+      "category": "unanswerable",
+      "query": "Do you run weekend batches for the lead auditor course?",
+      "answerable": false,
+      "expected_document_uris": [],
+      "expected_chunk_hashes": [],
+      "expected_source_scopes": [],
+      "absent_terms": [
+        "weekend"
+      ],
+      "notes": "Course pages list durations but never schedules; 'weekend' appears nowhere in the KB."
+    },
+    {
+      "id": "unanswerable-09",
+      "category": "unanswerable",
+      "query": "Do you certify against ISO/SAE 21434 for automotive cybersecurity?",
+      "answerable": false,
+      "expected_document_uris": [],
+      "expected_chunk_hashes": [],
+      "expected_source_scopes": [],
+      "absent_terms": [
+        "21434"
+      ],
+      "notes": "ISO/SAE 21434 is absent from the KB. TISAX, the nearest automotive content, is a different framework."
+    }
+  ]
+}
