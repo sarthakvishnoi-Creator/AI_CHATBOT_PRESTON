@@ -11,10 +11,11 @@ Provider-specific types never leave :class:`OpenAIEmbedder`: callers see
 ``str`` in and ``list[float]`` out.
 """
 
+import math
 from collections.abc import Sequence
 from typing import Protocol
 
-from openai import AsyncOpenAI
+from openai import APIConnectionError, AsyncOpenAI, InternalServerError, RateLimitError
 
 from preston.core.config import Settings
 from preston.core.errors import PrestonError
@@ -125,4 +126,29 @@ class OpenAIEmbedder:
                     f"Embedding {position} has {len(vector)} dimensions; "
                     f"expected {self._dimensions}."
                 )
+            if not all(math.isfinite(value) for value in vector):
+                raise EmbeddingError(f"Embedding {position} has a non-finite value.")
         return vectors
+
+
+def embedding_identity(model: str, dimensions: int) -> str:
+    """The value stored in ``embedding_model``: provider, model and dimensions."""
+    return f"openai:{model}:{dimensions}"
+
+
+def is_retryable(error: BaseException) -> bool:
+    """Whether a failed embedding request is worth repeating unchanged.
+
+    Transport failures, timeouts, rate limits and provider-side errors are
+    transient. Everything else — a rejected key, a bad request, or an
+    :class:`EmbeddingError` for a malformed answer — would fail the same way
+    again, so retrying only spends time (and, for a malformed answer, money).
+    """
+    return isinstance(
+        error,
+        APIConnectionError
+        | RateLimitError
+        | InternalServerError
+        | TimeoutError
+        | ConnectionError,
+    )

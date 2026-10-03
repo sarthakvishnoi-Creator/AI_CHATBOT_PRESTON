@@ -27,7 +27,7 @@ long-lived, widely-read record.
 import uuid
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from typing import Any, Final, Literal
 
@@ -94,11 +94,38 @@ class RunCounters:
 
 
 @dataclass(slots=True)
-class RunHandle:
+class BackfillCounters:
+    """What an embedding backfill did, in the shape ``counts`` stores.
+
+    ``selected_chunks`` are the pending rows chosen; ``unique_texts`` the
+    distinct texts among them (one is embedded once however many rows share
+    it). Token and request figures are what the provider billed, not
+    estimates. ``stop_reason`` is ``None`` for a run that finished its plan.
+    """
+
+    selected_chunks: int = 0
+    unique_texts: int = 0
+    embedded_texts: int = 0
+    rows_updated: int = 0
+    batches: int = 0
+    failed_batches: int = 0
+    api_requests: int = 0
+    prompt_tokens: int = 0
+    pending_after: int = 0
+    elapsed_seconds: float = 0.0
+    stop_reason: str | None = None
+
+    def as_counts(self) -> dict[str, Any]:
+        """Return a JSON-safe mapping for the ``counts`` column."""
+        return asdict(self)
+
+
+@dataclass(slots=True)
+class RunHandle[C: RunCounters | BackfillCounters]:
     """The open run: its id, and the counters the caller fills in."""
 
     run_id: uuid.UUID
-    counters: RunCounters = field(default_factory=RunCounters)
+    counters: C
 
 
 @asynccontextmanager
@@ -107,7 +134,7 @@ async def ingestion_run(
     *,
     mode: RunMode = "sync",
     extractor_version: int,
-) -> AsyncGenerator[RunHandle]:
+) -> AsyncGenerator[RunHandle[RunCounters]]:
     """Open a run, guard it against overlap, and close it honestly.
 
     Raises :class:`ConcurrentRunError` before doing anything if another
@@ -115,6 +142,44 @@ async def ingestion_run(
     the exception propagates — the caller decides what to do, but the row
     can never be left claiming success.
     """
+    async with _open_run(
+        engine,
+        mode=mode,
+        extractor_version=extractor_version,
+        embedding_model=None,
+        counters=RunCounters(),
+    ) as handle:
+        yield handle
+
+
+@asynccontextmanager
+async def backfill_run(
+    engine: AsyncEngine, *, embedding_model: str
+) -> AsyncGenerator[RunHandle[BackfillCounters]]:
+    """The same run lifecycle for an embedding backfill.
+
+    A backfill extracts nothing, so ``extractor_version`` is null; the
+    model identity it writes is recorded on the run instead.
+    """
+    async with _open_run(
+        engine,
+        mode="backfill",
+        extractor_version=None,
+        embedding_model=embedding_model,
+        counters=BackfillCounters(),
+    ) as handle:
+        yield handle
+
+
+@asynccontextmanager
+async def _open_run[C: RunCounters | BackfillCounters](
+    engine: AsyncEngine,
+    *,
+    mode: RunMode,
+    extractor_version: int | None,
+    embedding_model: str | None,
+    counters: C,
+) -> AsyncGenerator[RunHandle[C]]:
     session_factory = build_session_factory(engine)
 
     # A dedicated connection: a session-level advisory lock belongs to one
@@ -149,13 +214,14 @@ async def ingestion_run(
                 mode=mode,
                 status="running",
                 extractor_version=extractor_version,
+                embedding_model=embedding_model,
                 normalizer_version=NORMALIZER_VERSION,
                 hash_version=HASH_VERSION,
                 chunker_version=CHUNKER_VERSION,
             )
             session.add(run)
             await session.flush()
-            handle = RunHandle(run_id=run.id)
+            handle = RunHandle(run_id=run.id, counters=counters)
             # Committed before any work: a crash must leave evidence.
             await session.commit()
 
@@ -185,7 +251,7 @@ async def ingestion_run(
 
 async def _close(
     session_factory: async_sessionmaker[AsyncSession],
-    handle: RunHandle,
+    handle: RunHandle[Any],
     status: Literal["succeeded", "failed"],
     abort_reason: str | None,
 ) -> None:

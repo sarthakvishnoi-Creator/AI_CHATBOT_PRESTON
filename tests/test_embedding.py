@@ -10,16 +10,31 @@ from types import SimpleNamespace
 from typing import cast
 from unittest.mock import AsyncMock
 
+import httpx2 as httpx
 import pytest
 from fake_embedder import FakeEmbedder
-from openai import AsyncOpenAI
+from openai import (
+    APIConnectionError,
+    APITimeoutError,
+    AsyncOpenAI,
+    AuthenticationError,
+    BadRequestError,
+    InternalServerError,
+    RateLimitError,
+)
 from openai.types import CreateEmbeddingResponse, Embedding
 from openai.types.create_embedding_response import Usage
 from pydantic import SecretStr
 
 from preston.core.config import Settings
 from preston.core.errors import PrestonError
-from preston.embedding import Embedder, EmbeddingError, OpenAIEmbedder
+from preston.embedding import (
+    Embedder,
+    EmbeddingError,
+    OpenAIEmbedder,
+    embedding_identity,
+    is_retryable,
+)
 
 DIMENSIONS = 4
 FAKE_API_KEY = "sk-test-not-a-real-key-0000"
@@ -345,3 +360,37 @@ async def test_the_fake_handles_empty_input_and_records_calls() -> None:
     _ = await fake.embed(["a", "b"])
 
     assert fake.calls == [[], ["a", "b"]]
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize("bad", [float("nan"), float("inf"), float("-inf")])
+async def test_a_non_finite_value_is_rejected(bad: float) -> None:
+    embedder, _ = embedder_returning(response([[1.0, bad, 0.0, 0.0]]))
+
+    with pytest.raises(EmbeddingError, match="non-finite"):
+        await embedder.embed(["a"])
+
+
+def test_the_identity_names_provider_model_and_dimensions() -> None:
+    assert (
+        embedding_identity("text-embedding-3-large", 3072)
+        == "openai:text-embedding-3-large:3072"
+    )
+
+
+def test_only_transient_failures_are_retryable() -> None:
+    request = httpx.Request("POST", "https://api.openai.test/v1/embeddings")
+
+    def status(code: int) -> httpx.Response:
+        return httpx.Response(code, request=request)
+
+    assert is_retryable(APIConnectionError(request=request))
+    assert is_retryable(APITimeoutError(request=request))
+    assert is_retryable(RateLimitError("x", response=status(429), body=None))
+    assert is_retryable(InternalServerError("x", response=status(500), body=None))
+    assert is_retryable(TimeoutError())
+    assert is_retryable(ConnectionError())
+    assert not is_retryable(AuthenticationError("x", response=status(401), body=None))
+    assert not is_retryable(BadRequestError("x", response=status(400), body=None))
+    assert not is_retryable(EmbeddingError("malformed"))
+    assert not is_retryable(ValueError())

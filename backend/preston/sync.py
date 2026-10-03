@@ -202,7 +202,13 @@ async def synchronize(
     the lock, and re-raises whatever the source raises during inventory —
     in both cases the run row records the outcome and stored knowledge is
     untouched. Individual record failures never abort the run.
+
+    ``mode="backfill"`` is rejected with :class:`ValueError` before any run
+    row exists: a backfill embeds stored chunks and has no source to sync;
+    it is run by ``preston.embed_chunks``.
     """
+    if mode == "backfill":
+        raise ValueError("synchronize cannot run in backfill mode.")
     factory = build_session_factory(engine)
 
     async with ingestion_run(
