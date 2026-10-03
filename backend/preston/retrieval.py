@@ -520,6 +520,50 @@ async def get_office_locations(session: AsyncSession) -> list[Evidence]:
     """
     if OFFICE_SCOPE not in PUBLIC_SCOPES:
         raise RetrievalError(f"{OFFICE_SCOPE!r} is not a public scope.")
+    return await _read_structured(
+        session, "office lookup", Document.source_scope == OFFICE_SCOPE
+    )
+
+
+# ---------------------------------------------------------------------------
+# Company profile (structured lookup, no embeddings)
+# ---------------------------------------------------------------------------
+
+#: The authoritative page for facts about INTERCERT itself.
+ABOUT_URI: Final = "https://www.intercert.com/about"
+#: How many leading chunks of that page are the company profile.
+PROFILE_CHUNKS: Final = 2
+
+
+async def get_company_profile(session: AsyncSession) -> list[Evidence]:
+    """The leading chunks of INTERCERT's About page, in order.
+
+    A direct read, not a search. Facts about the company itself — when it was
+    founded, how long it has operated, what it does, its scale and
+    accreditations — sit in the first chunks of one page, and dense search
+    buries them under blog posts that repeat the same marketing text. Reading
+    the page by its canonical URI returns them reliably.
+
+    Needs no embeddings. Returns ``[]`` when no active About document exists,
+    and raises :class:`RetrievalError` when the database cannot be read.
+    Read-only.
+    """
+    return await _read_structured(
+        session,
+        "company profile lookup",
+        Document.canonical_uri == ABOUT_URI,
+        DocumentChunk.chunk_index < PROFILE_CHUNKS,
+    )
+
+
+async def _read_structured(
+    session: AsyncSession, what: str, *conditions: ColumnElement[bool]
+) -> list[Evidence]:
+    """Chunks of active, public documents matching ``conditions``, in order.
+
+    The one read behind every structured tool. ``what`` only names the lookup
+    in the error; database text is never passed on.
+    """
     statement = (
         sql_select(
             DocumentChunk.content,
@@ -532,15 +576,17 @@ async def get_office_locations(session: AsyncSession) -> list[Evidence]:
             Document.content_hash.label("document_content_hash"),
         )
         .join(Document, Document.id == DocumentChunk.document_id)
-        .where(Document.status == "active", Document.source_scope == OFFICE_SCOPE)
+        .where(
+            Document.status == "active",
+            Document.source_scope.in_(sorted(PUBLIC_SCOPES)),
+            *conditions,
+        )
         .order_by(Document.canonical_uri, DocumentChunk.chunk_index)
     )
     try:
         rows = (await session.execute(statement)).all()
     except SQLAlchemyError as error:
-        raise RetrievalError(
-            f"The office lookup failed ({type(error).__name__})."
-        ) from None
+        raise RetrievalError(f"The {what} failed ({type(error).__name__}).") from None
     return [
         _evidence(row, rank, method="structured")
         for rank, row in enumerate(rows, start=1)

@@ -23,6 +23,8 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from preston.canonical import FaqPair, Heading, ListBlock, Paragraph, hash_document
 from preston.canonical import Table as TableBlock
+from preston.ingestion import build_chunks
+from preston.retrieval import ABOUT_URI, PROFILE_CHUNKS
 from preston.sources import fixed_page_tables as t
 from preston.sources import fixed_pages
 from preston.sources.contract import (
@@ -1437,6 +1439,36 @@ async def test_real_standalone_faq_is_one_document_of_10_active_pairs(
     assert len(result.blocks) == 10
     assert all(isinstance(block, FaqPair) for block in result.blocks)
     assert "faq_pairs_dropped" not in source(result)
+
+
+@pytest.mark.anyio
+async def test_real_about_page_leading_chunks_carry_the_company_profile(
+    real_source_mysql_url: str | None,
+) -> None:
+    """Guards ``get_company_profile``, which serves the first two About chunks.
+
+    Built through the same path ingestion uses (record, canonical document,
+    ``build_chunks``), so a layout or chunking change that pushes the company
+    facts out of chunks 0 and 1 fails here instead of silently emptying the tool.
+    """
+    if real_source_mysql_url is None:
+        pytest.skip("No reachable MySQL source is configured.")
+    result = await _real_record(real_source_mysql_url, CORPORATE)
+    assert result.canonical_uri == ABOUT_URI
+
+    leading = build_chunks(to_canonical(result))[:PROFILE_CHUNKS]
+
+    assert len(leading) == PROFILE_CHUNKS
+    profile = " ".join(leading)
+    for fact in (
+        "Founded in 2009",
+        "15 years",
+        "Audits and Assessments",
+        "10,000+ clients",
+        "28+ countries",
+        "Accredited from",
+    ):
+        assert fact in profile, fact
 
 
 @pytest.mark.anyio

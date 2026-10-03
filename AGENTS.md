@@ -26,9 +26,10 @@ Report the actual results.
 Phase 4 — Backend Core / FastAPI — complete.
 Phase 5 — Database & Data Layer — complete.
 
-Phase 6 — Knowledge Base ingestion — complete (details below). The current
-phase is Phases 7–8 (embedding and retrieval), described after the Phase 6
-status.
+Phase 6 — Knowledge Base ingestion — complete (details below).
+Phases 7–8 (embedding and retrieval) — complete, described after the Phase 6
+status. The next implementation phase is **Phase 9** (grounded answering on
+top of the retrieval layer; plan below, not started).
 Phase 6.2 — Canonical Foundation — complete.
 Phase 6.3A — Incremental ingestion / synchronization foundation — complete.
 Phase 6.3B-1 — Blog HTML cleaning and block construction — complete.
@@ -152,6 +153,8 @@ PostgreSQL holds **541 documents and 6,973 `document_chunks`** across 13
 scopes, all `active`, `gone_count` 0 and `consecutive_failure_count` 0
 throughout, at `normalizer_version` 3 / `hash_version` 1. 29
 `ingestion_runs`, all `succeeded`. Migration head `54b5ec347e84` (Phase 7A).
+The chunk and document counts below are unchanged by Phase 7D, which only
+populated embedding fields (see the Phase 7D status further down).
 
 | `source_scope` | Documents | Chunks | Stored `chunker_version` |
 | --- | --- | --- | --- |
@@ -170,10 +173,9 @@ throughout, at `normalizer_version` 3 / `hash_version` 1. 29
 | `office_locations` | 1 | 3 | 2 |
 | **Total** | **541** | **6,973** | |
 
-Current phase: **Phases 7–8 — Embedding & Retrieval** (the foundation, the
-evaluation and the retrieval layer are built; the production embedding backfill
-and live validation are pending — see below). OPEN-3 is resolved by these
-approved decisions:
+Phases 7–8 — **Embedding & Retrieval — complete** (7A schema, 7B provider,
+evaluation, 7D production backfill, 8A–8D retrieval, 8H live validation; each
+is recorded below). OPEN-3 is resolved by these approved decisions:
 
 | Decision | Approved |
 | --- | --- |
@@ -203,11 +205,42 @@ requests and prompt tokens it was billed. Settings (`core/config.py`) default
 to `text-embedding-3-large` / 3,072 dimensions and add an embedding request
 timeout (default 10 s); the API key is a `SecretStr`.
 
-**Embeddings have NOT been backfilled.** Production holds 541 documents,
-6,973 chunks and **0 embeddings**: every `embedding` and `embedding_model` is
-null. Ingestion never calls the provider; the backfill will be a separate job
-and is not yet written or run. A rebuilt chunk is inserted without an
-embedding, so changed documents are re-embedded by that backfill.
+**Phase 7D — embedding backfill — complete** (`backend/preston/embed_chunks.py`,
+`python -m preston.embed_chunks`). It populates only `document_chunks.embedding`
+and `embedding_model`; it does not change any chunk text, chunk hash or
+document. Ingestion still never calls the provider, and a rebuilt chunk is
+inserted without an embedding, so a document that is re-chunked (for example a
+REPROCESSED scope) must be backfilled again.
+
+- **Behaviour.** A **dry run is the default**; writing needs `--execute`.
+  Options: `--scope`, `--limit`, `--max-cost-usd` (default 1.00). It selects
+  chunks of active documents in the explicit `PUBLIC_SCOPES` whose embedding is
+  NULL or whose `embedding_model` is not `openai:text-embedding-3-large:3072`, so
+  a rerun resumes naturally. It embeds each distinct `content_hash` once, in
+  batches of at most 128, **outside any database transaction**, validates count,
+  dimension and finite values, then writes each batch in one short transaction
+  (`UPDATE … WHERE content_hash`, restricted to still-pending rows of active
+  public documents). Requests use a 60 s timeout; a transient failure is retried
+  up to three more times after 2, 4 and 8 s; a non-retryable error stops at
+  once, as do three consecutive failed batches. It uses the ingestion advisory
+  lock and records an `ingestion_runs` row with `mode = 'backfill'`,
+  `extractor_version` NULL and the embedding identity. It never logs chunk text
+  or provider messages. `synchronize(mode="backfill")` is rejected. No new table
+  or migration.
+- **Production result (verified read-only).** Controlled `image_descriptions`
+  run (2026-10-01): 57 chunks, 1 request. Full backfill (2026-10-02): 6,916
+  chunks, 55 requests, 1,067,502 prompt tokens, 0 failed batches, about 133 s
+  (about $0.14 at the provider-reported tokens). The full-corpus rerun was
+  **idempotent: 0 chunks selected, 0 API calls, 0 rows updated.**
+- **Verified state.** 541 documents and 6,973 chunks, unchanged;
+  **6,973 embeddings and 0 pending**, all `openai:text-embedding-3-large:3072`
+  in `halfvec(3072)`, all 3,072-dimensional with finite positive norms. Every
+  active public-scope chunk is embedded and none exists outside the approved
+  public scopes. All 6,973 chunk hashes still match their text, and the
+  document, chunk-hash and chunk-text fingerprints are identical to those taken
+  before the backfill.
+- **No HNSW index was added.** Exact vector search remains the production
+  method.
 
 **Evaluation — complete (evaluation-only).** Golden Retrieval Set v2,
 `tests/fixtures/golden_retrieval_set.json`: 51 cases (42 answerable, 9
@@ -222,8 +255,8 @@ model remains `text-embedding-3-large`. The **chunk-context experiment kept the 
 `{title} › {heading path}` + the chunk did not justify changing the production
 representation, so the embedded text is the stored chunk content, unprefixed.
 
-**Phase 8 retrieval — 8A–8D complete** (`backend/preston/retrieval.py`). The
-design is intentionally simple.
+**Phase 8 retrieval — 8A–8D complete, 8H live validation complete**
+(`backend/preston/retrieval.py`). The design is intentionally simple.
 
 - `search_knowledge(session, embedder, query, *, embedding_model, scopes=None,
   documents=8) -> list[Evidence]` validates the query (non-empty, at most 2,000
@@ -238,8 +271,35 @@ design is intentionally simple.
   match is `[]`. It is read-only.
 - `get_office_locations(session)` makes one structured read of the active
   `office_locations` document and returns its 3 stored chunks as `Evidence`. It
-  uses no embeddings, so it works before the backfill, and does no per-office
-  parsing or matching.
+  uses no embeddings (so it works whether or not a backfill has run) and does
+  no per-office parsing or matching.
+- `get_company_profile(session)` is a second structured read of the same kind,
+  added after the company-fact diagnostic (below). It reads the active document
+  whose canonical URI is exactly `https://www.intercert.com/about` and returns
+  its **first two chunks** (`chunk_index` 0 and 1, in order) as `Evidence` with
+  `retrieval_method = "structured"` and the public About URL as its citation. It
+  uses no embeddings, no query and no semantic search, and calls neither the
+  provider nor `search_knowledge`. A missing or inactive About document gives
+  `[]`; a database failure raises `RetrievalError`. It shares one private
+  structured read (`_read_structured`) with `get_office_locations`, which is
+  otherwise unchanged. It is a targeted structured read over the existing
+  knowledge base, not a retrieval redesign: `search_knowledge()`, dense
+  retrieval, ingestion, chunks, embeddings and the schema are unchanged. It is
+  available for the future chatbot layer (Phase 9); it does no routing and
+  nothing calls it yet. The two chunks it returns carry the founding year, years
+  operating, the company description, scale (clients, countries) and
+  accreditations. **Limitation:** it selects chunks 0–1 *by position*; it does
+  not locate company facts dynamically. A source-backed content guard
+  (`test_real_about_page_leading_chunks_carry_the_company_profile`) builds the
+  real About page from the controlled MySQL source and fails if a chunk or layout
+  change moves those facts out of chunks 0 and 1. The guard depends on access to
+  that MySQL source and **skips cleanly when it is unavailable**, so it is not an
+  unconditional check.
+  The dense retrieval architecture remains unchanged. A small structured
+  company-profile read was added for authoritative company facts, following the
+  existing `get_office_locations()` pattern. The current implementation reads the
+  first two `/about` chunks; a source-backed content guard protects against
+  future chunk/layout drift.
 - `Evidence` carries `text`, `chunk_content_hash`, `canonical_uri`, `title`,
   `source_scope`, `content_type`, `chunk_index`, `retrieval_method`, `rank` and
   `citation_uri`, plus `score` and `embedding_model` for vector results and an
@@ -252,9 +312,111 @@ design is intentionally simple.
   contains the 8A lane helpers (`LANES`, `RetrievalLimits`, `select`); only the
   offline 8B evaluator uses them, and production search does not.
 
-**Next work:** the embedding backfill, then live validation of Golden Set v2
-against `search_knowledge` and a measured search latency. Phase 8 is not
-finished until that validation has run.
+**Phase 8H — live retrieval validation — complete** (2026-10-02;
+`scripts/validate_retrieval_live.py`, run with `--run-api`; reports in the
+gitignored `evaluation_artifacts/retrieval-live/`, with no chunk text). It runs
+the 51 Golden Set v2 queries (42 answerable, 9 unanswerable) through the real
+`search_knowledge` with live `text-embedding-3-large` query embeddings, and
+compares the result with a float32 replica of the same strategy computed from
+the saved evaluation vectors. It is read-only and changed no retrieval, schema,
+ingestion or production data.
+
+- **Quality.** 37 of the 40 answerable vector cases hit the expected document in
+  the top 8, identical to the float32 baseline, with no regressions; 5 of 5
+  image cases passed (the 2 `structured` cases are checked through
+  `get_office_locations` and are not in the vector metrics).
+- **Fidelity.** The halfvec top-1 chunk matched float32 in 49 of 49 cases. Two
+  cases differed only at the 8th-document cutoff, where two documents scored
+  within about 0.001 of each other; they were reviewed as harmless rounding
+  effects.
+- **Latency.** End-to-end p50 about 0.56 s, p95 about 0.78 s, max about 1.81 s
+  (target ≤ about 1 s p95). The query-embedding API call dominates (p50 about
+  0.52 s); database search plus grouping was about 45 ms p50 and 57 ms p95, and
+  `EXPLAIN (ANALYZE, BUFFERS)` execution was about 42 ms p50. **HNSW is not
+  justified at the current corpus size and performance.**
+- **Safety.** Public scopes only, no internal ids, no `preston-image://`
+  citation. Query embedding cost was provider-reported: 51 requests, 610 prompt
+  tokens.
+- **Three misses reviewed** (`paraphrase-09`, `cross-03`, `exact-06`, the same
+  three the float32 baseline misses): short-query near-ties and blog
+  duplication explain one; a buyer-phrased paraphrase against a marketing-style
+  page is uncertain; `cross-03` ("How long has INTERCERT been operating…") is a
+  genuine limitation, recorded below.
+
+**Known retrieval limitations (recorded, not a reason to redesign retrieval).**
+
+- **Similarity score is not an answerability threshold.** Unanswerable queries
+  scored as high as 0.708 while the weakest correct top hit scored 0.482, so
+  scores overlap. Answerability must not be decided from score alone.
+- **Canonical company facts under dense-only retrieval.** Facts that live in
+  very few chunks (founding year, years operating, headquarters, the company
+  description) can be buried by repeated blog boilerplate: "Why Choose
+  INTERCERT" appears in 116 chunks across 99 blog documents. Facts repeated
+  across many blog chunks (organizations certified, countries) retrieve well.
+  This is a known weakness for canonical company facts, not a general retrieval
+  failure. The facts on the About page are now also reachable through the
+  structured `get_company_profile()`; dense search itself is unchanged, so the
+  weakness still applies to any other single-source fact.
+- **No source priority.** Dense search cannot prefer a canonical service page
+  over blog posts on the same topic (blogs are about 93% of chunks), and on
+  short identifier queries documents near the 8th rank can be within about
+  0.005 of each other.
+- Only 50 chunks are scored before grouping and at most 2 chunks per document
+  are kept.
+
+**Company-fact diagnostic** (read-only, after 8H, 2026-10-02). Eight company-fact
+queries were run through the unchanged production path (8 requests, 55 prompt
+tokens): organizations certified, headquartered, when founded, how long
+operating, countries, "What is INTERCERT's headquarters?", "Who is INTERCERT?",
+"What does INTERCERT do?". The expected evidence was taken from stored text
+only. **2 of 8 retrieved supporting evidence** (organizations certified and
+countries, both repeated across many blog chunks); **6 of 8 did not surface the
+canonical single-source fact** (headquarters, founding, years operating, who and
+what), where repeated "Why Choose INTERCERT" boilerplate was the main competing
+signal. The expected chunk was always close (true rank about 20–68 of 6,973) but
+outside the top 8. The eight queries cover only about four distinct facts, so
+they are not eight independent observations. The diagnostic itself changed no
+retrieval; it motivated the targeted `get_company_profile()` read above. A
+deterministic check (no API calls, read-only against the production knowledge
+base) confirmed that the authoritative evidence for all eight queries is now
+available through the two structured tools: `get_company_profile()` for the six
+company and scale questions and `get_office_locations()` for the two headquarters
+questions.
+
+**Phase 9 plan — next implementation phase, not started.** Phase 9 adds grounded
+LLM answering on top of the existing retrieval layer; it does not change
+retrieval. No LLM provider or orchestration framework has been approved yet, and
+under the AI / RAG rules that needs approval before implementation.
+
+- **Grounded answering.** The LLM answers Intercert-specific questions only from
+  retrieved `Evidence`. If sufficient evidence is not retrieved it must not
+  invent an answer or rely on unsupported Intercert-specific knowledge; it says
+  the information could not be verified from the available knowledge.
+- **Evidence logging.** For every chatbot answer, record which `Evidence` items
+  reached the LLM, so a failure can be classified as a retrieval failure
+  (required evidence not retrieved) or a generation/grounding failure (evidence
+  retrieved, answer unsupported or wrong).
+- **Office / headquarters routing.** Use the existing `get_office_locations()`
+  for office, headquarters and location questions where appropriate. General
+  retrieval is not redesigned around this. The structured `get_company_profile()`
+  is likewise available for questions about INTERCERT itself; when and how either
+  tool is called is a Phase 9 decision and is not implemented.
+- **Standing company-fact regression set.** The eight queries above are kept as
+  a standing Phase 9 regression set, to observe how the complete chatbot
+  behaves before deciding anything about retrieval.
+- **Phase 9.x trigger (for investigation only).** Open a Phase 9.x
+  retrieval-improvement investigation if more than 2 of the 8 standing queries
+  produce an incorrect or unsupported chatbot answer *because the required fact
+  was not present in the retrieved Evidence*. This is a trigger, not a statement
+  that Phase 9.x is required; until it fires, no lanes, FTS, RRF, reranking,
+  HNSW or answerability scoring are added because of this diagnostic.
+
+**Architecture decisions that stand:** one simple `search_knowledge()` engine
+over the explicit `PUBLIC_SCOPES` allow-list; exact vector search; best 2 chunks
+per document, up to 8 documents; no production lanes, no FTS or RRF, no HNSW
+yet, no retrieval Protocol or registry; `get_office_locations()` is the
+structured office tool and `get_company_profile()` the structured company-profile
+tool; retrieval returns structured `Evidence`.
 
 Version changes are no longer free: 541 documents are stored, so any bump
 to `NORMALIZER_VERSION` (3) or `HASH_VERSION` (1) makes the whole corpus

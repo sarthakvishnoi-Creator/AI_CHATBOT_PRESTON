@@ -6,6 +6,7 @@ vector comes from a scripted embedder: nothing here calls OpenAI. Each test
 uses its own embedding-model identity, so no other row can interfere.
 """
 
+import dataclasses
 import math
 import uuid
 from collections.abc import AsyncIterator, Sequence
@@ -22,12 +23,15 @@ from preston.canonical import hash_content
 from preston.core.db import build_async_engine, build_session_factory
 from preston.models import EMBEDDING_DIMENSIONS, Document, DocumentChunk
 from preston.retrieval import (
+    ABOUT_URI,
     CHUNKS_PER_DOCUMENT,
     MAX_QUERY_CHARACTERS,
     OFFICE_SCOPE,
     PUBLIC_SCOPES,
+    Evidence,
     InvalidQueryError,
     RetrievalError,
+    get_company_profile,
     get_office_locations,
     search_knowledge,
 )
@@ -718,5 +722,151 @@ async def test_the_office_tool_only_reads(session: AsyncSession) -> None:
         event.remove(engine, "before_cursor_execute", record)
 
     assert (await session.execute(fingerprint)).one() == before
+
+
+# ---------------------------------------------------------------------------
+# get_company_profile
+# ---------------------------------------------------------------------------
+
+ABOUT_CHUNKS = [
+    "Who We Are? INTERCERT is a certification body. Founded in 2009.",
+    "Accreditations and licences.",
+    "Impartiality policy, which is not part of the company profile.",
+    "Conflict-of-interest rules.",
+]
+
+
+async def add_about(
+    session: AsyncSession,
+    *,
+    status: str = "active",
+    vectors: bool = False,
+    uri: str = ABOUT_URI,
+) -> Document:
+    await session.execute(
+        text("DELETE FROM documents WHERE canonical_uri = :uri"), {"uri": uri}
+    )
+    return await add_document(
+        session,
+        "about",
+        [(c, unit((0, 1.0)) if vectors else None) for c in ABOUT_CHUNKS],
+        model="test:about:3072",
+        scope="corporate",
+        uri=uri,
+        status=status,
+    )
+
+
+@pytest.mark.anyio
+async def test_the_profile_is_the_first_two_about_chunks_in_order(
+    session: AsyncSession,
+) -> None:
+    await add_about(session)
+    # Another corporate document and an unrelated page must never appear.
+    await add_document(
+        session,
+        "other-corporate",
+        [("not the about page", None)],
+        model="test:about:3072",
+        scope="corporate",
+        uri="https://www.intercert.com/test/other-corporate",
+    )
+
+    results = await get_company_profile(session)
+
+    assert [e.canonical_uri for e in results] == [ABOUT_URI, ABOUT_URI]
+    assert [e.chunk_index for e in results] == [0, 1]
+    assert [e.text for e in results] == ABOUT_CHUNKS[:2]
+    assert [e.rank for e in results] == [1, 2]
+
+
+@pytest.mark.anyio
+async def test_profile_evidence_is_structured_and_cites_the_public_page(
+    session: AsyncSession,
+) -> None:
+    document = await add_about(session)
+
+    results = await get_company_profile(session)
+
+    for evidence in results:
+        assert evidence.retrieval_method == "structured"
+        assert evidence.score is None and evidence.embedding_model is None
+        assert evidence.source_scope == "corporate"
+        assert evidence.citation_uri == ABOUT_URI
+        assert evidence.document_content_hash == document.content_hash
+        assert evidence.title == "Title about"
+    assert results[0].chunk_content_hash == hash_content(ABOUT_CHUNKS[0])
+    assert not {"id", "document_id"} & {f.name for f in dataclasses.fields(Evidence)}
+
+
+@pytest.mark.anyio
+async def test_the_profile_needs_no_embedder_and_ignores_embeddings(
+    session: AsyncSession,
+) -> None:
+    await add_about(session, vectors=False)
+    unembedded = [e.text for e in await get_company_profile(session)]
+
+    await session.rollback()
+    await add_about(session, vectors=True)
+    embedded = [e.text for e in await get_company_profile(session)]
+
+    assert unembedded == embedded == ABOUT_CHUNKS[:2]
+
+
+@pytest.mark.anyio
+async def test_an_inactive_about_document_gives_no_profile(
+    session: AsyncSession,
+) -> None:
+    await add_about(session, status="archived")
+
+    assert await get_company_profile(session) == []
+
+
+@pytest.mark.anyio
+async def test_a_missing_about_document_gives_no_profile(
+    session: AsyncSession,
+) -> None:
+    await session.execute(
+        text("DELETE FROM documents WHERE canonical_uri = :uri"), {"uri": ABOUT_URI}
+    )
+
+    assert await get_company_profile(session) == []
+
+
+@pytest.mark.anyio
+async def test_a_profile_database_failure_is_a_retrieval_error() -> None:
+    class BrokenSession:
+        async def execute(self, *_: object) -> object:
+            raise OperationalError("SELECT 1", {}, Exception("server closed"))
+
+    with pytest.raises(RetrievalError, match="OperationalError") as failure:
+        _ = await get_company_profile(cast(AsyncSession, BrokenSession()))
+
+    assert "server closed" not in str(failure.value)
+
+
+@pytest.mark.anyio
+async def test_the_profile_only_reads(session: AsyncSession) -> None:
+    await add_about(session)
+    fingerprint = text(
+        "SELECT count(*), md5(string_agg(id::text || content_hash, ',' ORDER BY id)) "
+        "FROM document_chunks"
+    )
+    before = (await session.execute(fingerprint)).one()
+    statements: list[str] = []
+    engine = cast(AsyncEngine, session.bind).sync_engine
+
+    def record(*args: Any) -> None:
+        statements.append(str(args[2]))
+
+    event.listen(engine, "before_cursor_execute", record)
+    try:
+        _ = await get_company_profile(session)
+    finally:
+        event.remove(engine, "before_cursor_execute", record)
+
+    assert (await session.execute(fingerprint)).one() == before
+    assert statements
+    assert all(s.lstrip().upper().startswith("SELECT") for s in statements)
     assert len(statements) == 1 and statements[0].lstrip().upper().startswith("SELECT")
     assert not session.new and not session.dirty and not session.deleted
