@@ -21,7 +21,9 @@ the five service-page families and freezes per-page FAQ-widget treatment)
 
 **Where the flow stands:** stages ①–⑤ up to the canonical seam are **built**
 (Phase 6.2 — schema, URL normalization, the content/hash normalizer split, the
-version quartet; current migration head `54b5ec347e84`). Cleaning and block
+version quartet; the ingestion database is at migration `54b5ec347e84`, while the
+repository head is the Phase 9B `e0384a7162ec`, applied so far only to the test
+database). Cleaning and block
 construction (6.3B-1) and the synchronization foundation (6.3A) are built too,
 and so are the source adapters — the Blog adapter, the generic service-page
 adapter (one class, five `FamilySpec` values), the fixed-route page adapter,
@@ -31,8 +33,9 @@ held whole as one chunk — see §13 for per-scope status and the 2026-09-22
 integrity audit. **Embedding and retrieval are built, populated and live-validated**
 (Phases 7A–7D and 8A–8D, 8H; §7, §8, §14): the vector column, the `Embedder`,
 the production backfill (**all 6,973 chunks embedded**, 0 pending), exact vector
-search, the office lookup and a live validation against Golden Set v2. The next
-implementation phase is Phase 9, grounded answering (§14). Chunking beyond the FAQ rule (the heading tree and token budget) remains
+search, the office lookup and a live validation against Golden Set v2. Phase 9,
+grounded answering, is in progress: the agent foundation (9A) and the conversation
+foundation (9B) are built; the public chatbot (9C) is next (§14). Chunking beyond the FAQ rule (the heading tree and token budget) remains
 designed, not built. §12 says which decisions are frozen and which still block.
 
 ---
@@ -667,10 +670,10 @@ What the audit checked and found clean:
 
 ---
 
-## 14. PHASES 7–8: EMBEDDING & RETRIEVAL (complete) — and the next phase, 9
+## 14. PHASES 7–8: EMBEDDING & RETRIEVAL (complete) — and Phase 9 (in progress)
 
-**Built, populated and live-validated.** OPEN-3 is resolved (§7). The next
-implementation phase is Phase 9 (below); it has not started.
+**Built, populated and live-validated.** OPEN-3 is resolved (§7). Phase 9 is in
+progress (below): 9A and 9B complete, 9C next.
 
 - **7A — schema foundation, complete.** Migration `54b5ec347e84` added
   `document_chunks.content_hash` (filled and verified for all 6,973 existing
@@ -733,21 +736,57 @@ implementation phase is Phase 9 (below); it has not started.
   tool yet.
 - **Not part of retrieval, unchanged:** lanes, source quotas, full-text search,
   rank fusion, reranking, an HNSW index, any answerability decision, any LLM
-  call. No orchestration layer, LLM call or chat endpoint exists yet.
+  call. The Phase 9 agent sits *on top of* retrieval (below); no chat endpoint
+  exists yet, and no real chat-model call has been made.
 
-### Phase 9 — grounded answering (next; not started)
+### Phase 9 — grounded answering (in progress)
+
+| Milestone | Status |
+| --- | --- |
+| 9A — Agent foundation | Complete |
+| 9B — Conversation foundation (9B-i schema, 9B-iii lifecycle) | Complete; 9B-iv documentation current |
+| 9C — Public chatbot (API, SSE, real model) | **Next** — not started |
+| 9D evaluation · 9E admin portal · 9F production hardening | Not started |
 
 Phase 9 adds LLM answering on top of the existing retrieval layer and does not
-change it. No LLM provider or orchestration framework has been approved yet.
+change it. LangGraph and LangChain are approved; OpenAI is the provider; the
+exact chat model is a 9C decision, so everything so far runs on a fake model.
+
+```
+Visitor
+  ↓
+Conversation ownership      server-enforced token check (only a SHA-256 digest is stored)
+  ↓
+Conversation history        last 10 messages of complete turns, from PostgreSQL
+  ↓
+LangGraph turn              one stateless graph per turn: model ⇄ tools
+  ↓
+Read-only tools             search_knowledge · get_office_locations · get_company_profile
+  ↓
+Evidence                    labelled sources; citations mapped by the application
+  ↓
+Assistant result            answer, outcome, citations, usage
+  ↓
+PostgreSQL audit/history    messages · tool_calls · message_evidence (references)
+```
+
+- **LangGraph does not persist conversation state** — no checkpointer, no
+  LangGraph memory. **PostgreSQL is the product history.**
+- **Ownership is server-enforced:** a wrong or missing token and an unknown
+  conversation get the same 404; ownership is checked before the 24-hour expiry.
+- **The 9B migration (`e0384a7162ec`) has been rehearsed on the test database
+  only. The ingestion database has NOT been migrated.**
+- Detail: `docs/PHASE_9_CHATBOT_ARCHITECTURE.md`,
+  `docs/PHASE_9B_CONVERSATION_DESIGN.md` (both local; `docs/` is gitignored).
 
 - **Grounded answering.** Answer Intercert-specific questions only from retrieved
   `Evidence`; if sufficient evidence is not retrieved, do not invent an answer or
   rely on unsupported Intercert-specific knowledge — say the information could
   not be verified from the available knowledge.
-- **Evidence logging.** Record, for every answer, which `Evidence` items reached
-  the LLM, so a failure is classifiable as a retrieval failure (evidence not
-  retrieved) or a generation/grounding failure (evidence retrieved, answer
-  unsupported or wrong).
+- **Evidence logging** (storage built in 9B). Record, for every answer, which
+  `Evidence` items reached the LLM, so a failure is classifiable as a retrieval
+  failure (evidence not retrieved) or a generation/grounding failure (evidence
+  retrieved, answer unsupported or wrong).
 - **Office routing.** Use `get_office_locations()` for office, headquarters and
   location questions where appropriate; general retrieval is not redesigned.
   `get_company_profile()` is available for questions about INTERCERT itself.
@@ -774,7 +813,7 @@ audit.
 | **Purpose** | 5-minute operating guide to SOURCE → KB → RETRIEVAL |
 | **Not** | The architecture specification — that is `docs/PHASE_6_KB_ARCHITECTURE.md` |
 | **Derived from** | `Preston_Source_of_Truth_FINAL` (2026-09-04) · `docs/PHASE_6_KB_ARCHITECTURE.md` (2026-09-07) · `docs/PRESTON_PHASE_6_OPEN_QUESTIONS_DECISIONS.pdf` (Implementation Decision Record) · `docs/archive/phase-history/PHASE_6_2_COMPLETION.md` |
-| **Implementation status** | **Built:** Phase 6.2 canonical foundation — schema, canonical URL normalization, the content/hash normalizer split, the version quartet. Phase 6.3A synchronization foundation; Phase 6.3B-1 cleaning and block construction; the Blog allow-list, pre-clean gate and Blog adapter (6.3B-2 steps 1–9, `backend/preston/sources/blog.py`); the Phase 6.5 service-page layer — one generic `ServicePageAdapter` driven by a declarative `FamilySpec` per family (`backend/preston/sources/service_page.py`, allow-list in `service_page_tables.py`) plus the frontend FAQ adapter (`service_faq.py`), the fixed-route page adapter (`fixed_pages.py`) and the image-description adapter (`image_descriptions.py`). **Ingested and stored:** 541 documents and 6,973 `document_chunks` across 13 `source_scope`s (§13), all active, at `normalizer_version` 3 / `hash_version` 1; stored `chunker_version` 3 for `blog` and `image_descriptions`, 2 elsewhere (`CHUNKER_VERSION` is 3); `extractor_version` 2 for Blog, 1 for every other adapter. Implemented chunking rules: an `FaqPair` is one chunk, whole, and non-knowledge alt text contributes no chunk text. The six scopes present on 2026-09-22 were verified by the final KB integrity audit — **PASS** (§13). **Also built (Phases 7–8):** the embedding schema (migration head `54b5ec347e84`: chunk `content_hash`, nullable `halfvec(3072)` `embedding`, `embedding_model`), the `Embedder` and OpenAI provider (`embedding.py`), the embedding backfill (`embed_chunks.py`, Phase 7D), the retrieval contract and tools (`retrieval.py`: `search_knowledge`, `get_office_locations`, `get_company_profile`), Golden Set v2, the offline evaluators (`scripts/evaluate_*.py`) and the live validator (`scripts/validate_retrieval_live.py`, Phase 8H). **Production embeddings: 6,973 of 6,973 chunks, 0 pending** (§14). **Designed, not built:** the rest of chunking (heading tree, token budget), the HNSW index, the multiset vector reuse (§7), and the orchestration and answering layer (Phase 9, §14) |
+| **Implementation status** | **Built:** Phase 6.2 canonical foundation — schema, canonical URL normalization, the content/hash normalizer split, the version quartet. Phase 6.3A synchronization foundation; Phase 6.3B-1 cleaning and block construction; the Blog allow-list, pre-clean gate and Blog adapter (6.3B-2 steps 1–9, `backend/preston/sources/blog.py`); the Phase 6.5 service-page layer — one generic `ServicePageAdapter` driven by a declarative `FamilySpec` per family (`backend/preston/sources/service_page.py`, allow-list in `service_page_tables.py`) plus the frontend FAQ adapter (`service_faq.py`), the fixed-route page adapter (`fixed_pages.py`) and the image-description adapter (`image_descriptions.py`). **Ingested and stored:** 541 documents and 6,973 `document_chunks` across 13 `source_scope`s (§13), all active, at `normalizer_version` 3 / `hash_version` 1; stored `chunker_version` 3 for `blog` and `image_descriptions`, 2 elsewhere (`CHUNKER_VERSION` is 3); `extractor_version` 2 for Blog, 1 for every other adapter. Implemented chunking rules: an `FaqPair` is one chunk, whole, and non-knowledge alt text contributes no chunk text. The six scopes present on 2026-09-22 were verified by the final KB integrity audit — **PASS** (§13). **Also built (Phases 7–8):** the embedding schema (migration head `54b5ec347e84`: chunk `content_hash`, nullable `halfvec(3072)` `embedding`, `embedding_model`), the `Embedder` and OpenAI provider (`embedding.py`), the embedding backfill (`embed_chunks.py`, Phase 7D), the retrieval contract and tools (`retrieval.py`: `search_knowledge`, `get_office_locations`, `get_company_profile`), Golden Set v2, the offline evaluators (`scripts/evaluate_*.py`) and the live validator (`scripts/validate_retrieval_live.py`, Phase 8H). **Production embeddings: 6,973 of 6,973 chunks, 0 pending** (§14). **Built (Phase 9A–9B, §14):** the agent (`agent.py`, `chat_model.py`) and the conversation foundation (`conversations.py`; migration `e0384a7162ec`, rehearsed on the test database, not applied to the ingestion database). **Designed, not built:** the rest of chunking (heading tree, token budget), the HNSW index, the multiset vector reuse (§7), and the public chat API, admin portal and production controls (Phase 9C–9F, §14) |
 | **Numbering note** | `OPEN-n` numbers are **not** shared across source documents. OPEN-1…16 here follow `PHASE_6_KB_ARCHITECTURE.md` §18; OPEN-20 and U9 come from the cleaning contract |
-| **Phase note** | `AGENTS.md` records Phase 6 (Knowledge Base ingestion), Phase 7 (embedding foundation, evaluation and the 7D production backfill) and Phase 8 (retrieval 8A–8D and the 8H live validation) as complete, and Phase 9 (grounded answering) as the next implementation phase, not started |
+| **Phase note** | `AGENTS.md` records Phase 6 (Knowledge Base ingestion), Phase 7 (embedding foundation, evaluation and the 7D production backfill) and Phase 8 (retrieval 8A–8D and the 8H live validation) as complete, and Phase 9 (grounded answering) as in progress: 9A and 9B complete, 9C next |
 | **Update trigger** | Resolution of OPEN-3 · approval of OPEN-4/5/15 · a content-owner decision on OPEN-6/7 · a source schema or API change · any change to the architecture document |

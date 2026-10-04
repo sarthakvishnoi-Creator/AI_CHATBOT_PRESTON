@@ -28,8 +28,9 @@ Phase 5 — Database & Data Layer — complete.
 
 Phase 6 — Knowledge Base ingestion — complete (details below).
 Phases 7–8 (embedding and retrieval) — complete, described after the Phase 6
-status. The next implementation phase is **Phase 9** (grounded answering on
-top of the retrieval layer; plan below, not started).
+status. **Phase 9** (grounded answering on top of the retrieval layer) is in
+progress: 9A and 9B complete, 9B-iv (documentation) current, **9C next**;
+details below.
 Phase 6.2 — Canonical Foundation — complete.
 Phase 6.3A — Incremental ingestion / synchronization foundation — complete.
 Phase 6.3B-1 — Blog HTML cleaning and block construction — complete.
@@ -383,16 +384,56 @@ available through the two structured tools: `get_company_profile()` for the six
 company and scale questions and `get_office_locations()` for the two headquarters
 questions.
 
-**Phase 9 plan — next implementation phase, not started.** Phase 9 adds grounded
+**Phase 9A — agent foundation — complete (2026-10-03, not yet wired to any
+API).** `backend/preston/agent.py`: the evidence boundary (labelled `<source>`
+blocks, application-owned citations), the three read-only tools behind
+`run_tool` (unknown names refused, one session and a timeout per call, every
+failure a fixed category), the grounding system prompt, and the two-node
+LangGraph loop (`run_turn`: the first round must call a tool, at most 3 model
+rounds and 4 tool calls, an answer without any tool is discarded).
+`backend/preston/chat_model.py` builds the OpenAI model and refuses to start
+with no model configured or with tracing on. Tested offline with a scripted
+fake model, a network guard, and one run through the real `ChatOpenAI` class
+against a local fake server; no OpenAI call was made. No migration, schema,
+retrieval, ingestion or embedding change.
+
+**Phase 9B — conversation foundation — complete (2026-10-04, uncommitted; not
+yet wired to any API).** Migration `e0384a7162ec_conversation_foundation`
+extends `conversations` and `messages` and adds `tool_calls`,
+`message_evidence` and `support_requests`; `backend/preston/conversations.py`
+holds the lifecycle. **PostgreSQL is the product conversation history;
+LangGraph stays stateless (no checkpointer, no LangGraph memory).** Ownership is
+server-enforced (only a SHA-256 digest of the visitor token is stored; one
+uniform 404; ownership before expiry); the 24-hour inactivity rule (shared
+`ensure_active()`) applies to new turns and support requests; turns are two short
+transactions with no lock held while the model runs; history is the last 10
+messages of complete turns; tool calls and evidence *references* are audited;
+support requests store the A5 contact details (name, email, company) and nothing
+else does. `admin_access_log` is deferred to 9E. Defaults: 24 h inactivity, 30
+turns, 10 history messages (settings). **The migration is rehearsed on the test
+database only; the ingestion database has not been migrated (approval 9B-3).**
+Detail: `docs/PHASE_9B_CONVERSATION_DESIGN.md`.
+
+**Phase 9 plan — 9A and 9B complete; 9B-iv current; 9C (public chatbot) next;
+9D–9F not started.** Phase 9 adds grounded
 LLM answering on top of the existing retrieval layer; it does not change
-retrieval. No LLM provider or orchestration framework has been approved yet, and
-under the AI / RAG rules that needs approval before implementation.
+retrieval. **Approved (2026-10-03):** LangGraph for agent execution and
+LangChain for model/tool integration (`langgraph==1.2.2`,
+`langchain-core~=1.6.6`, `langchain-openai~=1.6.7`; runtime-verified against
+`openai` 3.22.1; `langgraph` is pinned exactly because ≥ 1.2.12 would force
+`websockets` below 17). OpenAI remains the provider; **the exact chat model is
+not yet approved**, so Phase 9 code runs on a fake model until then. The agent
+is one simple graph: no planner, multi-agent system, LangGraph checkpointer,
+Redis, queue, event bus or other orchestration infrastructure is approved.
+LangSmith tracing stays off. The design is
+`docs/PHASE_9_CHATBOT_ARCHITECTURE.md` (local; `docs/` is gitignored).
 
 - **Grounded answering.** The LLM answers Intercert-specific questions only from
   retrieved `Evidence`. If sufficient evidence is not retrieved it must not
   invent an answer or rely on unsupported Intercert-specific knowledge; it says
   the information could not be verified from the available knowledge.
-- **Evidence logging.** For every chatbot answer, record which `Evidence` items
+- **Evidence logging** (storage implemented in 9B: `tool_calls`,
+  `message_evidence`). For every chatbot answer, record which `Evidence` items
   reached the LLM, so a failure can be classified as a retrieval failure
   (required evidence not retrieved) or a generation/grounding failure (evidence
   retrieved, answer unsupported or wrong).
