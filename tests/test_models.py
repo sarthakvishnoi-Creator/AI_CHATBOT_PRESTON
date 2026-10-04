@@ -31,6 +31,9 @@ from preston.models import (
 EXPECTED_TABLES = {
     "conversations",
     "messages",
+    "tool_calls",
+    "message_evidence",
+    "support_requests",
     "documents",
     "document_chunks",
     "ingestion_runs",
@@ -147,10 +150,12 @@ async def test_a_message_requires_an_existing_conversation(
 ) -> None:
     """The foreign key rejects a message pointing at no conversation."""
     session.add(
-        Message(conversation_id=uuid.uuid4(), role="user", content="orphan turn")
+        Message(
+            conversation_id=uuid.uuid4(), role="user", content="orphan turn", sequence=1
+        )
     )
 
-    with pytest.raises(IntegrityError):
+    with pytest.raises(IntegrityError, match="foreign key"):
         await session.flush()
 
 
@@ -159,10 +164,12 @@ async def test_deleting_a_conversation_deletes_its_messages(
     session: AsyncSession,
 ) -> None:
     """``ON DELETE CASCADE`` removes a thread's turns with the thread."""
-    conversation = Conversation()
+    conversation = Conversation(visitor_token_hash=hash_content("token"))
     session.add(conversation)
     await session.flush()
-    session.add(Message(conversation_id=conversation.id, role="user", content="hello"))
+    session.add(
+        Message(conversation_id=conversation.id, role="user", content="hi", sequence=1)
+    )
     await session.flush()
 
     await session.delete(conversation)
@@ -178,15 +185,17 @@ async def test_deleting_a_conversation_deletes_its_messages(
 @pytest.mark.anyio
 async def test_an_unknown_message_role_is_rejected(session: AsyncSession) -> None:
     """The CHECK constraint confines roles to the approved set."""
-    conversation = Conversation()
+    conversation = Conversation(visitor_token_hash=hash_content("token"))
     session.add(conversation)
     await session.flush()
 
     session.add(
-        Message(conversation_id=conversation.id, role="moderator", content="nope")
+        Message(
+            conversation_id=conversation.id, role="moderator", content="no", sequence=1
+        )
     )
 
-    with pytest.raises(IntegrityError):
+    with pytest.raises(IntegrityError, match="ck_messages_role"):
         await session.flush()
 
 
