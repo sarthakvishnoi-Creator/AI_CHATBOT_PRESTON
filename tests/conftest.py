@@ -2,9 +2,11 @@
 
 import logging
 import re
+import socket
 from collections.abc import Callable, Generator, Iterator, Mapping
 from contextlib import AbstractContextManager, contextmanager
 from pathlib import Path
+from typing import Any, cast
 
 import psycopg
 import pytest
@@ -14,6 +16,7 @@ from sqlalchemy import text
 from sqlalchemy.engine import make_url
 from sqlalchemy.exc import ArgumentError, SQLAlchemyError
 
+from preston.chat_model import TRACING_VARIABLES
 from preston.core.config import get_settings
 from preston.main import create_app
 from preston.sources.mysql import build_source_engine
@@ -259,3 +262,48 @@ def app_logs() -> Iterator[LogRecorder]:
         yield recorder
     finally:
         logger.removeHandler(recorder)
+
+
+_LOOPBACK = frozenset({"localhost", "127.0.0.1", "::1"})
+
+
+class ExternalNetworkError(RuntimeError):
+    """A test tried to reach a host other than this machine."""
+
+
+@pytest.fixture
+def no_external_network(monkeypatch: pytest.MonkeyPatch) -> list[str]:
+    """Refuse every DNS lookup or connection to a non-loopback host.
+
+    Opt-in, for agent tests: a stray OpenAI or LangSmith call fails loudly
+    instead of quietly reaching the internet (or billing). The local test
+    database stays reachable. LangChain tracing switches are cleared for the
+    test. Returns the hosts that were attempted, so a test can assert on them.
+    """
+    attempted: list[str] = []
+    real_getaddrinfo = socket.getaddrinfo
+    real_connect = socket.socket.connect
+
+    def refuse(host: object) -> None:
+        attempted.append(str(host))
+        raise ExternalNetworkError(f"External network access attempted: {host}")
+
+    def getaddrinfo(host: Any, *args: Any, **kwargs: Any) -> Any:
+        if host is not None and str(host) not in _LOOPBACK:
+            refuse(host)
+        return real_getaddrinfo(host, *args, **kwargs)
+
+    def connect(self: socket.socket, address: Any) -> None:
+        # A tuple is (host, port, …); a str is a Unix-socket path, which is local.
+        target: object = address
+        if isinstance(target, tuple):
+            host = cast(tuple[object, ...], target)[0]
+            if str(host) not in _LOOPBACK:
+                refuse(host)
+        real_connect(self, address)
+
+    monkeypatch.setattr(socket, "getaddrinfo", getaddrinfo)
+    monkeypatch.setattr(socket.socket, "connect", connect)
+    for name in TRACING_VARIABLES:
+        monkeypatch.delenv(name, raising=False)
+    return attempted

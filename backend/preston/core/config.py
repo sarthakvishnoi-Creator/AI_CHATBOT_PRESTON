@@ -65,6 +65,23 @@ class Settings(BaseSettings):
     # minutes, far too long for a query embedded while a user waits.
     embedding_timeout_seconds: PositiveFloat = 10.0
 
+    # The chat model (Phase 9). No default: the exact model is not yet
+    # approved, and unset means the chatbot cannot be built at all.
+    chat_model: str | None = None
+    # Upper bound on one model request, and on the length of one answer.
+    chat_timeout_seconds: PositiveFloat = 30.0
+    chat_max_output_tokens: PositiveInt = 700
+
+    # Conversations (Phase 9B). Application policy, not schema: a conversation
+    # idle longer than this cannot be continued; a thread holds at most this
+    # many turns; the model sees at most this many earlier messages.
+    conversation_inactivity_hours: PositiveInt = 24
+    conversation_max_turns: PositiveInt = 30
+    conversation_history_messages: PositiveInt = 10
+    # Upper bound on one whole turn. A turn still in progress 30 s past this
+    # belongs to a process that died; the next turn closes it as abandoned.
+    chat_turn_timeout_seconds: PositiveFloat = 60.0
+
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:

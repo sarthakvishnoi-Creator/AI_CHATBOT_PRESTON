@@ -177,6 +177,21 @@ def test_embedding_defaults_are_the_approved_production_model() -> None:
     assert settings.openai_api_key is None
 
 
+def test_conversation_defaults_are_the_approved_policy() -> None:
+    settings = settings_from(None)
+
+    assert settings.conversation_inactivity_hours == 24
+    assert settings.conversation_max_turns == 30
+    assert settings.conversation_history_messages == 10
+    assert settings.chat_model is None  # no chat model is approved yet
+
+
+def test_conversation_policy_is_configurable(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("PRESTON_CONVERSATION_MAX_TURNS", "12")
+
+    assert settings_from(None).conversation_max_turns == 12
+
+
 def test_the_evaluation_model_can_still_be_configured(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
